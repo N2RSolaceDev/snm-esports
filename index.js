@@ -13,9 +13,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// In-memory storage for applications and contacts
+// In-memory storage for applications (in production, use a database)
 let applications = [];
-let contacts = [];
 
 // Serve static files
 app.get('/', (req, res) => {
@@ -44,6 +43,7 @@ app.get('/admin.html', (req, res) => {
 app.post('/api/login', (req, res) => {
     const { username, password } = req.body;
     
+    // In a real application, this would check against a database
     if (username === process.env.ADMIN_USERNAME && password === process.env.ADMIN_PASSWORD) {
         const token = jwt.sign({ username }, process.env.JWT_SECRET, { expiresIn: '1h' });
         res.json({ success: true, token });
@@ -82,39 +82,6 @@ app.put('/api/applications/:id', (req, res) => {
         res.json({ success: true, message: 'Application status updated' });
     } else {
         res.status(404).json({ success: false, message: 'Application not found' });
-    }
-});
-
-// Get all contacts (protected)
-app.get('/api/contacts', (req, res) => {
-    res.json({ success: true, contacts });
-});
-
-// Submit contact form
-app.post('/api/contacts', (req, res) => {
-    const contact = {
-        id: Date.now(),
-        ...req.body,
-        status: 'unread',
-        submittedAt: new Date().toISOString()
-    };
-    
-    contacts.push(contact);
-    res.json({ success: true, message: 'Message sent successfully' });
-});
-
-// Update contact status (protected)
-app.put('/api/contacts/:id', (req, res) => {
-    const { id } = req.params;
-    const { status } = req.body;
-    
-    const contactIndex = contacts.findIndex(contact => contact.id === parseInt(id));
-    
-    if (contactIndex !== -1) {
-        contacts[contactIndex].status = status;
-        res.json({ success: true, message: 'Contact status updated' });
-    } else {
-        res.status(404).json({ success: false, message: 'Contact not found' });
     }
 });
 
