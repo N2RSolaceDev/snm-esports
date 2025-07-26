@@ -368,40 +368,6 @@
     </div>
 
     <script>
-        // Sample applications data
-        let applications = [
-            {
-                id: 1,
-                fullName: "Alex Johnson",
-                email: "alex@example.com",
-                game: "Valorant",
-                experience: "5 years of competitive play, top 500 in NA server",
-                availability: "Weekdays after 6 PM, weekends anytime",
-                status: "pending",
-                submittedAt: "2024-06-15T14:30:00Z"
-            },
-            {
-                id: 2,
-                fullName: "Taylor Smith",
-                email: "taylor@example.com",
-                game: "CS2",
-                experience: "3 years professional play, former collegiate champion",
-                availability: "Evenings and weekends",
-                status: "approved",
-                submittedAt: "2024-06-10T09:15:00Z"
-            },
-            {
-                id: 3,
-                fullName: "Jordan Williams",
-                email: "jordan@example.com",
-                game: "Rocket League",
-                experience: "2 years ranked play, diamond rank, content creator",
-                availability: "After 5 PM weekdays, all day weekends",
-                status: "rejected",
-                submittedAt: "2024-06-05T16:45:00Z"
-            }
-        ];
-
         // DOM Elements
         const loginForm = document.getElementById('loginForm');
         const adminDashboard = document.getElementById('adminDashboard');
@@ -435,18 +401,35 @@
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             
-            // Simple authentication (in a real app, this would be server-side)
-            if (username === 'admin' && password === 'admin123') {
-                localStorage.setItem('isLoggedIn', 'true');
-                document.querySelector('.login-container').style.display = 'none';
-                adminDashboard.style.display = 'block';
-                loadApplications();
-            } else {
+            // Send login request to server
+            fetch('/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, password })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    localStorage.setItem('isLoggedIn', 'true');
+                    document.querySelector('.login-container').style.display = 'none';
+                    adminDashboard.style.display = 'block';
+                    loadApplications();
+                } else {
+                    errorMessage.style.display = 'block';
+                    setTimeout(() => {
+                        errorMessage.style.display = 'none';
+                    }, 3000);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
                 errorMessage.style.display = 'block';
                 setTimeout(() => {
                     errorMessage.style.display = 'none';
                 }, 3000);
-            }
+            });
         });
 
         // Logout functionality
@@ -458,78 +441,96 @@
 
         // Load applications for admin panel
         function loadApplications() {
-            // Update stats
-            updateStats();
-            
-            // Clear current list
-            applicationsList.innerHTML = '';
-            
-            // Sort applications by submission date (newest first)
-            const sortedApplications = [...applications].sort((a, b) => 
-                new Date(b.submittedAt) - new Date(a.submittedAt)
-            );
-            
-            // Display applications
-            if (sortedApplications.length === 0) {
-                applicationsList.innerHTML = '<p>No applications found.</p>';
-                return;
-            }
-            
-            sortedApplications.forEach(app => {
-                const appElement = document.createElement('div');
-                appElement.className = 'application-card';
-                appElement.innerHTML = `
-                    <div class="application-header">
-                        <h3>${app.fullName}</h3>
-                        <span class="application-status status-${app.status}">${app.status.charAt(0).toUpperCase() + app.status.slice(1)}</span>
-                    </div>
-                    <div class="application-details">
-                        <p><strong>Email:</strong> ${app.email}</p>
-                        <p><strong>Game:</strong> ${app.game}</p>
-                        <p><strong>Experience:</strong> ${app.experience.substring(0, 100)}${app.experience.length > 100 ? '...' : ''}</p>
-                        <p><strong>Submitted:</strong> ${new Date(app.submittedAt).toLocaleString()}</p>
-                    </div>
-                    ${app.status === 'pending' ? `
-                    <div class="application-actions">
-                        <button class="action-btn approve-btn" data-id="${app.id}">Approve</button>
-                        <button class="action-btn reject-btn" data-id="${app.id}">Reject</button>
-                    </div>
-                    ` : ''}
-                `;
-                applicationsList.appendChild(appElement);
-            });
-            
-            // Add event listeners to action buttons
-            document.querySelectorAll('.approve-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const id = parseInt(this.getAttribute('data-id'));
-                    updateApplicationStatus(id, 'approved');
+            // Fetch applications from server
+            fetch('/api/applications')
+            .then(response => response.json())
+            .then(data => {
+                const applications = data.applications || [];
+                updateStats(applications);
+                
+                // Clear current list
+                applicationsList.innerHTML = '';
+                
+                // Sort applications by submission date (newest first)
+                const sortedApplications = [...applications].sort((a, b) => 
+                    new Date(b.submittedAt) - new Date(a.submittedAt)
+                );
+                
+                // Display applications
+                if (sortedApplications.length === 0) {
+                    applicationsList.innerHTML = '<p>No applications found.</p>';
+                    return;
+                }
+                
+                sortedApplications.forEach(app => {
+                    const appElement = document.createElement('div');
+                    appElement.className = 'application-card';
+                    appElement.innerHTML = `
+                        <div class="application-header">
+                            <h3>${app.fullName}</h3>
+                            <span class="application-status status-${app.status}">${app.status.charAt(0).toUpperCase() + app.status.slice(1)}</span>
+                        </div>
+                        <div class="application-details">
+                            <p><strong>Email:</strong> ${app.email}</p>
+                            <p><strong>Game:</strong> ${app.game}</p>
+                            <p><strong>Experience:</strong> ${app.experience.substring(0, 100)}${app.experience.length > 100 ? '...' : ''}</p>
+                            <p><strong>Submitted:</strong> ${new Date(app.submittedAt).toLocaleString()}</p>
+                        </div>
+                        ${app.status === 'pending' ? `
+                        <div class="application-actions">
+                            <button class="action-btn approve-btn" data-id="${app.id}">Approve</button>
+                            <button class="action-btn reject-btn" data-id="${app.id}">Reject</button>
+                        </div>
+                        ` : ''}
+                    `;
+                    applicationsList.appendChild(appElement);
                 });
-            });
-            
-            document.querySelectorAll('.reject-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const id = parseInt(this.getAttribute('data-id'));
-                    updateApplicationStatus(id, 'rejected');
+                
+                // Add event listeners to action buttons
+                document.querySelectorAll('.approve-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = parseInt(this.getAttribute('data-id'));
+                        updateApplicationStatus(id, 'approved');
+                    });
                 });
+                
+                document.querySelectorAll('.reject-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = parseInt(this.getAttribute('data-id'));
+                        updateApplicationStatus(id, 'rejected');
+                    });
+                });
+            })
+            .catch(error => {
+                console.error('Error loading applications:', error);
             });
         }
 
         // Update application status
         function updateApplicationStatus(id, status) {
-            applications = applications.map(app => {
-                if (app.id === id) {
-                    return {...app, status};
+            fetch(`/api/applications/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ status })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    loadApplications();
+                } else {
+                    alert('Error updating application status.');
                 }
-                return app;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error updating application status.');
             });
-            
-            localStorage.setItem('applications', JSON.stringify(applications));
-            loadApplications();
         }
 
         // Update dashboard stats
-        function updateStats() {
+        function updateStats(applications) {
             totalApplicationsEl.textContent = applications.length;
             pendingApplicationsEl.textContent = applications.filter(app => app.status === 'pending').length;
             approvedApplicationsEl.textContent = applications.filter(app => app.status === 'approved').length;
