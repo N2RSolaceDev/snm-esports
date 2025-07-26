@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join SNM Esports</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <h1>SNM ESPORTS</h1>
+            </div>
+            <div class="mobile-menu">
+                <i class="fas fa-bars"></i>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/about.html">About</a></li>
+                    <li><a href="/merch.html">Merch</a></li>
+                    <li><a href="/apply.html">Apply</a></li>
+                    <li><a href="/admin.html">Admin</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="hero">
+            <h1>Join Our Team</h1>
+            <p>Fill out the application form below to become part of SNM Esports. We're always looking for talented players and passionate individuals to join our growing community.</p>
+        </div>
+
+        <form class="application-form" id="applicationForm">
+            <h2 class="form-title">Application Form</h2>
+            
+            <div class="form-group">
+                <label for="fullName">Full Name</label>
+                <input type="text" id="fullName" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="game">Primary Game</label>
+                <select id="game" required>
+                    <option value="">Select a game</option>
+                    <option value="CS2">Counter-Strike 2</option>
+                    <option value="Valorant">Valorant</option>
+                    <option value="Rocket League">Rocket League</option>
+                    <option value="League of Legends">League of Legends</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="experience">Experience</label>
+                <textarea id="experience" placeholder="Tell us about your competitive experience, achievements, and what makes you a good fit for SNM Esports" required></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="availability">Availability</label>
+                <textarea id="availability" placeholder="When are you available for practice and competitions? (e.g., weekdays after 6 PM, weekends)" required></textarea>
+            </div>
+            
+            <button type="submit" class="btn">Submit Application</button>
+        </form>
+        
+        <div class="success-message" id="successMessage">
+            <h3>Application Submitted Successfully!</h3>
+            <p>Thank you for your interest in joining SNM Esports. Our team will review your application and get back to you soon.</p>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>SNM Esports - Redefining competitive gaming since 2023</p>
+            <p class="copyright">&copy; 2025 SNM Esports. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="/js/main.js"></script>
+</body>
+</html>
