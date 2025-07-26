@@ -6,7 +6,308 @@
     <title>SNM Esports Admin Panel</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        /* Global Styles */
+        :root {
+            --primary: #1a3a5f;
+            --secondary: #2d5a87;
+            --accent: #e63946;
+            --light: #f1faee;
+            --dark: #1d3557;
+            --gray: #a8dadc;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Login Form */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-form {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-form h2 {
+            margin-bottom: 30px;
+            color: var(--dark);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus {
+            border-color: var(--secondary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(45, 90, 135, 0.1);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            box-shadow: 0 2px 8px rgba(45, 90, 135, 0.2);
+            font-size: 0.9rem;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(45, 90, 135, 0.3);
+        }
+
+        .error-message {
+            color: var(--accent);
+            margin-top: 15px;
+            display: none;
+        }
+
+        /* Admin Dashboard */
+        .admin-dashboard {
+            display: none;
+            padding: 40px 0;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .dashboard-header h1 {
+            color: var(--dark);
+        }
+
+        .logout-btn {
+            background: var(--accent);
+            padding: 10px 20px;
+            font-size: 0.9rem;
+        }
+
+        .logout-btn:hover {
+            background: #c1121f;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card i {
+            font-size: 2.5rem;
+            color: var(--secondary);
+            margin-bottom: 15px;
+        }
+
+        .stat-card h3 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .stat-card p {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .applications-section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            margin-top: 30px;
+        }
+
+        .applications-section h2 {
+            margin-bottom: 25px;
+            color: var(--dark);
+        }
+
+        .applications-list {
+            display: grid;
+            gap: 20px;
+        }
+
+        .application-card {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 20px;
+            transition: var(--transition);
+        }
+
+        .application-card:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .application-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .application-header h3 {
+            color: var(--dark);
+        }
+
+        .application-status {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-approved {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .application-details p {
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .application-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .action-btn {
+            padding: 8px 15px;
+            border-radius: 4px;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .approve-btn {
+            background: #28a745;
+            color: white;
+        }
+
+        .approve-btn:hover {
+            background: #218838;
+        }
+
+        .reject-btn {
+            background: #dc3545;
+            color: white;
+        }
+
+        .reject-btn:hover {
+            background: #c82333;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .dashboard-header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .applications-section {
+                padding: 20px 15px;
+            }
+            
+            .application-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .application-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Login Form -->
@@ -66,6 +367,179 @@
         </div>
     </div>
 
-    <script src="/js/main.js"></script>
+    <script>
+        // Sample applications data
+        let applications = [
+            {
+                id: 1,
+                fullName: "Alex Johnson",
+                email: "alex@example.com",
+                game: "Valorant",
+                experience: "5 years of competitive play, top 500 in NA server",
+                availability: "Weekdays after 6 PM, weekends anytime",
+                status: "pending",
+                submittedAt: "2024-06-15T14:30:00Z"
+            },
+            {
+                id: 2,
+                fullName: "Taylor Smith",
+                email: "taylor@example.com",
+                game: "CS2",
+                experience: "3 years professional play, former collegiate champion",
+                availability: "Evenings and weekends",
+                status: "approved",
+                submittedAt: "2024-06-10T09:15:00Z"
+            },
+            {
+                id: 3,
+                fullName: "Jordan Williams",
+                email: "jordan@example.com",
+                game: "Rocket League",
+                experience: "2 years ranked play, diamond rank, content creator",
+                availability: "After 5 PM weekdays, all day weekends",
+                status: "rejected",
+                submittedAt: "2024-06-05T16:45:00Z"
+            }
+        ];
+
+        // DOM Elements
+        const loginForm = document.getElementById('loginForm');
+        const adminDashboard = document.getElementById('adminDashboard');
+        const errorMessage = document.getElementById('errorMessage');
+        const applicationsList = document.getElementById('applicationsList');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        // Stats elements
+        const totalApplicationsEl = document.getElementById('totalApplications');
+        const pendingApplicationsEl = document.getElementById('pendingApplications');
+        const approvedApplicationsEl = document.getElementById('approvedApplications');
+        const rejectedApplicationsEl = document.getElementById('rejectedApplications');
+
+        // Check if user is logged in
+        function checkLoginStatus() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            if (isLoggedIn) {
+                document.querySelector('.login-container').style.display = 'none';
+                adminDashboard.style.display = 'block';
+                loadApplications();
+            } else {
+                document.querySelector('.login-container').style.display = 'flex';
+                adminDashboard.style.display = 'none';
+            }
+        }
+
+        // Login form submission
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // Simple authentication (in a real app, this would be server-side)
+            if (username === 'admin' && password === 'admin123') {
+                localStorage.setItem('isLoggedIn', 'true');
+                document.querySelector('.login-container').style.display = 'none';
+                adminDashboard.style.display = 'block';
+                loadApplications();
+            } else {
+                errorMessage.style.display = 'block';
+                setTimeout(() => {
+                    errorMessage.style.display = 'none';
+                }, 3000);
+            }
+        });
+
+        // Logout functionality
+        logoutBtn.addEventListener('click', function() {
+            localStorage.removeItem('isLoggedIn');
+            document.querySelector('.login-container').style.display = 'flex';
+            adminDashboard.style.display = 'none';
+        });
+
+        // Load applications for admin panel
+        function loadApplications() {
+            // Update stats
+            updateStats();
+            
+            // Clear current list
+            applicationsList.innerHTML = '';
+            
+            // Sort applications by submission date (newest first)
+            const sortedApplications = [...applications].sort((a, b) => 
+                new Date(b.submittedAt) - new Date(a.submittedAt)
+            );
+            
+            // Display applications
+            if (sortedApplications.length === 0) {
+                applicationsList.innerHTML = '<p>No applications found.</p>';
+                return;
+            }
+            
+            sortedApplications.forEach(app => {
+                const appElement = document.createElement('div');
+                appElement.className = 'application-card';
+                appElement.innerHTML = `
+                    <div class="application-header">
+                        <h3>${app.fullName}</h3>
+                        <span class="application-status status-${app.status}">${app.status.charAt(0).toUpperCase() + app.status.slice(1)}</span>
+                    </div>
+                    <div class="application-details">
+                        <p><strong>Email:</strong> ${app.email}</p>
+                        <p><strong>Game:</strong> ${app.game}</p>
+                        <p><strong>Experience:</strong> ${app.experience.substring(0, 100)}${app.experience.length > 100 ? '...' : ''}</p>
+                        <p><strong>Submitted:</strong> ${new Date(app.submittedAt).toLocaleString()}</p>
+                    </div>
+                    ${app.status === 'pending' ? `
+                    <div class="application-actions">
+                        <button class="action-btn approve-btn" data-id="${app.id}">Approve</button>
+                        <button class="action-btn reject-btn" data-id="${app.id}">Reject</button>
+                    </div>
+                    ` : ''}
+                `;
+                applicationsList.appendChild(appElement);
+            });
+            
+            // Add event listeners to action buttons
+            document.querySelectorAll('.approve-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = parseInt(this.getAttribute('data-id'));
+                    updateApplicationStatus(id, 'approved');
+                });
+            });
+            
+            document.querySelectorAll('.reject-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = parseInt(this.getAttribute('data-id'));
+                    updateApplicationStatus(id, 'rejected');
+                });
+            });
+        }
+
+        // Update application status
+        function updateApplicationStatus(id, status) {
+            applications = applications.map(app => {
+                if (app.id === id) {
+                    return {...app, status};
+                }
+                return app;
+            });
+            
+            localStorage.setItem('applications', JSON.stringify(applications));
+            loadApplications();
+        }
+
+        // Update dashboard stats
+        function updateStats() {
+            totalApplicationsEl.textContent = applications.length;
+            pendingApplicationsEl.textContent = applications.filter(app => app.status === 'pending').length;
+            approvedApplicationsEl.textContent = applications.filter(app => app.status === 'approved').length;
+            rejectedApplicationsEl.textContent = applications.filter(app => app.status === 'rejected').length;
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            checkLoginStatus();
+        });
+    </script>
 </body>
 </html>
