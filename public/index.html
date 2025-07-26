@@ -82,23 +82,15 @@
 
         /* Header Styles */
         header {
-            background: white;
-            box-shadow: 0 1px 8px rgba(0, 0, 0, 0.06);
             position: sticky;
             top: 0;
             z-index: 1000;
+            padding: 20px 0;
         }
 
         .header-container {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 0;
-        }
-
-        .logo h1 {
-            font-size: 1.6rem;
-            color: var(--dark);
+            justify-content: center;
         }
 
         nav ul {
@@ -107,7 +99,7 @@
         }
 
         nav ul li {
-            margin-left: 30px;
+            margin: 0 15px;
         }
 
         nav ul li a {
@@ -549,12 +541,6 @@
     <!-- Header -->
     <header>
         <div class="container header-container">
-            <div class="logo">
-                <h1>SNM ESPORTS</h1>
-            </div>
-            <div class="mobile-menu">
-                <i class="fas fa-bars"></i>
-            </div>
             <nav>
                 <ul>
                     <li><a href="/">Home</a></li>
@@ -564,6 +550,9 @@
                     <li><a href="/admin.html">Admin</a></li>
                 </ul>
             </nav>
+            <div class="mobile-menu">
+                <i class="fas fa-bars"></i>
+            </div>
         </div>
     </header>
 
