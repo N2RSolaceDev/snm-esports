@@ -9,8 +9,9 @@
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
+    <!-- Header -->
     <header>
-        <div class="container header-content">
+        <div class="container header-container">
             <div class="logo">
                 <h1>SNM ESPORTS</h1>
             </div>
@@ -29,17 +30,22 @@
         </div>
     </header>
 
-    <div class="container">
-        <div class="hero">
-            <h1>Join Our Team</h1>
-            <p>Fill out the application form below to become part of SNM Esports. We're always looking for talented players and passionate individuals to join our growing community.</p>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container hero-content">
         </div>
+    </section>
 
-        <form class="application-form" id="applicationForm">
-            <h2 class="form-title">Application Form</h2>
-            
-            <!-- Step 1: Basic Information -->
-            <div class="application-step active">
+    <!-- Application Form -->
+    <section class="section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Join Our Team</h2>
+                <p>Fill out the application form below to become part of SNM Esports</p>
+            </div>
+            <form class="application-form" id="applicationForm">
+                <h2 class="form-title">Application Form</h2>
+                
                 <div class="form-group">
                     <label for="fullName">Full Name *</label>
                     <input type="text" id="fullName" name="fullName" required>
@@ -51,107 +57,38 @@
                 </div>
                 
                 <div class="form-group">
-                    <label for="discord">Discord Username + ID *</label>
-                    <input type="text" id="discord" name="discord" placeholder="username#1234 or username (ID: 1234567890)" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="inDiscord">Are you in our Discord server? *</label>
-                    <select id="inDiscord" name="inDiscord" required>
-                        <option value="">Select an option</option>
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
+                    <label for="game">Primary Game *</label>
+                    <select id="game" name="game" required>
+                        <option value="">Select a game</option>
+                        <option value="CS2">Counter-Strike 2</option>
+                        <option value="Valorant">Valorant</option>
+                        <option value="Rocket League">Rocket League</option>
+                        <option value="League of Legends">League of Legends</option>
+                        <option value="Other">Other</option>
                     </select>
                 </div>
                 
                 <div class="form-group">
-                    <label for="role">Are you applying as a Player or Staff? *</label>
-                    <select id="role" name="role" required>
-                        <option value="">Select a role</option>
-                        <option value="player">Player</option>
-                        <option value="staff">Staff</option>
-                    </select>
+                    <label for="experience">Gaming Experience *</label>
+                    <textarea id="experience" name="experience" placeholder="Tell us about your competitive gaming experience, achievements, and what makes you a good fit for SNM Esports" required></textarea>
                 </div>
                 
-                <div class="form-navigation">
-                    <button type="button" class="btn btn-outline" disabled>Previous</button>
-                    <button type="button" class="btn" onclick="nextStep()">Next</button>
+                <div class="form-group">
+                    <label for="availability">Availability *</label>
+                    <textarea id="availability" name="availability" placeholder="When are you available for practice and competitions? (e.g., weekdays after 6 PM, weekends)" required></textarea>
                 </div>
-            </div>
+                
+                <button type="submit" class="btn">Submit Application</button>
+            </form>
             
-            <!-- Step 2: Player Specific Questions -->
-            <div class="application-step">
-                <div id="player-fields">
-                    <div class="form-group">
-                        <label for="game">Primary Game *</label>
-                        <select id="game" name="game">
-                            <option value="">Select a game</option>
-                            <option value="CS2">Counter-Strike 2</option>
-                            <option value="Valorant">Valorant</option>
-                            <option value="Rocket League">Rocket League</option>
-                            <option value="League of Legends">League of Legends</option>
-                            <option value="Other">Other</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="experience">Gaming Experience *</label>
-                        <textarea id="experience" name="experience" placeholder="Tell us about your competitive gaming experience, achievements, and what makes you a good fit for SNM Esports" required></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="availability">Availability *</label>
-                        <textarea id="availability" name="availability" placeholder="When are you available for practice and competitions? (e.g., weekdays after 6 PM, weekends)" required></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="trackerLink">Tracker Link (Optional)</label>
-                        <input type="url" id="trackerLink" name="trackerLink" placeholder="https://example.com/your-tracker">
-                    </div>
-                </div>
-                
-                <div id="staff-fields" style="display: none;">
-                    <div class="form-group">
-                        <label for="position">Position Interested In *</label>
-                        <select id="position" name="position">
-                            <option value="">Select a position</option>
-                            <option value="content-creator">Content Creator</option>
-                            <option value="coach">Coach</option>
-                            <option value="analyst">Analyst</option>
-                            <option value="manager">Manager</option>
-                            <option value="other">Other</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="skills">Relevant Skills and Experience *</label>
-                        <textarea id="skills" name="skills" placeholder="Describe your relevant skills, experience, and why you'd be a good fit for this position" required></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="resumeLink">Resume/CV Link *</label>
-                        <input type="url" id="resumeLink" name="resumeLink" placeholder="https://example.com/your-resume" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="portfolio">Portfolio/Work Examples (Optional)</label>
-                        <input type="url" id="portfolio" name="portfolio" placeholder="https://example.com/your-portfolio">
-                    </div>
-                </div>
-                
-                <div class="form-navigation">
-                    <button type="button" class="btn btn-outline" onclick="prevStep()">Previous</button>
-                    <button type="submit" class="btn">Submit Application</button>
-                </div>
+            <div class="success-message" id="successMessage">
+                <h3>Application Submitted Successfully!</h3>
+                <p>Thank you for your interest in joining SNM Esports. Our team will review your application and get back to you soon.</p>
             </div>
-        </form>
-        
-        <div class="success-message" id="successMessage">
-            <h3>Application Submitted Successfully!</h3>
-            <p>Thank you for your interest in joining SNM Esports. Our team will review your application and get back to you soon.</p>
         </div>
-    </div>
+    </section>
 
+    <!-- Footer -->
     <footer>
         <div class="container">
             <div class="footer-content">
@@ -191,7 +128,7 @@
                     <ul class="footer-links">
                         <li><a href="#"><i class="fas fa-envelope"></i> contact@snmesports.com</a></li>
                         <li><a href="#"><i class="fas fa-map-marker-alt"></i> Global</a></li>
-                        <li><a href="#"><i class="fas fa-phone"></i></a></li>
+                        <li><a href="#"><i class="fas fa-phone"></i> </a></li>
                         <li><a href="#"><i class="fas fa-headset"></i> Support Center</a></li>
                     </ul>
                 </div>
