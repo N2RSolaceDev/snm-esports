@@ -3,30 +3,427 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SNM Esports Admin Panel</title>
+    <title>Admin - SNM Esports</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+       /* Reuse your existing CSS from the file */
+        /* Dark Mode Variables */
+        :root {
+            --primary: #1a3a5f;
+            --secondary: #2d5a87;
+            --accent: #e63946;
+            --light: #f1faee;
+            --dark: #0d1b2a;
+            --darker: #0a1424;
+            --darkest: #080f1a;
+            --gray: #a8dadc;
+            --text-light: #e0e1dd;
+            --text-gray: #b0b0b0;
+            --border: #2d3a52;
+            --card-bg: #1b263b;
+            --transition: all 0.3s ease;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--darker);
+            color: var(--text-light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        h1, h2, h3, h4, h5 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            box-shadow: 0 2px 8px rgba(45, 90, 135, 0.2);
+            font-size: 0.9rem;
+        }
+        .btn:hover {
+            background-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(45, 90, 135, 0.3);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--secondary);
+            color: var(--secondary);
+        }
+        .btn-outline:hover {
+            background: var(--secondary);
+            color: white;
+        }
+        .btn-danger {
+            background-color: var(--accent);
+        }
+        .btn-danger:hover {
+            background-color: #c1121f;
+        }
+        /* Header Styles */
+        header {
+            background: var(--darkest);
+            box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+        .logo h1 {
+            font-size: 1.6rem;
+            color: var(--text-light);
+        }
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        nav ul li {
+            margin-left: 30px;
+        }
+        nav ul li a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+            padding: 5px 0;
+            font-size: 0.95rem;
+        }
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--secondary);
+            transition: var(--transition);
+        }
+        nav ul li a:hover {
+            color: var(--secondary);
+        }
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+        .mobile-menu {
+            display: none;
+            font-size: 1.4rem;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+         /* Login Form */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            background-color: var(--darker);
+        }
+        .login-form {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+        .login-form h2 {
+            margin-bottom: 30px;
+            color: var(--text-light);
+        }
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-light);
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            background: var(--darkest);
+            color: var(--text-light);
+        }
+        .error-message {
+            color: var(--accent);
+            margin-top: 15px;
+            display: none;
+        }
+        /* Admin Dashboard */
+        .admin-dashboard {
+            padding: 40px 0;
+            background-color: var(--darker);
+            min-height: 100vh;
+            display: none; /* Hidden by default */
+        }
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        .dashboard-header h1 {
+            color: var(--text-light);
+        }
+        .logout-btn {
+            background: var(--accent);
+            padding: 10px 20px;
+            font-size: 0.9rem;
+        }
+        .logout-btn:hover {
+            background: #c1121f;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        .stat-card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            transition: var(--transition);
+            border: 1px solid var(--border);
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+        .stat-card i {
+            font-size: 2.5rem;
+            color: var(--secondary);
+            margin-bottom: 15px;
+        }
+        .stat-card h3 {
+            font-size: 2rem;
+            color: var(--text-light);
+            margin-bottom: 10px;
+        }
+        .stat-card p {
+            color: var(--text-gray);
+            font-size: 1rem;
+        }
+        .applications-section {
+            background: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            margin-top: 30px;
+            border: 1px solid var(--border);
+        }
+        .applications-section h2 {
+            color: var(--text-light);
+            margin-bottom: 25px;
+        }
+        .applications-list {
+            display: grid;
+            gap: 20px;
+        }
+        .application-card {
+            background: var(--darkest);
+            border-radius: 8px;
+            padding: 20px;
+            transition: var(--transition);
+            border: 1px solid var(--border);
+        }
+        .application-card:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        .application-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            flex-wrap: wrap; /* Allow wrapping on small screens */
+            gap: 10px;
+        }
+        .application-header h3 {
+            color: var(--text-light);
+            margin: 0; /* Remove default margin */
+        }
+        .application-status {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .status-approved {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .application-details p {
+            margin-bottom: 8px; /* Slightly reduced margin */
+            color: var(--text-gray);
+            font-size: 0.95rem; /* Slightly smaller font */
+        }
+        .application-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap; /* Allow buttons to wrap */
+        }
+        .action-btn {
+            padding: 8px 15px;
+            border-radius: 4px;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem; /* Slightly smaller font */
+        }
+        .approve-btn {
+            background: #28a745;
+            color: white;
+        }
+        .approve-btn:hover {
+            background: #218838;
+        }
+        .reject-btn {
+            background: #dc3545;
+            color: white;
+        }
+        .reject-btn:hover {
+            background: #c82333;
+        }
+        .no-applications {
+            text-align: center;
+            color: var(--text-gray);
+            font-style: italic;
+            padding: 20px;
+        }
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .mobile-menu {
+                display: block;
+            }
+            nav ul {
+                position: fixed;
+                top: 80px;
+                left: -100%;
+                flex-direction: column;
+                background: var(--darkest);
+                width: 100%;
+                text-align: center;
+                transition: var(--transition);
+                padding: 20px 0;
+                box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
+                border: 1px solid var(--border);
+                z-index: 999;
+            }
+            nav ul.active {
+                left: 0;
+            }
+            nav ul li {
+                margin: 15px 0;
+            }
+            .dashboard-header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            .applications-section {
+                padding: 20px 15px;
+            }
+            .application-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .application-actions {
+                flex-direction: column;
+            }
+             .action-btn {
+                width: 100%; /* Make buttons full width on small screens */
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Login Form -->
-    <div class="login-container">
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <h1>SNM ESPORTS</h1>
+            </div>
+            <div class="mobile-menu">
+                <i class="fas fa-bars"></i>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/about.html">About</a></li>
+                    <li><a href="/merch.html">Merch</a></li>
+                    <li><a href="/apply.html">Apply</a></li>
+                    <li><a href="/admin.html">Admin</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Login Form Container -->
+    <div class="login-container" id="loginContainer">
         <form class="login-form" id="loginForm">
             <h2>Admin Login</h2>
             <div class="form-group">
                 <label for="username">Username</label>
-                <input type="text" id="username" required>
+                <input type="text" id="username" name="username" required>
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" required>
+                <input type="password" id="password" name="password" required>
             </div>
             <button type="submit" class="btn">Login</button>
             <div class="error-message" id="errorMessage">Invalid credentials. Please try again.</div>
         </form>
     </div>
 
-    <!-- Admin Dashboard -->
+    <!-- Admin Dashboard Container -->
     <div class="admin-dashboard" id="adminDashboard">
         <div class="container">
             <div class="dashboard-header">
@@ -37,35 +434,271 @@
             <div class="stats-grid">
                 <div class="stat-card">
                     <i class="fas fa-users"></i>
-                    <h3 id="totalApplications">0</h3>
+                    <h3 id="totalApps">0</h3>
                     <p>Total Applications</p>
                 </div>
                 <div class="stat-card">
                     <i class="fas fa-clock"></i>
-                    <h3 id="pendingApplications">0</h3>
-                    <p>Pending Applications</p>
+                    <h3 id="pendingApps">0</h3>
+                    <p>Pending</p>
                 </div>
                 <div class="stat-card">
                     <i class="fas fa-check-circle"></i>
-                    <h3 id="approvedApplications">0</h3>
-                    <p>Approved Applications</p>
+                    <h3 id="approvedApps">0</h3>
+                    <p>Approved</p>
                 </div>
                 <div class="stat-card">
                     <i class="fas fa-times-circle"></i>
-                    <h3 id="rejectedApplications">0</h3>
-                    <p>Rejected Applications</p>
+                    <h3 id="rejectedApps">0</h3>
+                    <p>Rejected</p>
                 </div>
             </div>
 
             <div class="applications-section">
-                <h2>Recent Applications</h2>
+                <h2>Applications</h2>
                 <div class="applications-list" id="applicationsList">
                     <!-- Applications will be loaded here -->
+                    <div class="no-applications" id="noApplicationsMessage">Loading applications...</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="/js/main.js"></script>
+    <script>
+        // --- Client-side JavaScript for admin.html ---
+        document.addEventListener('DOMContentLoaded', function () {
+            // DOM Elements
+            const mobileMenu = document.querySelector('.mobile-menu');
+            const navMenu = document.querySelector('nav ul');
+            const loginContainer = document.getElementById('loginContainer');
+            const adminDashboard = document.getElementById('adminDashboard');
+            const loginForm = document.getElementById('loginForm');
+            const errorMessage = document.getElementById('errorMessage');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const applicationsList = document.getElementById('applicationsList');
+            const noApplicationsMessage = document.getElementById('noApplicationsMessage');
+            const totalAppsEl = document.getElementById('totalApps');
+            const pendingAppsEl = document.getElementById('pendingApps');
+            const approvedAppsEl = document.getElementById('approvedApps');
+            const rejectedAppsEl = document.getElementById('rejectedApps');
+
+            // Mobile Menu Toggle
+            if (mobileMenu) {
+                mobileMenu.addEventListener('click', () => {
+                    navMenu.classList.toggle('active');
+                });
+            }
+
+            // Check for existing token on page load
+            const token = localStorage.getItem('adminToken');
+            if (token) {
+                loginContainer.style.display = 'none';
+                adminDashboard.style.display = 'block';
+                loadApplications();
+            }
+
+            // Login Form Submission
+            loginForm.addEventListener('submit', async function (e) {
+                e.preventDefault();
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+
+                try {
+                    const response = await fetch('/api/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ username, password })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success && data.token) {
+                        localStorage.setItem('adminToken', data.token);
+                        loginContainer.style.display = 'none';
+                        adminDashboard.style.display = 'block';
+                        loadApplications();
+                    } else {
+                        errorMessage.style.display = 'block';
+                        errorMessage.textContent = data.message || 'Login failed.';
+                    }
+                } catch (error) {
+                    console.error('Login error:', error);
+                    errorMessage.style.display = 'block';
+                    errorMessage.textContent = 'An error occurred during login. Please try again.';
+                }
+            });
+
+            // Logout Function
+            logoutBtn.addEventListener('click', function () {
+                localStorage.removeItem('adminToken');
+                adminDashboard.style.display = 'none';
+                loginContainer.style.display = 'flex'; // Use flex to center
+                loginForm.reset();
+                errorMessage.style.display = 'none';
+            });
+
+            // Load Applications Function
+            async function loadApplications() {
+                noApplicationsMessage.textContent = 'Loading applications...';
+                noApplicationsMessage.style.display = 'block';
+                applicationsList.innerHTML = ''; // Clear previous list
+
+                try {
+                    const token = localStorage.getItem('adminToken');
+                    const response = await fetch('/api/applications', {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    if (!response.ok) {
+                        if (response.status === 401 || response.status === 403) {
+                            alert('Session expired or invalid. Please log in again.');
+                            logoutBtn.click();
+                            return;
+                        }
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    displayApplications(data.applications);
+                    updateStats(data.applications);
+                } catch (error) {
+                    console.error('Error loading applications:', error);
+                    noApplicationsMessage.textContent = 'Error loading applications. Please try again.';
+                    noApplicationsMessage.style.display = 'block';
+                    // Reset stats on error
+                    totalAppsEl.textContent = '0';
+                    pendingAppsEl.textContent = '0';
+                    approvedAppsEl.textContent = '0';
+                    rejectedAppsEl.textContent = '0';
+                }
+            }
+
+            // Display Applications Function
+            function displayApplications(applications) {
+                 applicationsList.innerHTML = ''; // Clear the list
+
+                if (!applications || applications.length === 0) {
+                    noApplicationsMessage.textContent = 'No applications found.';
+                    noApplicationsMessage.style.display = 'block';
+                    return;
+                }
+                noApplicationsMessage.style.display = 'none'; // Hide the "no apps" message
+
+                // Sort applications by submission date (newest first)
+                applications.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+
+                applications.forEach(app => {
+                    const appCard = document.createElement('div');
+                    appCard.className = 'application-card';
+                    // Simple HTML escaping for display (basic protection)
+                    const escapeHtml = (text) => {
+                         if (typeof text !== 'string') return text;
+                         return text.replace(/[&<>"']/g, match => ({'&': '&amp;', '<': '<', '>': '>', '"': '&quot;', "'": '&#39;'}[match]));
+                    };
+
+                    let roleSpecificDetails = '';
+                    if (app.role === 'player') {
+                        roleSpecificDetails = `
+                            <p><strong>Player Type:</strong> ${escapeHtml(app.playerType || 'N/A')}</p>
+                            ${app.playerType === 'competitive' ? `
+                                <p><strong>Game:</strong> ${escapeHtml(app.game || 'N/A')}</p>
+                                <p><strong>Tracker Link:</strong> ${escapeHtml(app.trackerLink || 'N/A')}</p>
+                            ` : ''}
+                            ${app.playerType === 'creative' ? `
+                                <p><strong>Social Links:</strong> ${escapeHtml(app.socialLinks || 'N/A')}</p>
+                                <p><strong>Content Sample:</strong> ${escapeHtml(app.contentSample || 'N/A')}</p>
+                            ` : ''}
+                            <p><strong>Gaming Experience:</strong> ${escapeHtml(app.gamingExperience || 'N/A')}</p>
+                            <p><strong>Availability:</strong> ${escapeHtml(app.availability || 'N/A')}</p>
+                        `;
+                    } else if (app.role === 'staff') {
+                        roleSpecificDetails = `
+                            <p><strong>Position:</strong> ${escapeHtml(app.position || 'N/A')}</p>
+                            <p><strong>Skills:</strong> ${escapeHtml(app.skills || 'N/A')}</p>
+                            <p><strong>Resume Link:</strong> ${escapeHtml(app.resumeLink || 'N/A')}</p>
+                            <p><strong>Portfolio:</strong> ${escapeHtml(app.portfolio || 'N/A')}</p>
+                        `;
+                    }
+
+
+                    appCard.innerHTML = `
+                        <div class="application-header">
+                            <h3>${escapeHtml(app.fullName || 'N/A')}</h3>
+                            <span class="application-status status-${app.status}">${app.status}</span>
+                        </div>
+                        <div class="application-details">
+                            <p><strong>Email:</strong> ${escapeHtml(app.email || 'N/A')}</p>
+                            <p><strong>Discord:</strong> ${escapeHtml(app.discord || 'N/A')}</p>
+                            <p><strong>Role:</strong> ${escapeHtml(app.role || 'N/A')}</p>
+                            <p><strong>Submitted:</strong> ${new Date(app.submittedAt).toLocaleString()}</p>
+                            ${roleSpecificDetails}
+                        </div>
+                        <div class="application-actions">
+                            ${app.status === 'pending' ? `
+                                <button class="action-btn approve-btn" onclick="updateApplicationStatus(${app.id}, 'approved')">Approve</button>
+                                <button class="action-btn reject-btn" onclick="updateApplicationStatus(${app.id}, 'rejected')">Reject</button>
+                            ` : `<span>Status is final.</span>`}
+                        </div>
+                    `;
+                    applicationsList.appendChild(appCard);
+                });
+            }
+
+            // Update Statistics Function
+            function updateStats(applications) {
+                const total = applications.length;
+                const pending = applications.filter(app => app.status === 'pending').length;
+                const approved = applications.filter(app => app.status === 'approved').length;
+                const rejected = applications.filter(app => app.status === 'rejected').length;
+
+                totalAppsEl.textContent = total;
+                pendingAppsEl.textContent = pending;
+                approvedAppsEl.textContent = approved;
+                rejectedAppsEl.textContent = rejected;
+            }
+
+            // Make updateApplicationStatus globally accessible for inline onclick
+            window.updateApplicationStatus = async function(id, status) {
+                 if (!confirm(`Are you sure you want to set application ID ${id} to ${status}?`)) {
+                    return; // Do nothing if user cancels
+                 }
+
+                try {
+                    const token = localStorage.getItem('adminToken');
+                    const response = await fetch(`/api/applications/${id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ status: status })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        // Reload the list to show the updated status
+                        loadApplications();
+                    } else {
+                        alert('Failed to update status: ' + (data.message || 'Unknown error'));
+                        // If token is invalid, logout
+                         if (response.status === 401 || response.status === 403) {
+                            alert('Session expired or invalid. Please log in again.');
+                            logoutBtn.click();
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error updating application status:', error);
+                    alert('An error occurred while updating the status.');
+                }
+            };
+
+        });
+    </script>
 </body>
 </html>
