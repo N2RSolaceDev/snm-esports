@@ -18,23 +18,23 @@ let applications = [];
 
 // Serve static files
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.get('/about.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'about.html'));
+    res.sendFile(path.join(__dirname, 'about.html'));
 });
 
 app.get('/merch.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'merch.html'));
+    res.sendFile(path.join(__dirname, 'merch.html'));
 });
 
 app.get('/apply.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'apply.html'));
+    res.sendFile(path.join(__dirname, 'apply.html'));
 });
 
 app.get('/admin.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+    res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
 // API Routes
