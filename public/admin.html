@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-       /* Dark Mode Variables */
+        /* Dark Mode Variables */
         :root {
             --primary: #1a3a5f;
             --secondary: #2d5a87;
@@ -81,7 +81,7 @@
             background-color: var(--accent);
         }
         .btn-danger:hover {
-            background-color: #c1121f;
+            background: #c1121f;
         }
         /* Header Styles */
         header {
@@ -653,8 +653,7 @@
                              ${item.bannerUrl ? `<p><strong>Banner:</strong> <a href="${escapeHtml(item.bannerUrl)}" target="_blank">View Image</a></p>` : ''}
                          </div>
                          <div class="news-card-actions">
-                             <!-- CHANGED: Use item._id for MongoDB -->
-                             <button class="action-btn delete-btn" data-id="${escapeHtml(item._id)}">Delete</button>
+                             <button class="action-btn delete-btn" data-id="${escapeHtml(item.id)}">Delete</button>
                          </div>
                      `;
                      newsList.appendChild(newsCard);
@@ -663,7 +662,6 @@
                  if (newsList) {
                      newsList.addEventListener('click', function(event) {
                          if (event.target.classList.contains('delete-btn')) {
-                             // CHANGED: Get the _id from data-id
                              const id = event.target.getAttribute('data-id');
                              if (id) deleteNews(id);
                          }
@@ -736,7 +734,7 @@
              }
              // Delete News Function
              async function deleteNews(id) {
-                 // CHANGED: Confirmation message now uses _id
+                 // Simple confirmation
                  if (!confirm(`Are you sure you want to permanently delete news article ID ${id}? This action cannot be undone.`)) {
                      return;
                  }
@@ -745,7 +743,6 @@
                      if (!token) {
                          throw new Error("No authentication token found.");
                      }
-                     // CHANGED: API call now uses _id in the URL
                      const response = await fetch(`/api/news/${id}`, {
                          method: 'DELETE',
                          headers: {
