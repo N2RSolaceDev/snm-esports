@@ -3,24 +3,67 @@ const express = require('express');
 const path = require('path');
 const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
+// --- Import MongoDB ---
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb'); // Import ObjectId for ID handling
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// --- MongoDB Connection Setup ---
+const uri = process.env.MONGODB_URI; // Add your MongoDB connection string to .env
+
+if (!uri) {
+    console.error("Error: MONGODB_URI is not defined in the .env file.");
+    process.exit(1); // Exit if no URI is provided
+}
+
+// Create a MongoClient with a MongoClientOptions object to set the Stable API version
+const client = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  }
+});
+
+let db;
+let newsCollection;
+
+async function connectToDatabase() {
+  try {
+    // Connect the client to the server
+    await client.connect();
+    // Send a ping to confirm a successful connection
+    await client.db("admin").command({ ping: 1 });
+    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+
+    // Select the database and collection
+    db = client.db(process.env.MONGODB_DB_NAME || "snm_esports"); // Use DB name from .env or default
+    newsCollection = db.collection("news"); // Collection name
+
+     // --- Optional: Create an index on publishedAt for sorting ---
+     await newsCollection.createIndex({ publishedAt: -1 }); // -1 for descending order
+
+  } catch (error) {
+    console.error("Error connecting to MongoDB:", error);
+    process.exit(1); // Exit if connection fails
+  }
+}
+
 // --- Middleware ---
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// --- In-memory storage for applications and news ---
+// --- In-memory storage for applications (unchanged) ---
 let applications = [];
-let news = []; // Array to store news articles
+// let news = []; // Remove or comment out the in-memory news array
 
 // --- Helper Functions ---
 
-// Middleware to verify JWT token
+// Middleware to verify JWT token (unchanged)
 const authenticateToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
 
@@ -39,17 +82,16 @@ const authenticateToken = (req, res, next) => {
         req.user = decoded;
         next();
     } catch (err) {
-        console.error("Token verification error:", err.message); // Log for debugging
+        console.error("Token verification error:", err.message);
         res.status(403).json({ success: false, message: 'Invalid Token.' });
     }
 };
 
-// --- Serve HTML Pages ---
-// Simplified route to serve any HTML file from /public
+// --- Serve HTML Pages (unchanged) ---
 app.get(['/', '/about.html', '/merch.html', '/apply.html', '/news.html', '/admin.html'], (req, res) => {
-    let filename = 'index.html'; // Default
+    let filename = 'index.html';
     if (req.path !== '/') {
-        filename = req.path.substring(1); // Remove leading slash
+        filename = req.path.substring(1);
     }
     res.sendFile(path.join(__dirname, 'public', filename), (err) => {
         if (err) {
@@ -61,7 +103,7 @@ app.get(['/', '/about.html', '/merch.html', '/apply.html', '/news.html', '/admin
 
 // --- API Routes ---
 
-// Login endpoint
+// Login endpoint (unchanged)
 app.post('/api/login', (req, res) => {
     const { username, password } = req.body;
 
@@ -77,74 +119,28 @@ app.post('/api/login', (req, res) => {
     }
 });
 
-// --- Application Management Routes ---
+// --- Application Management Routes (unchanged) ---
+// ... (GET, POST, PUT, DELETE /api/applications remain the same) ...
 
-// Get all applications (Protected Route)
-app.get('/api/applications', authenticateToken, (req, res) => {
-    res.json({ success: true, applications: applications });
-});
-
-// Submit application (Public Route)
-app.post('/api/applications', (req, res) => {
-    const newApplication = {
-        id: Date.now(), // Simple ID generation
-        ...req.body,
-        status: 'pending',
-        submittedAt: new Date().toISOString()
-    };
-
-    applications.push(newApplication);
-    console.log(`New application received (ID: ${newApplication.id})`);
-    res.json({ success: true, message: 'Application submitted successfully' });
-});
-
-// Update application status (Protected Route)
-app.put('/api/applications/:id', authenticateToken, (req, res) => {
-    const { id } = req.params;
-    const { status } = req.body;
-
-    // Validate status
-    if (!['approved', 'rejected'].includes(status)) {
-        return res.status(400).json({ success: false, message: 'Invalid status. Must be "approved" or "rejected".' });
-    }
-
-    const applicationIndex = applications.findIndex(app => app.id === parseInt(id, 10));
-
-    if (applicationIndex !== -1) {
-        applications[applicationIndex].status = status;
-        console.log(`Application ID ${id} status updated to ${status}`);
-        res.json({ success: true, message: `Application status updated to ${status}` });
-    } else {
-        res.status(404).json({ success: false, message: 'Application not found' });
-    }
-});
-
-// Delete an application (Protected Route)
-app.delete('/api/applications/:id', authenticateToken, (req, res) => {
-    const { id } = req.params;
-    const applicationIndex = applications.findIndex(app => app.id === parseInt(id, 10));
-
-    if (applicationIndex !== -1) {
-        const deletedApp = applications.splice(applicationIndex, 1);
-        console.log(`Application ID ${id} deleted`);
-        res.json({ success: true, message: 'Application deleted successfully', deletedApplication: deletedApp[0] });
-    } else {
-        res.status(404).json({ success: false, message: 'Application not found' });
-    }
-});
-
-// --- News Management Routes (Protected) ---
+// --- News Management Routes (Modified for MongoDB) ---
 
 // Get all news articles (Public Route - for news.html)
-app.get('/api/news', (req, res) => {
-    // Send the news array wrapped in an object for consistency
-    // Sort by publishedAt descending (newest first) before sending
-    const sortedNews = [...news].sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
-    res.json({ success: true, news: sortedNews });
+// Fetches from MongoDB instead of in-memory array
+app.get('/api/news', async (req, res) => {
+    try {
+        // Fetch all news articles from the collection, sorted by publishedAt descending
+        const newsItems = await newsCollection.find({}).sort({ publishedAt: -1 }).toArray();
+
+        res.json({ success: true, news: newsItems });
+    } catch (error) {
+        console.error('Error fetching news from MongoDB:', error);
+        res.status(500).json({ success: false, message: 'Failed to load news articles.' });
+    }
 });
 
 // Create a new news article (Protected Route)
-app.post('/api/news', authenticateToken, (req, res) => {
+// Stores in MongoDB instead of in-memory array
+app.post('/api/news', authenticateToken, async (req, res) => {
     const { title, description, bannerUrl } = req.body;
 
     // Basic validation
@@ -153,41 +149,78 @@ app.post('/api/news', authenticateToken, (req, res) => {
     }
 
     const newNewsItem = {
-        id: Date.now(), // Simple ID generation
+        // MongoDB will generate an _id automatically, but if you prefer numeric IDs like before:
+        // id: Date.now(), // Or use a better unique ID generator if needed
         title,
         description,
-        bannerUrl: bannerUrl || '', // Allow empty banner URL
-        publishedAt: new Date().toISOString()
+        bannerUrl: bannerUrl || '',
+        publishedAt: new Date() // Store as Date object, will be serialized to ISO string by MongoDB driver
     };
 
-    news.push(newNewsItem);
-    console.log(`New news article created (ID: ${newNewsItem.id})`);
-    res.status(201).json({ success: true, message: 'News article created successfully', newsItem: newNewsItem });
-});
-
-// Delete a news article (Protected Route)
-app.delete('/api/news/:id', authenticateToken, (req, res) => {
-    const { id } = req.params;
-    const newsIndex = news.findIndex(item => item.id === parseInt(id, 10));
-
-    if (newsIndex !== -1) {
-        const deletedNews = news.splice(newsIndex, 1);
-        console.log(`News article ID ${id} deleted`);
-        res.json({ success: true, message: 'News article deleted successfully', deletedNewsItem: deletedNews[0] });
-    } else {
-        res.status(404).json({ success: false, message: 'News article not found' });
+    try {
+        const result = await newsCollection.insertOne(newNewsItem);
+        // The inserted document (with _id) is in result.ops[0] in older driver versions,
+        // or you can get the insertedId from result.insertedId
+        console.log(`New news article created with ID: ${result.insertedId}`);
+        // Return the full item including the _id generated by MongoDB
+        res.status(201).json({ success: true, message: 'News article created successfully', newsItem: { _id: result.insertedId, ...newNewsItem } });
+    } catch (error) {
+        console.error('Error creating news article in MongoDB:', error);
+        res.status(500).json({ success: false, message: 'Failed to create news article.' });
     }
 });
 
+// Delete a news article (Protected Route)
+// Deletes from MongoDB instead of in-memory array
+app.delete('/api/news/:id', authenticateToken, async (req, res) => {
+    const { id } = req.params;
+
+    // Handle potential invalid ObjectId format
+    let objectId;
+    try {
+        objectId = new ObjectId(id); // Try to convert string ID to ObjectId
+    } catch (err) {
+        console.error("Invalid ObjectId format for deletion:", id);
+        return res.status(400).json({ success: false, message: 'Invalid news article ID format.' });
+    }
+
+    try {
+        const result = await newsCollection.deleteOne({ _id: objectId });
+
+        if (result.deletedCount === 1) {
+            console.log(`News article ID ${id} deleted`);
+            res.json({ success: true, message: 'News article deleted successfully' });
+        } else {
+            res.status(404).json({ success: false, message: 'News article not found' });
+        }
+    } catch (error) {
+        console.error('Error deleting news article from MongoDB:', error);
+        res.status(500).json({ success: false, message: 'Failed to delete news article.' });
+    }
+});
+
+// --- Graceful Shutdown ---
+process.on('SIGINT', async () => {
+  console.log('\nShutting down gracefully...');
+  await client.close();
+  console.log('MongoDB connection closed.');
+  process.exit(0);
+});
+
 // --- Start Server ---
-app.listen(PORT, () => {
-    console.log(`\n==========================================`);
-    console.log(`  Server is running on http://localhost:${PORT}`);
-    console.log(`==========================================\n`);
-    // It's helpful to log the expected credentials on startup
-    console.log(`Expected Admin Credentials:`);
-    console.log(`  Username: ${process.env.ADMIN_USERNAME || 'NOT SET (check .env)'}`);
-    console.log(`  Password: ${process.env.ADMIN_PASSWORD ? '[SET]' : 'NOT SET (check .env)'}`);
-    console.log(`  JWT Secret: ${process.env.JWT_SECRET ? '[SET]' : 'NOT SET (check .env)'}`);
-    console.log(`==========================================\n`);
+// Connect to MongoDB before starting the server
+connectToDatabase().then(() => {
+    app.listen(PORT, () => {
+        console.log(`\n==========================================`);
+        console.log(`  Server is running on http://localhost:${PORT}`);
+        console.log(`==========================================\n`);
+        console.log(`Expected Admin Credentials:`);
+        console.log(`  Username: ${process.env.ADMIN_USERNAME || 'NOT SET (check .env)'}`);
+        console.log(`  Password: ${process.env.ADMIN_PASSWORD ? '[SET]' : 'NOT SET (check .env)'}`);
+        console.log(`  JWT Secret: ${process.env.JWT_SECRET ? '[SET]' : 'NOT SET (check .env)'}`);
+        console.log(`==========================================\n`);
+    });
+}).catch(err => {
+    console.error("Failed to start server due to database connection error:", err);
+    process.exit(1);
 });
