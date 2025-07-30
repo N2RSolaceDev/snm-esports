@@ -245,7 +245,6 @@
             color: var(--text-gray);
             font-size: 1rem;
         }
-
         /* News Section */
         .news-section {
              background: var(--card-bg);
@@ -338,8 +337,6 @@
             font-style: italic;
             padding: 20px;
         }
-
-
         /* Responsive Design */
         @media (max-width: 768px) {
             .mobile-menu {
@@ -439,11 +436,9 @@
                     <p>News Articles</p>
                 </div>
             </div>
-
             <!-- News Management Content -->
             <div class="news-section">
                 <h2>Manage News</h2>
-
                 <!-- News Creation Form -->
                 <div class="news-form">
                     <h3>Publish New Article</h3>
@@ -464,7 +459,6 @@
                         <div class="error-message" id="newsErrorMessage"></div>
                     </form>
                 </div>
-
                 <!-- News List -->
                 <h3>Existing Articles</h3>
                 <div class="news-grid" id="newsList">
@@ -472,7 +466,6 @@
                     <div class="no-news" id="noNewsMessage">Loading news...</div>
                 </div>
             </div>
-
         </div>
     </div>
     <script>
@@ -486,14 +479,12 @@
             const loginForm = document.getElementById('loginForm');
             const errorMessage = document.getElementById('errorMessage'); // For login errors
             const logoutBtn = document.getElementById('logoutBtn');
-
             // --- News Management Elements ---
             const newsForm = document.getElementById('newsForm');
             const newsList = document.getElementById('newsList');
             const noNewsMessage = document.getElementById('noNewsMessage'); // Message when list is empty/loading
             const newsErrorMessage = document.getElementById('newsErrorMessage'); // For news form errors
             const totalNewsEl = document.getElementById('totalNews'); // Stat card for total news
-
             // --- Helper Functions ---
             function showLogin() {
                 if (loginContainer) loginContainer.style.display = 'flex';
@@ -504,19 +495,16 @@
                 if (newsForm) newsForm.reset();
                 if (newsErrorMessage) newsErrorMessage.style.display = 'none';
             }
-
             function hideLogin() {
                 if (loginContainer) loginContainer.style.display = 'none';
                 if (adminDashboard) adminDashboard.style.display = 'block';
             }
-
             // --- Mobile Menu Toggle ---
             if (mobileMenu) {
                 mobileMenu.addEventListener('click', () => {
                     if (navMenu) navMenu.classList.toggle('active');
                 });
             }
-
             // --- Check for existing token on page load ---
             const token = localStorage.getItem('adminToken');
             if (token) {
@@ -525,14 +513,12 @@
             } else {
                 showLogin();
             }
-
             // --- Login Form Submission ---
             if (loginForm) {
                 loginForm.addEventListener('submit', async function (e) {
                     e.preventDefault();
                     const username = document.getElementById('username')?.value;
                     const password = document.getElementById('password')?.value;
-
                     if (!username || !password) {
                         if (errorMessage) {
                             errorMessage.style.display = 'block';
@@ -540,7 +526,6 @@
                         }
                         return;
                     }
-
                     try {
                         const response = await fetch('/api/login', {
                             method: 'POST',
@@ -549,9 +534,7 @@
                             },
                             body: JSON.stringify({ username, password })
                         });
-
                         const data = await response.json();
-
                         if (response.ok && data.success && data.token) {
                             localStorage.setItem('adminToken', data.token);
                             hideLogin();
@@ -571,7 +554,6 @@
                     }
                 });
             }
-
             // --- Logout Function ---
             if (logoutBtn) {
                 logoutBtn.addEventListener('click', function () {
@@ -579,9 +561,7 @@
                     showLogin();
                 });
             }
-
             // --- News Management ---
-
             // Load News Function
             async function loadNews() {
                  if (noNewsMessage) {
@@ -589,20 +569,17 @@
                      noNewsMessage.style.display = 'block';
                  }
                  if (newsList) newsList.innerHTML = ''; // Clear previous list
-
                  try {
                      const token = localStorage.getItem('adminToken');
                      if (!token) {
                          throw new Error("No authentication token found.");
                      }
-
                      const response = await fetch('/api/news', {
                          method: 'GET',
                          headers: {
                              'Authorization': `Bearer ${token}`
                          }
                      });
-
                      if (!response.ok) {
                          // If the error is due to authentication, logout
                          if (response.status === 401 || response.status === 403) {
@@ -615,7 +592,6 @@
                          // For other errors, throw a generic one
                          throw new Error(`Failed to load news: ${response.status} ${response.statusText}`);
                      }
-
                      const data = await response.json();
                      // Ensure the data structure is as expected
                      if (data.success && Array.isArray(data.news)) {
@@ -635,12 +611,10 @@
                      if (totalNewsEl) totalNewsEl.textContent = '0';
                  }
              }
-
              // Display News Function
              function displayNews(newsItems) {
                  if (!newsList) return; // Safety check
                  newsList.innerHTML = ''; // Clear the list
-
                  if (!newsItems || newsItems.length === 0) {
                      if (noNewsMessage) {
                          noNewsMessage.textContent = 'No news articles found.';
@@ -648,18 +622,14 @@
                      }
                      return;
                  }
-
                  if (noNewsMessage) {
                      noNewsMessage.style.display = 'none'; // Hide the "no news" message
                  }
-
                  // Sort news by published date (newest first)
                  const sortedNews = [...newsItems].sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
-
                  sortedNews.forEach(item => {
                      const newsCard = document.createElement('div');
                      newsCard.className = 'news-card';
-
                      // Simple HTML escaping for display (basic protection)
                      const escapeHtml = (text) => {
                          if (typeof text !== 'string') return text;
@@ -670,10 +640,9 @@
                              .replace(/"/g, "&quot;")
                              .replace(/'/g, "&#039;");
                      };
-
                      // Get first line for preview
-                     const firstLine = escapeHtml((item.description || '').split(/\r?\n/)[0] || 'No description available.');
-
+                     const firstLine = escapeHtml((item.description || '').split(/\r?
+/)[0] || 'No description available.');
                      newsCard.innerHTML = `
                          <div class="news-card-header">
                              <h3>${escapeHtml(item.title || 'Untitled')}</h3>
@@ -684,24 +653,23 @@
                              ${item.bannerUrl ? `<p><strong>Banner:</strong> <a href="${escapeHtml(item.bannerUrl)}" target="_blank">View Image</a></p>` : ''}
                          </div>
                          <div class="news-card-actions">
-                             <button class="action-btn delete-btn" data-id="${escapeHtml(item.id)}">Delete</button>
+                             <!-- CHANGED: Use item._id for MongoDB -->
+                             <button class="action-btn delete-btn" data-id="${escapeHtml(item._id)}">Delete</button>
                          </div>
                      `;
                      newsList.appendChild(newsCard);
                  });
-
                  // --- Add event listeners for Delete buttons using event delegation ---
                  if (newsList) {
                      newsList.addEventListener('click', function(event) {
                          if (event.target.classList.contains('delete-btn')) {
+                             // CHANGED: Get the _id from data-id
                              const id = event.target.getAttribute('data-id');
                              if (id) deleteNews(id);
                          }
                      });
                  }
              }
-
-
              // News Form Submission Handler
              if (newsForm) {
                  newsForm.addEventListener('submit', async function(e) {
@@ -710,14 +678,12 @@
                          newsErrorMessage.style.display = 'none';
                          newsErrorMessage.textContent = '';
                      }
-
                      const formData = new FormData(this);
                      const newsData = {
                          title: formData.get('title')?.trim(),
                          description: formData.get('description')?.trim(),
                          bannerUrl: formData.get('bannerUrl')?.trim() || '' // Allow empty
                      };
-
                      // Basic validation
                      if (!newsData.title || !newsData.description) {
                          if (newsErrorMessage) {
@@ -726,13 +692,11 @@
                          }
                          return;
                      }
-
                      try {
                          const token = localStorage.getItem('adminToken');
                          if (!token) {
                              throw new Error("No authentication token found.");
                          }
-
                          const response = await fetch('/api/news', {
                              method: 'POST',
                              headers: {
@@ -741,7 +705,6 @@
                              },
                              body: JSON.stringify(newsData)
                          });
-
                          if (response.ok) {
                              const data = await response.json();
                              if (data.success) {
@@ -771,36 +734,31 @@
                      }
                  });
              }
-
              // Delete News Function
              async function deleteNews(id) {
-                 // Simple confirmation
+                 // CHANGED: Confirmation message now uses _id
                  if (!confirm(`Are you sure you want to permanently delete news article ID ${id}? This action cannot be undone.`)) {
                      return;
                  }
-
                  try {
                      const token = localStorage.getItem('adminToken');
                      if (!token) {
                          throw new Error("No authentication token found.");
                      }
-
+                     // CHANGED: API call now uses _id in the URL
                      const response = await fetch(`/api/news/${id}`, {
                          method: 'DELETE',
                          headers: {
                              'Authorization': `Bearer ${token}`
                          }
                      });
-
                      const data = await response.json();
-
                      if (response.ok && data.success) {
                          alert('News article deleted successfully.');
                          loadNews(); // Reload the list to reflect the deletion
                      } else {
                          const message = data.message || 'Unknown error';
                          alert(`Failed to delete news article: ${message}`);
-
                          // If the error is due to authentication, logout
                          if (response.status === 401 || response.status === 403) {
                              console.warn("Authentication failed during delete, redirecting to login.");
@@ -817,7 +775,6 @@
                      alert('An error occurred while deleting the news article.');
                  }
              }
-
         });
     </script>
 </body>
