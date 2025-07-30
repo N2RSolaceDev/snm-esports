@@ -45,7 +45,7 @@ const authenticateToken = (req, res, next) => {
 
 // --- Serve HTML Pages ---
 // Simplified route to serve any HTML file from /public
-app.get(['/', '/about.html', '/merch.html', '/apply.html', '/admin.html'], (req, res) => {
+app.get(['/', '/about.html', '/merch.html', '/news.html', '/admin.html'], (req, res) => {
     let filename = 'index.html'; // Default
     if (req.path !== '/') {
         filename = req.path.substring(1); // Remove leading slash
