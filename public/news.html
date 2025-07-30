@@ -155,7 +155,369 @@
             color: var(--text-light);
         }
 
-        /* Keep the rest of your styles below unchanged */
+        /* Hero Section */
+        .hero {
+            height: 50vh;
+            min-height: 400px;
+            background: url('snm.png') center/cover no-repeat;
+            display: flex;
+            align-items: center;
+            position: relative;
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(13, 27, 42, 0.7);
+        }
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding-top: 60px;
+            position: relative;
+            z-index: 2;
+        }
+        .hero h1 {
+            font-size: 3rem;
+            color: white;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        .hero p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 40px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        /* News Section */
+        .section {
+            padding: 60px 0;
+        }
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .section-title h2 {
+            font-size: 2.2rem;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 15px;
+            color: var(--text-light);
+        }
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 2px;
+            background: var(--secondary);
+        }
+
+        /* News Grid */
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        /* News Card */
+        .news-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: var(--transition);
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .news-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        }
+        .news-banner {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+        }
+        .news-content {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .news-content h3 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: var(--text-light);
+        }
+        .news-excerpt {
+            color: var(--text-gray);
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+        .news-date {
+            font-size: 0.85rem;
+            color: var(--gray);
+            margin-top: auto;
+            margin-bottom: 15px;
+        }
+        .news-actions {
+            margin-top: auto;
+        }
+        .read-more-btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .read-more-btn:hover {
+            background: var(--primary);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.7);
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: var(--card-bg);
+            margin: auto;
+            padding: 0;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            width: 90%;
+            max-width: 800px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            position: relative;
+            animation: modalopen 0.4s;
+        }
+        @keyframes modalopen {
+            from {opacity: 0; transform: translateY(-60px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-title {
+            margin: 0;
+            font-size: 1.8rem;
+            color: var(--text-light);
+        }
+        .close {
+            color: var(--text-gray);
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            margin: 0;
+        }
+        .close:hover,
+        .close:focus {
+            color: var(--text-light);
+        }
+        .modal-body {
+            padding: 20px;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+        .modal-banner {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 8px 8px 0 0;
+            display: block;
+        }
+        .modal-date {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-top: 10px;
+            display: block;
+        }
+        .modal-description {
+            margin-top: 20px;
+            color: var(--text-light);
+            line-height: 1.7;
+            white-space: pre-wrap;
+        }
+        .no-news {
+            text-align: center;
+            color: var(--text-gray);
+            font-style: italic;
+            padding: 40px 20px;
+            grid-column: 1 / -1;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--darkest);
+            color: var(--text-light);
+            padding: 70px 0 30px;
+            border-top: 1px solid var(--border);
+        }
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            position: relative;
+            padding-bottom: 10px;
+            color: var(--text-light);
+        }
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 35px;
+            height: 2px;
+            background: var(--secondary);
+        }
+        .footer-column p {
+            margin-bottom: 20px;
+            color: var(--text-gray);
+            font-size: 0.95rem;
+        }
+        .footer-links {
+            list-style: none;
+        }
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+        .footer-links a {
+            color: var(--text-gray);
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            font-size: 0.95rem;
+        }
+        .footer-links a i {
+            margin-right: 10px;
+            color: var(--secondary);
+            width: 20px;
+        }
+        .footer-links a:hover {
+            color: var(--secondary);
+            padding-left: 5px;
+        }
+        .social-icons.footer-social {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .social-icons.footer-social a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #2d3a52;
+            color: var(--text-light);
+            transition: var(--transition);
+            font-size: 1rem;
+        }
+        .social-icons.footer-social a:hover {
+            background: var(--secondary);
+            color: white;
+            transform: translateY(-3px);
+        }
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid var(--border);
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .logo {
+                order: 1;
+            }
+            nav ul {
+                display: none;
+            }
+            nav ul.active {
+                display: flex;
+                flex-direction: column;
+                position: fixed;
+                top: 70px;
+                left: 0;
+                background: var(--darkest);
+                width: 100%;
+                text-align: center;
+                padding: 20px 0;
+                box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
+                border: 1px solid var(--border);
+            }
+            .social-icons:not(.footer-social) {
+                display: none;
+            }
+            .mobile-menu {
+                display: block;
+            }
+        }
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            .hero p {
+                font-size: 1.1rem;
+            }
+            .news-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 576px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .modal-content {
+                width: 95%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -188,24 +550,24 @@
     </header>
 
     <!-- Hero Section -->
-    <div class="hero">
+    <section class="hero">
         <div class="container hero-content">
             <h1>Latest News</h1>
             <p>Stay updated with the latest happenings in SNM Esports</p>
         </div>
-    </div>
+    </section>
 
-    <div class="container">
-        <section class="section">
+    <!-- News Section -->
+    <section class="section">
+        <div class="container">
             <div class="section-title">
                 <h2>News & Announcements</h2>
             </div>
             <div class="news-grid" id="newsContainer">
-                <!-- News items will be loaded here -->
                 <div class="no-news" id="loadingMessage">Loading news...</div>
             </div>
-        </section>
-    </div>
+        </div>
+    </section>
 
     <!-- The Modal -->
     <div id="newsModal" class="modal">
@@ -217,10 +579,63 @@
             <img class="modal-banner" id="modalNewsBanner" src="" alt="News Banner">
             <div class="modal-body">
                 <span class="modal-date" id="modalNewsDate">January 1, 2024</span>
-                <div class="modal-description" id="modalNewsDescription">Full news description will appear here.</div>
+                <div class="modal-description" id="modalNewsDescription">
+                    Full news description will appear here.
+                </div>
             </div>
         </div>
     </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>SNM Esports</h3>
+                    <p>Redefining competitive gaming through innovation, excellence, and community since 2024.</p>
+                    <div class="social-icons footer-social">
+                        <a href="https://twitch.tv/snmesportsggs" target="_blank"><i class="fab fa-twitch"></i></a>
+                        <a href="https://twitter.com/snmesportsggs" target="_blank"><i class="fab fa-twitter"></i></a>
+                        <a href="https://youtube.com/@snmesportsggs" target="_blank"><i class="fab fa-youtube"></i></a>
+                        <a href="https://discord.gg/fearsnm" target="_blank"><i class="fab fa-discord"></i></a>
+                        <a href="https://instagram.com/snmesportsggs" target="_blank"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Organization</h3>
+                    <ul class="footer-links">
+                        <li><a href="/about.html"><i class="fas fa-chevron-right"></i> Our Story</a></li>
+                        <li><a href="/about.html"><i class="fas fa-chevron-right"></i> Leadership</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Careers</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Press</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Partnerships</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Competitive Teams</h3>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Counter-Strike 2</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Valorant</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Rocket League</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Content Creators</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Academy Program</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact</h3>
+                    <ul class="footer-links">
+                        <li><a href="mailto:contact@snmesports.com"><i class="fas fa-envelope"></i> contact@snmesports.com</a></li>
+                        <li><a href="#"><i class="fas fa-map-marker-alt"></i> Global</a></li>
+                        <li><a href="#"><i class="fas fa-phone"></i> </a></li>
+                        <li><a href="#"><i class="fas fa-headset"></i> Support Center</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 SNM Esports. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
 
     <script>
         // Mobile Menu Toggle
