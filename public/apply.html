@@ -473,7 +473,6 @@
             </nav>
         </div>
     </header>
-
     <!-- Hero Section -->
     <section class="hero">
         <div class="container hero-content">
@@ -485,7 +484,6 @@
             </div>
         </div>
     </section>
-
     <!-- Application Form Section -->
     <section class="section">
         <div class="container">
@@ -495,22 +493,18 @@
             </div>
             <form class="application-form" id="applicationForm">
                 <h2 class="form-title">Join SNM Esports</h2>
-                
                 <div class="form-group">
                     <label for="fullName">Full Name *</label>
                     <input type="text" id="fullName" name="fullName" required>
                 </div>
-                
                 <div class="form-group">
                     <label for="email">Email Address *</label>
                     <input type="email" id="email" name="email" required>
                 </div>
-                
                 <div class="form-group">
                     <label for="discord">Discord Username + ID *</label>
                     <input type="text" id="discord" name="discord" placeholder="username#1234 or username (ID: 1234567890)" required>
                 </div>
-                
                 <div class="form-group">
                     <label for="inDiscord">Are you in our Discord server? *</label>
                     <select id="inDiscord" name="inDiscord" required>
@@ -519,7 +513,6 @@
                         <option value="no">No</option>
                     </select>
                 </div>
-                
                 <div class="form-group">
                     <label>Role Selection *</label>
                     <div class="role-selection">
@@ -536,7 +529,6 @@
                     </div>
                     <input type="hidden" id="role" name="role" required>
                 </div>
-
                 <!-- Player Specific Fields -->
                 <div class="player-specific" id="playerFields">
                     <div class="form-group">
@@ -547,7 +539,6 @@
                             <option value="creative">Creative Content Creator</option>
                         </select>
                     </div>
-                    
                     <div class="competitive-fields" id="competitiveFields" style="display: none;">
                         <div class="form-group">
                             <label for="game">Primary Game *</label>
@@ -566,7 +557,6 @@
                             <small>Please provide your Fortnite tracker link for verification</small>
                         </div>
                     </div>
-                    
                     <div class="creative-fields" id="creativeFields" style="display: none;">
                         <div class="form-group">
                             <label for="socialLinks">Social Media Links *</label>
@@ -579,18 +569,15 @@
                             <small>Provide a link to your best content sample (YouTube, Twitch, TikTok, etc.)</small>
                         </div>
                     </div>
-                    
                     <div class="form-group">
                         <label for="gamingExperience">Gaming Experience *</label>
                         <textarea id="gamingExperience" name="gamingExperience" placeholder="Tell us about your competitive gaming experience, achievements, and what makes you a good fit for SNM Esports" required></textarea>
                     </div>
-                    
                     <div class="form-group">
                         <label for="availability">Availability *</label>
                         <textarea id="availability" name="availability" placeholder="When are you available for practice and competitions? (e.g., weekdays after 6 PM, weekends)" required></textarea>
                     </div>
                 </div>
-
                 <!-- Staff Specific Fields -->
                 <div class="staff-specific" id="staffFields">
                     <div class="form-group">
@@ -604,35 +591,29 @@
                             <option value="other">Other</option>
                         </select>
                     </div>
-                    
                     <div class="form-group">
                         <label for="skills">Relevant Skills and Experience *</label>
                         <textarea id="skills" name="skills" placeholder="Describe your relevant skills, experience, and why you'd be a good fit for this position" required></textarea>
                     </div>
-                    
                     <div class="form-group">
                         <label for="resumeLink">Resume/CV Link *</label>
                         <input type="url" id="resumeLink" name="resumeLink" placeholder="https://drive.google.com/your-resume" required>
                         <small>Please upload your resume to Google Drive or similar service and provide the link</small>
                     </div>
-                    
                     <div class="form-group">
                         <label for="portfolio">Portfolio/Work Examples (Optional)</label>
                         <input type="url" id="portfolio" name="portfolio" placeholder="https://example.com/your-portfolio">
                         <small>If applicable, provide examples of your previous work</small>
                     </div>
                 </div>
-
                 <button type="submit" class="btn">Submit Application</button>
             </form>
-            
             <div class="success-message" id="successMessage">
                 <h3>Application Submitted Successfully!</h3>
                 <p>Thank you for your interest in joining SNM Esports. Our team will review your application and get back to you soon.</p>
             </div>
         </div>
     </section>
-
     <!-- Footer -->
     <footer>
        <div class="container">
@@ -683,7 +664,6 @@
             </div>
         </div>
     </footer>
-
     <script>
         // --- Client-side JavaScript for apply.html ---
         document.addEventListener('DOMContentLoaded', function() {
@@ -698,14 +678,12 @@
             const playerType = document.getElementById('playerType');
             const competitiveFields = document.getElementById('competitiveFields');
             const creativeFields = document.getElementById('creativeFields');
-
             // Mobile Menu Toggle
             if (mobileMenu) {
                 mobileMenu.addEventListener('click', () => {
                     navMenu.classList.toggle('active');
                 });
             }
-
             // Role Selection
             roleOptions.forEach(option => {
                 option.addEventListener('click', () => {
@@ -725,7 +703,6 @@
                     }
                 });
             });
-
             // Player Type Selection
             if (playerType) {
                 playerType.addEventListener('change', function() {
@@ -741,19 +718,16 @@
                     }
                 });
             }
-
             // Application Form Submission
             if (applicationForm) {
                 applicationForm.addEventListener('submit', async function(e) {
                     e.preventDefault();
-
                     // Get form data
                     const formData = new FormData(this);
                     const applicationData = {};
                     for (let [key, value] of formData.entries()) {
                         applicationData[key] = value;
                     }
-
                     try {
                         const response = await fetch('/api/applications', {
                             method: 'POST',
@@ -762,14 +736,11 @@
                             },
                             body: JSON.stringify(applicationData)
                         });
-
                         const data = await response.json();
-
                         if (data.success) {
                             // Show success message
                             applicationForm.style.display = 'none';
                             successMessage.style.display = 'block';
-
                             // Reset form after 5 seconds
                             setTimeout(() => {
                                 applicationForm.style.display = 'block';
