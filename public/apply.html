@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Reuse your existing CSS from the file */
         /* Dark Mode Variables */
         :root {
             --primary: #1a3a5f;
@@ -728,6 +727,7 @@
                     for (let [key, value] of formData.entries()) {
                         applicationData[key] = value;
                     }
+                    console.log("apply.html: Submitting application data:", applicationData); // Debug log
                     try {
                         const response = await fetch('/api/applications', {
                             method: 'POST',
@@ -736,7 +736,9 @@
                             },
                             body: JSON.stringify(applicationData)
                         });
+                        console.log("apply.html: Received response:", response); // Debug log
                         const data = await response.json();
+                        console.log("apply.html: Parsed JSON data:", data); // Debug log
                         if (data.success) {
                             // Show success message
                             applicationForm.style.display = 'none';
