@@ -7,11 +7,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Dark Mode Variables */
+       /* Dark Mode Variables */
         :root {
             --primary: #1a3a5f;
             --secondary: #2d5a87;
-            --accent: #e63946; /* Red for primary actions like Reject/Delete */
+            --accent: #e63946; /* Red for primary actions like Delete */
             --light: #f1faee;
             --dark: #0d1b2a;
             --darker: #0a1424;
@@ -246,157 +246,6 @@
             font-size: 1rem;
         }
 
-        /* Tab Navigation */
-        .tabs {
-            display: flex;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 30px;
-        }
-        .tab-button {
-            padding: 15px 25px;
-            background: none;
-            border: none;
-            color: var(--text-gray);
-            font-family: 'Inter', sans-serif;
-            font-weight: 500;
-            cursor: pointer;
-            transition: var(--transition);
-            position: relative;
-            font-size: 1rem;
-        }
-        .tab-button.active {
-            color: var(--text-light);
-        }
-        .tab-button.active::after {
-            content: '';
-            position: absolute;
-            bottom: -1px; /* Align with border */
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: var(--secondary);
-        }
-        .tab-button:hover:not(.active) {
-            color: var(--text-light);
-        }
-
-        /* Tab Content */
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
-        }
-
-
-        /* Applications Section */
-        .applications-section {
-            background: var(--card-bg);
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            padding: 30px;
-            margin-top: 30px;
-            border: 1px solid var(--border);
-        }
-        .applications-section h2 {
-            color: var(--text-light);
-            margin-bottom: 25px;
-        }
-        .applications-list {
-            display: grid;
-            gap: 20px;
-        }
-        .application-card {
-            background: var(--darkest);
-            border-radius: 8px;
-            padding: 20px;
-            transition: var(--transition);
-            border: 1px solid var(--border);
-        }
-        .application-card:hover {
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-        .application-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 15px;
-            flex-wrap: wrap; /* Allow wrapping on small screens */
-            gap: 10px;
-        }
-        .application-header h3 {
-            color: var(--text-light);
-            margin: 0; /* Remove default margin */
-        }
-        .application-status {
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-        .status-pending {
-            background: #fff3cd;
-            color: #856404;
-        }
-        .status-approved {
-            background: #d4edda;
-            color: #155724;
-        }
-        .status-rejected {
-            background: #f8d7da;
-            color: #721c24;
-        }
-        .application-details p {
-            margin-bottom: 8px; /* Slightly reduced margin */
-            color: var(--text-gray);
-            font-size: 0.95rem; /* Slightly smaller font */
-        }
-        .application-actions {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-            flex-wrap: wrap; /* Allow buttons to wrap */
-            align-items: center; /* Align items vertically */
-        }
-        .action-btn {
-            padding: 8px 15px;
-            border-radius: 4px;
-            border: none;
-            font-family: 'Inter', sans-serif;
-            font-weight: 500;
-            cursor: pointer;
-            transition: var(--transition);
-            font-size: 0.9rem; /* Slightly smaller font */
-            text-decoration: none; /* Remove underline for links styled as buttons */
-            display: inline-block; /* Allow padding */
-        }
-        .approve-btn {
-            background: #28a745; /* Green */
-            color: white;
-        }
-        .approve-btn:hover {
-            background: #218838;
-        }
-        .reject-btn {
-            background: #dc3545; /* Red */
-            color: white;
-        }
-        .reject-btn:hover {
-            background: #c82333;
-        }
-        .delete-btn {
-             background: var(--accent); /* Use accent color (red) */
-             color: white;
-        }
-        .delete-btn:hover {
-             background: #c1121f; /* Darker red on hover */
-        }
-        .no-applications, .no-news {
-            text-align: center;
-            color: var(--text-gray);
-            font-style: italic;
-            padding: 20px;
-        }
-
         /* News Section */
         .news-section {
              background: var(--card-bg);
@@ -464,6 +313,31 @@
             gap: 10px;
             justify-content: flex-end; /* Align buttons to the right */
         }
+        .action-btn {
+            padding: 8px 15px;
+            border-radius: 4px;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .delete-btn {
+             background: var(--accent); /* Use accent color (red) */
+             color: white;
+        }
+        .delete-btn:hover {
+             background: #c1121f; /* Darker red on hover */
+        }
+        .no-news {
+            text-align: center;
+            color: var(--text-gray);
+            font-style: italic;
+            padding: 20px;
+        }
 
 
         /* Responsive Design */
@@ -496,38 +370,19 @@
                 gap: 20px;
                 text-align: center;
             }
-             .applications-section, .news-section {
+             .news-section {
                 padding: 20px 15px;
             }
-            .application-header, .news-card-header {
+            .news-card-header {
                 flex-direction: column;
                 gap: 10px;
             }
-            .application-actions, .news-card-actions {
+            .news-card-actions {
                 flex-direction: column;
                 align-items: stretch; /* Stretch buttons to full width */
             }
              .action-btn {
                 width: 100%; /* Make buttons full width on small screens */
-            }
-            .tabs {
-                 flex-direction: column;
-                 border-bottom: none;
-                 border-right: 1px solid var(--border);
-            }
-            .tab-button {
-                text-align: left;
-                border-bottom: 1px solid var(--border);
-            }
-            .tab-button:last-child {
-                border-bottom: none;
-            }
-            .tab-button.active::after {
-                 /* Change active indicator for vertical tabs */
-                 bottom: 0;
-                 left: 0;
-                 width: 3px;
-                 height: 100%;
             }
         }
     </style>
@@ -547,8 +402,8 @@
                     <li><a href="/">Home</a></li>
                     <li><a href="/about.html">About</a></li>
                     <li><a href="/merch.html">Merch</a></li>
-                    <li><a href="/apply.html">Apply</a></li>
-                    <li><a href="/news.html">News</a></li> <!-- Add News link -->
+                    <!-- <li><a href="/apply.html">Apply</a></li> --> <!-- Removed Apply Link -->
+                    <li><a href="/news.html">News</a></li>
                     <li><a href="/admin.html">Admin</a></li>
                 </ul>
             </nav>
@@ -578,26 +433,6 @@
                 <button class="btn logout-btn" id="logoutBtn">Logout</button>
             </div>
             <div class="stats-grid">
-                <div class="stat-card">
-                    <i class="fas fa-users"></i>
-                    <h3 id="totalApps">0</h3>
-                    <p>Total Applications</p>
-                </div>
-                <div class="stat-card">
-                    <i class="fas fa-clock"></i>
-                    <h3 id="pendingApps">0</h3>
-                    <p>Pending</p>
-                </div>
-                <div class="stat-card">
-                    <i class="fas fa-check-circle"></i>
-                    <h3 id="approvedApps">0</h3>
-                    <p>Approved</p>
-                </div>
-                <div class="stat-card">
-                    <i class="fas fa-times-circle"></i>
-                    <h3 id="rejectedApps">0</h3>
-                    <p>Rejected</p>
-                </div>
                  <div class="stat-card">
                     <i class="fas fa-newspaper"></i>
                     <h3 id="totalNews">0</h3>
@@ -605,408 +440,235 @@
                 </div>
             </div>
 
-            <!-- Tab Navigation -->
-            <div class="tabs">
-                <button class="tab-button active" data-tab="applications">Applications</button>
-                <button class="tab-button" data-tab="news">News Management</button>
-            </div>
+            <!-- News Management Content -->
+            <div class="news-section">
+                <h2>Manage News</h2>
 
-            <!-- Applications Tab Content -->
-            <div id="applications" class="tab-content active">
-                <div class="applications-section">
-                    <h2>Applications</h2>
-                    <div class="applications-list" id="applicationsList">
-                        <!-- Applications will be loaded here -->
-                        <div class="no-applications" id="noApplicationsMessage">Loading applications...</div>
-                    </div>
+                <!-- News Creation Form -->
+                <div class="news-form">
+                    <h3>Publish New Article</h3>
+                    <form id="newsForm">
+                        <div class="form-group">
+                            <label for="newsTitle">Title</label>
+                            <input type="text" id="newsTitle" name="title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="newsDescription">Description</label>
+                            <textarea id="newsDescription" name="description" rows="5" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="newsBannerUrl">Banner Image URL</label>
+                            <input type="url" id="newsBannerUrl" name="bannerUrl" placeholder="https://example.com/image.jpg">
+                        </div>
+                        <button type="submit" class="btn">Publish News</button>
+                        <div class="error-message" id="newsErrorMessage"></div>
+                    </form>
                 </div>
-            </div>
 
-            <!-- News Tab Content -->
-            <div id="news" class="tab-content">
-                <div class="news-section">
-                    <h2>Manage News</h2>
-
-                    <!-- News Creation Form -->
-                    <div class="news-form">
-                        <h3>Publish New Article</h3>
-                        <form id="newsForm">
-                            <div class="form-group">
-                                <label for="newsTitle">Title</label>
-                                <input type="text" id="newsTitle" name="title" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="newsDescription">Description</label>
-                                <textarea id="newsDescription" name="description" rows="5" required></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label for="newsBannerUrl">Banner Image URL</label>
-                                <input type="url" id="newsBannerUrl" name="bannerUrl" placeholder="https://example.com/image.jpg">
-                            </div>
-                            <button type="submit" class="btn">Publish News</button>
-                            <div class="error-message" id="newsErrorMessage"></div>
-                        </form>
-                    </div>
-
-                    <!-- News List -->
-                    <h3>Existing Articles</h3>
-                    <div class="news-grid" id="newsList">
-                        <!-- News items will be loaded here -->
-                        <div class="no-news" id="noNewsMessage">Loading news...</div>
-                    </div>
+                <!-- News List -->
+                <h3>Existing Articles</h3>
+                <div class="news-grid" id="newsList">
+                    <!-- News items will be loaded here -->
+                    <div class="no-news" id="noNewsMessage">Loading news...</div>
                 </div>
             </div>
 
         </div>
     </div>
     <script>
-        // --- Client-side JavaScript for admin.html ---
+        // --- Client-side JavaScript for admin.html (News Management ONLY) ---
         document.addEventListener('DOMContentLoaded', function () {
-            // DOM Elements
+            // --- DOM Elements (Ensure these IDs match your simplified admin.html) ---
             const mobileMenu = document.querySelector('.mobile-menu');
             const navMenu = document.querySelector('nav ul');
             const loginContainer = document.getElementById('loginContainer');
             const adminDashboard = document.getElementById('adminDashboard');
             const loginForm = document.getElementById('loginForm');
-            const errorMessage = document.getElementById('errorMessage');
+            const errorMessage = document.getElementById('errorMessage'); // For login errors
             const logoutBtn = document.getElementById('logoutBtn');
-            // Applications
-            const applicationsList = document.getElementById('applicationsList');
-            const noApplicationsMessage = document.getElementById('noApplicationsMessage');
-            const totalAppsEl = document.getElementById('totalApps');
-            const pendingAppsEl = document.getElementById('pendingApps');
-            const approvedAppsEl = document.getElementById('approvedApps');
-            const rejectedAppsEl = document.getElementById('rejectedApps');
-            // News
+
+            // --- News Management Elements ---
             const newsForm = document.getElementById('newsForm');
             const newsList = document.getElementById('newsList');
-            const noNewsMessage = document.getElementById('noNewsMessage');
-            const newsErrorMessage = document.getElementById('newsErrorMessage');
-            const totalNewsEl = document.getElementById('totalNews');
-            // Tabs
-            const tabButtons = document.querySelectorAll('.tab-button');
-            const tabContents = document.querySelectorAll('.tab-content');
+            const noNewsMessage = document.getElementById('noNewsMessage'); // Message when list is empty/loading
+            const newsErrorMessage = document.getElementById('newsErrorMessage'); // For news form errors
+            const totalNewsEl = document.getElementById('totalNews'); // Stat card for total news
 
+            // --- Helper Functions ---
+            function showLogin() {
+                if (loginContainer) loginContainer.style.display = 'flex';
+                if (adminDashboard) adminDashboard.style.display = 'none';
+                if (loginForm) loginForm.reset();
+                if (errorMessage) errorMessage.style.display = 'none';
+                // Reset news form/messages on logout if they exist
+                if (newsForm) newsForm.reset();
+                if (newsErrorMessage) newsErrorMessage.style.display = 'none';
+            }
 
-            // Mobile Menu Toggle
+            function hideLogin() {
+                if (loginContainer) loginContainer.style.display = 'none';
+                if (adminDashboard) adminDashboard.style.display = 'block';
+            }
+
+            // --- Mobile Menu Toggle ---
             if (mobileMenu) {
                 mobileMenu.addEventListener('click', () => {
-                    navMenu.classList.toggle('active');
+                    if (navMenu) navMenu.classList.toggle('active');
                 });
             }
 
-            // Tab Switching Logic
-            tabButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const tabId = button.getAttribute('data-tab');
-
-                    // Update active tab button
-                    tabButtons.forEach(btn => btn.classList.remove('active'));
-                    button.classList.add('active');
-
-                    // Update active tab content
-                    tabContents.forEach(content => {
-                        content.classList.remove('active');
-                        if (content.id === tabId) {
-                            content.classList.add('active');
-                        }
-                    });
-                });
-            });
-
-            // Check for existing token on page load
+            // --- Check for existing token on page load ---
             const token = localStorage.getItem('adminToken');
             if (token) {
-                loginContainer.style.display = 'none';
-                adminDashboard.style.display = 'block';
-                loadApplications();
-                loadNews(); // Load news on login
+                hideLogin();
+                loadNews(); // Load news on initial check
+            } else {
+                showLogin();
             }
 
-            // Login Form Submission
-            loginForm.addEventListener('submit', async function (e) {
-                e.preventDefault();
-                const username = document.getElementById('username').value;
-                const password = document.getElementById('password').value;
-                try {
-                    const response = await fetch('/api/login', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ username, password })
-                    });
-                    const data = await response.json();
-                    if (data.success && data.token) {
-                        localStorage.setItem('adminToken', data.token);
-                        loginContainer.style.display = 'none';
-                        adminDashboard.style.display = 'block';
-                        loadApplications();
-                        loadNews(); // Load news after login
-                    } else {
-                        errorMessage.style.display = 'block';
-                        errorMessage.textContent = data.message || 'Login failed.';
-                    }
-                } catch (error) {
-                    console.error('Login error:', error);
-                    errorMessage.style.display = 'block';
-                    errorMessage.textContent = 'An error occurred during login. Please try again.';
-                }
-            });
+            // --- Login Form Submission ---
+            if (loginForm) {
+                loginForm.addEventListener('submit', async function (e) {
+                    e.preventDefault();
+                    const username = document.getElementById('username')?.value;
+                    const password = document.getElementById('password')?.value;
 
-            // Logout Function
-            logoutBtn.addEventListener('click', function () {
-                localStorage.removeItem('adminToken');
-                adminDashboard.style.display = 'none';
-                loginContainer.style.display = 'flex'; // Use flex to center
-                loginForm.reset();
-                errorMessage.style.display = 'none';
-                // Reset news form and messages
-                 newsForm.reset();
-                 newsErrorMessage.style.display = 'none';
-            });
-
-            // --- Applications Management ---
-
-            // Load Applications Function
-            async function loadApplications() {
-                noApplicationsMessage.textContent = 'Loading applications...';
-                noApplicationsMessage.style.display = 'block';
-                applicationsList.innerHTML = ''; // Clear previous list
-                try {
-                    const token = localStorage.getItem('adminToken');
-                    const response = await fetch('/api/applications', {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': `Bearer ${token}`
+                    if (!username || !password) {
+                        if (errorMessage) {
+                            errorMessage.style.display = 'block';
+                            errorMessage.textContent = 'Username and password are required.';
                         }
-                    });
-                    if (!response.ok) {
-                        if (response.status === 401 || response.status === 403) {
-                            alert('Session expired or invalid. Please log in again.');
-                            logoutBtn.click();
-                            return;
+                        return;
+                    }
+
+                    try {
+                        const response = await fetch('/api/login', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ username, password })
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok && data.success && data.token) {
+                            localStorage.setItem('adminToken', data.token);
+                            hideLogin();
+                            loadNews(); // Load news after successful login
+                        } else {
+                            if (errorMessage) {
+                                errorMessage.style.display = 'block';
+                                errorMessage.textContent = data.message || 'Login failed.';
+                            }
                         }
-                        throw new Error(`HTTP error! status: ${response.status}`);
+                    } catch (error) {
+                        console.error('Login error:', error);
+                        if (errorMessage) {
+                            errorMessage.style.display = 'block';
+                            errorMessage.textContent = 'An error occurred during login. Please try again.';
+                        }
                     }
-                    const data = await response.json();
-                    displayApplications(data.applications); // <-- Key Change: Use data.applications
-                    updateApplicationStats(data.applications);        // <-- Key Change: Use data.applications
-                } catch (error) {
-                    console.error('Error loading applications:', error);
-                    noApplicationsMessage.textContent = 'Error loading applications. Please try again.';
-                    noApplicationsMessage.style.display = 'block';
-                    // Reset stats on error
-                    totalAppsEl.textContent = '0';
-                    pendingAppsEl.textContent = '0';
-                    approvedAppsEl.textContent = '0';
-                    rejectedAppsEl.textContent = '0';
-                }
-            }
-
-            // Display Applications Function
-            function displayApplications(applications) {
-                 applicationsList.innerHTML = ''; // Clear the list
-                if (!applications || applications.length === 0) {
-                    noApplicationsMessage.textContent = 'No applications found.';
-                    noApplicationsMessage.style.display = 'block';
-                    return;
-                }
-                noApplicationsMessage.style.display = 'none'; // Hide the "no apps" message
-                // Sort applications by submission date (newest first)
-                applications.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
-                applications.forEach(app => {
-                    const appCard = document.createElement('div');
-                    appCard.className = 'application-card';
-                    // Simple HTML escaping for display (basic protection)
-                    const escapeHtml = (text) => {
-                         if (typeof text !== 'string') return text;
-                         return text.replace(/[&<>"']/g, match => ({'&': '&amp;', '<': '<', '>': '>', '"': '&quot;', "'": '&#39;'}[match]));
-                    };
-                    let roleSpecificDetails = '';
-                    // Assuming the application structure is similar to the previous version
-                    if (app.role === 'player') {
-                        roleSpecificDetails = `
-                            <p><strong>Game:</strong> ${escapeHtml(app.game || 'N/A')}</p>
-                            <p><strong>Social Links:</strong> ${escapeHtml(app.socialLinks || 'N/A')}</p>
-                            <p><strong>Gaming Experience:</strong> ${escapeHtml(app.gamingExperience || 'N/A')}</p>
-                            <p><strong>Availability:</strong> ${escapeHtml(app.availability || 'N/A')}</p>
-                        `;
-                    } else if (app.role === 'staff') {
-                         roleSpecificDetails = `
-                            <p><strong>Position:</strong> ${escapeHtml(app.position || 'N/A')}</p>
-                            <p><strong>Skills:</strong> ${escapeHtml(app.skills || 'N/A')}</p>
-                            <p><strong>Resume Link:</strong> ${escapeHtml(app.resumeLink || 'N/A')}</p>
-                            <p><strong>Additional Info:</strong> ${escapeHtml(app.additionalInfo || 'N/A')}</p>
-                        `;
-                    }
-                    // Determine if status actions (approve/reject) should be shown
-                    const statusActions = app.status === 'pending' ?
-                        `<button class="action-btn approve-btn" onclick="updateApplicationStatus(${app.id}, 'approved')">Approve</button>
-                         <button class="action-btn reject-btn" onclick="updateApplicationStatus(${app.id}, 'rejected')">Reject</button>` :
-                        `<span>Status is final.</span>`;
-
-                    appCard.innerHTML = `
-                        <div class="application-header">
-                            <h3>${escapeHtml(app.fullName || 'N/A')}</h3>
-                            <span class="application-status status-${app.status}">${app.status}</span>
-                        </div>
-                        <div class="application-details">
-                            <p><strong>Email:</strong> ${escapeHtml(app.email || 'N/A')}</p>
-                            <p><strong>Discord:</strong> ${escapeHtml(app.discord || 'N/A')}</p>
-                            <p><strong>Role:</strong> ${escapeHtml(app.role || 'N/A')}</p>
-                            <p><strong>Submitted:</strong> ${new Date(app.submittedAt).toLocaleString()}</p>
-                            ${roleSpecificDetails}
-                        </div>
-                        <div class="application-actions">
-                            ${statusActions}
-                            <button class="action-btn delete-btn" onclick="deleteApplication(${app.id})">Delete</button>
-                        </div>
-                    `;
-                    applicationsList.appendChild(appCard);
                 });
             }
 
-            // Update Application Statistics Function
-            function updateApplicationStats(applications) {
-                const total = applications.length;
-                const pending = applications.filter(app => app.status === 'pending').length;
-                const approved = applications.filter(app => app.status === 'approved').length;
-                const rejected = applications.filter(app => app.status === 'rejected').length;
-                totalAppsEl.textContent = total;
-                pendingAppsEl.textContent = pending;
-                approvedAppsEl.textContent = approved;
-                rejectedAppsEl.textContent = rejected;
+            // --- Logout Function ---
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function () {
+                    localStorage.removeItem('adminToken');
+                    showLogin();
+                });
             }
-
-            // Update Application Status Function (Make globally accessible)
-            window.updateApplicationStatus = async function(id, status) {
-                 if (!confirm(`Are you sure you want to set application ID ${id} to ${status}?`)) {
-                    return; // Do nothing if user cancels
-                 }
-                try {
-                    const token = localStorage.getItem('adminToken');
-                    const response = await fetch(`/api/applications/${id}`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: JSON.stringify({ status: status })
-                    });
-                    const data = await response.json();
-                    if (data.success) {
-                        // Reload the list to show the updated status
-                        loadApplications();
-                    } else {
-                        alert('Failed to update status: ' + (data.message || 'Unknown error'));
-                        // If token is invalid, logout
-                         if (response.status === 401 || response.status === 403) {
-                            alert('Session expired or invalid. Please log in again.');
-                            logoutBtn.click();
-                        }
-                    }
-                } catch (error) {
-                    console.error('Error updating application status:', error);
-                    alert('An error occurred while updating the status.');
-                }
-            };
-
-            // Delete Application Function (Make globally accessible)
-            window.deleteApplication = async function(id) {
-                if (!confirm(`Are you sure you want to permanently delete application ID ${id}? This action cannot be undone.`)) {
-                    return; // Do nothing if user cancels
-                }
-                try {
-                    const token = localStorage.getItem('adminToken');
-                    const response = await fetch(`/api/applications/${id}`, {
-                        method: 'DELETE',
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    });
-
-                    if (response.ok) {
-                        const data = await response.json();
-                        if (data.success) {
-                            alert('Application deleted successfully.');
-                            // Reload the list to reflect the deletion
-                            loadApplications();
-                        } else {
-                             alert('Failed to delete application: ' + (data.message || 'Unknown error'));
-                        }
-                    } else {
-                         // Handle specific HTTP errors
-                        if (response.status === 401 || response.status === 403) {
-                            alert('Session expired or invalid. Please log in again.');
-                            logoutBtn.click();
-                            return;
-                        } else if (response.status === 404) {
-                             alert('Application not found.');
-                        } else {
-                             throw new Error(`HTTP error! status: ${response.status}`);
-                        }
-                    }
-                } catch (error) {
-                    console.error('Error deleting application:', error);
-                    alert('An error occurred while deleting the application.');
-                }
-            };
-
 
             // --- News Management ---
 
             // Load News Function
             async function loadNews() {
-                 noNewsMessage.textContent = 'Loading news...';
-                 noNewsMessage.style.display = 'block';
-                 newsList.innerHTML = ''; // Clear previous list
+                 if (noNewsMessage) {
+                     noNewsMessage.textContent = 'Loading news...';
+                     noNewsMessage.style.display = 'block';
+                 }
+                 if (newsList) newsList.innerHTML = ''; // Clear previous list
+
                  try {
                      const token = localStorage.getItem('adminToken');
+                     if (!token) {
+                         throw new Error("No authentication token found.");
+                     }
+
                      const response = await fetch('/api/news', {
                          method: 'GET',
                          headers: {
                              'Authorization': `Bearer ${token}`
                          }
                      });
+
                      if (!response.ok) {
+                         // If the error is due to authentication, logout
                          if (response.status === 401 || response.status === 403) {
-                             // Don't logout immediately on news load fail, just show error
-                             noNewsMessage.textContent = 'Authentication required. Please refresh or log in again.';
+                             console.warn("Authentication failed for news, redirecting to login.");
+                             alert('Session expired or invalid. Please log in again.');
+                             localStorage.removeItem('adminToken');
+                             showLogin();
                              return;
                          }
-                         throw new Error(`HTTP error! status: ${response.status}`);
+                         // For other errors, throw a generic one
+                         throw new Error(`Failed to load news: ${response.status} ${response.statusText}`);
                      }
+
                      const data = await response.json();
-                     displayNews(data.news || []); // Expecting { news: [...] }
-                     // Update news stats
-                     totalNewsEl.textContent = (data.news || []).length;
+                     // Ensure the data structure is as expected
+                     if (data.success && Array.isArray(data.news)) {
+                         displayNews(data.news);
+                         // Update news stats
+                         if (totalNewsEl) totalNewsEl.textContent = data.news.length;
+                     } else {
+                         throw new Error('Invalid data format received for news.');
+                     }
                  } catch (error) {
                      console.error('Error loading news:', error);
-                     noNewsMessage.textContent = 'Error loading news. Please try again.';
+                     if (noNewsMessage) {
+                         noNewsMessage.textContent = 'Error loading news. Please try again.';
+                         noNewsMessage.style.display = 'block';
+                     }
                      // Reset news stats on error
-                     totalNewsEl.textContent = '0';
+                     if (totalNewsEl) totalNewsEl.textContent = '0';
                  }
              }
 
              // Display News Function
              function displayNews(newsItems) {
+                 if (!newsList) return; // Safety check
                  newsList.innerHTML = ''; // Clear the list
+
                  if (!newsItems || newsItems.length === 0) {
-                     noNewsMessage.textContent = 'No news articles found.';
-                     noNewsMessage.style.display = 'block';
+                     if (noNewsMessage) {
+                         noNewsMessage.textContent = 'No news articles found.';
+                         noNewsMessage.style.display = 'block';
+                     }
                      return;
                  }
-                 noNewsMessage.style.display = 'none'; // Hide the "no news" message
+
+                 if (noNewsMessage) {
+                     noNewsMessage.style.display = 'none'; // Hide the "no news" message
+                 }
+
                  // Sort news by published date (newest first)
-                 newsItems.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
-                 newsItems.forEach(item => {
+                 const sortedNews = [...newsItems].sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
+
+                 sortedNews.forEach(item => {
                      const newsCard = document.createElement('div');
                      newsCard.className = 'news-card';
+
                      // Simple HTML escaping for display (basic protection)
                      const escapeHtml = (text) => {
                          if (typeof text !== 'string') return text;
-                         return text.replace(/[&<>"']/g, match => ({'&': '&amp;', '<': '<', '>': '>', '"': '&quot;', "'": '&#39;'}[match]));
+                         return text
+                             .replace(/&/g, "&amp;")
+                             .replace(/</g, "<")
+                             .replace(/>/g, ">")
+                             .replace(/"/g, "&quot;")
+                             .replace(/'/g, "&#039;");
                      };
 
                      // Get first line for preview
@@ -1022,77 +684,107 @@
                              ${item.bannerUrl ? `<p><strong>Banner:</strong> <a href="${escapeHtml(item.bannerUrl)}" target="_blank">View Image</a></p>` : ''}
                          </div>
                          <div class="news-card-actions">
-                             <button class="action-btn delete-btn" onclick="deleteNews(${item.id})">Delete</button>
+                             <button class="action-btn delete-btn" data-id="${escapeHtml(item.id)}">Delete</button>
                          </div>
                      `;
                      newsList.appendChild(newsCard);
                  });
+
+                 // --- Add event listeners for Delete buttons using event delegation ---
+                 if (newsList) {
+                     newsList.addEventListener('click', function(event) {
+                         if (event.target.classList.contains('delete-btn')) {
+                             const id = event.target.getAttribute('data-id');
+                             if (id) deleteNews(id);
+                         }
+                     });
+                 }
              }
 
-             // News Form Submission
-             newsForm.addEventListener('submit', async function(e) {
-                 e.preventDefault();
-                 newsErrorMessage.style.display = 'none';
-                 newsErrorMessage.textContent = '';
 
-                 const formData = new FormData(this);
-                 const newsData = {
-                     title: formData.get('title'),
-                     description: formData.get('description'),
-                     bannerUrl: formData.get('bannerUrl')
-                 };
+             // News Form Submission Handler
+             if (newsForm) {
+                 newsForm.addEventListener('submit', async function(e) {
+                     e.preventDefault();
+                     if (newsErrorMessage) {
+                         newsErrorMessage.style.display = 'none';
+                         newsErrorMessage.textContent = '';
+                     }
 
-                 // Basic validation
-                 if (!newsData.title || !newsData.description) {
-                     newsErrorMessage.textContent = 'Title and Description are required.';
-                     newsErrorMessage.style.display = 'block';
+                     const formData = new FormData(this);
+                     const newsData = {
+                         title: formData.get('title')?.trim(),
+                         description: formData.get('description')?.trim(),
+                         bannerUrl: formData.get('bannerUrl')?.trim() || '' // Allow empty
+                     };
+
+                     // Basic validation
+                     if (!newsData.title || !newsData.description) {
+                         if (newsErrorMessage) {
+                             newsErrorMessage.textContent = 'Title and Description are required.';
+                             newsErrorMessage.style.display = 'block';
+                         }
+                         return;
+                     }
+
+                     try {
+                         const token = localStorage.getItem('adminToken');
+                         if (!token) {
+                             throw new Error("No authentication token found.");
+                         }
+
+                         const response = await fetch('/api/news', {
+                             method: 'POST',
+                             headers: {
+                                 'Content-Type': 'application/json',
+                                 'Authorization': `Bearer ${token}`
+                             },
+                             body: JSON.stringify(newsData)
+                         });
+
+                         if (response.ok) {
+                             const data = await response.json();
+                             if (data.success) {
+                                 alert('News article published successfully!');
+                                 newsForm.reset(); // Clear the form
+                                 loadNews(); // Reload the news list
+                             } else {
+                                 throw new Error(data.message || 'Unknown error from server.');
+                             }
+                         } else {
+                             if (response.status === 401 || response.status === 403) {
+                                 alert('Session expired or invalid. Please log in again.');
+                                 localStorage.removeItem('adminToken');
+                                 showLogin();
+                                 return;
+                             } else {
+                                 const errorData = await response.json();
+                                 throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                             }
+                         }
+                     } catch (error) {
+                         console.error('Error publishing news:', error);
+                         if (newsErrorMessage) {
+                             newsErrorMessage.textContent = 'Failed to publish news: ' + error.message;
+                             newsErrorMessage.style.display = 'block';
+                         }
+                     }
+                 });
+             }
+
+             // Delete News Function
+             async function deleteNews(id) {
+                 // Simple confirmation
+                 if (!confirm(`Are you sure you want to permanently delete news article ID ${id}? This action cannot be undone.`)) {
                      return;
                  }
 
                  try {
                      const token = localStorage.getItem('adminToken');
-                     const response = await fetch('/api/news', {
-                         method: 'POST',
-                         headers: {
-                             'Content-Type': 'application/json',
-                             'Authorization': `Bearer ${token}`
-                         },
-                         body: JSON.stringify(newsData)
-                     });
-
-                     if (response.ok) {
-                         const data = await response.json();
-                         if (data.success) {
-                             alert('News article published successfully!');
-                             newsForm.reset(); // Clear the form
-                             loadNews(); // Reload the news list
-                         } else {
-                             throw new Error(data.message || 'Unknown error from server.');
-                         }
-                     } else {
-                         if (response.status === 401 || response.status === 403) {
-                             alert('Session expired or invalid. Please log in again.');
-                             logoutBtn.click();
-                             return;
-                         } else {
-                             const errorData = await response.json();
-                             throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
-                         }
+                     if (!token) {
+                         throw new Error("No authentication token found.");
                      }
-                 } catch (error) {
-                     console.error('Error publishing news:', error);
-                     newsErrorMessage.textContent = 'Failed to publish news: ' + error.message;
-                     newsErrorMessage.style.display = 'block';
-                 }
-             });
 
-             // Delete News Function (Make globally accessible)
-             window.deleteNews = async function(id) {
-                 if (!confirm(`Are you sure you want to permanently delete news article ID ${id}? This action cannot be undone.`)) {
-                     return; // Do nothing if user cancels
-                 }
-                 try {
-                     const token = localStorage.getItem('adminToken');
                      const response = await fetch(`/api/news/${id}`, {
                          method: 'DELETE',
                          headers: {
@@ -1100,32 +792,31 @@
                          }
                      });
 
-                     if (response.ok) {
-                         const data = await response.json();
-                         if (data.success) {
-                             alert('News article deleted successfully.');
-                             loadNews(); // Reload the list to reflect the deletion
-                         } else {
-                             alert('Failed to delete news article: ' + (data.message || 'Unknown error'));
-                         }
+                     const data = await response.json();
+
+                     if (response.ok && data.success) {
+                         alert('News article deleted successfully.');
+                         loadNews(); // Reload the list to reflect the deletion
                      } else {
-                         // Handle specific HTTP errors
+                         const message = data.message || 'Unknown error';
+                         alert(`Failed to delete news article: ${message}`);
+
+                         // If the error is due to authentication, logout
                          if (response.status === 401 || response.status === 403) {
+                             console.warn("Authentication failed during delete, redirecting to login.");
                              alert('Session expired or invalid. Please log in again.');
-                             logoutBtn.click();
-                             return;
+                             localStorage.removeItem('adminToken');
+                             showLogin();
                          } else if (response.status === 404) {
-                             alert('News article not found.');
-                         } else {
-                             const errorData = await response.json();
-                             throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                             alert('News article not found. It might have already been deleted.');
+                             loadNews(); // Reload list as it might be out of sync
                          }
                      }
                  } catch (error) {
                      console.error('Error deleting news article:', error);
-                     alert('An error occurred while deleting the news article: ' + error.message);
+                     alert('An error occurred while deleting the news article.');
                  }
-             };
+             }
 
         });
     </script>
