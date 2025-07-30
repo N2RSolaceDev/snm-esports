@@ -270,7 +270,6 @@
         .read-more-btn:hover {
             background: var(--primary);
         }
-
         /* Modal Styles */
         .modal {
             display: none; /* Hidden by default */
@@ -284,7 +283,6 @@
             background-color: rgba(0,0,0,0.7); /* Black w/ opacity */
             padding-top: 60px; /* Add top padding to prevent content from touching top */
         }
-
         .modal-content {
             background-color: var(--card-bg);
             margin: auto;
@@ -297,12 +295,10 @@
             position: relative;
             animation: modalopen 0.4s; /* Add animation */
         }
-
         @keyframes modalopen {
             from {opacity: 0; transform: translateY(-60px);}
             to {opacity: 1; transform: translateY(0);}
         }
-
         .modal-header {
             padding: 20px;
             border-bottom: 1px solid var(--border);
@@ -310,13 +306,11 @@
             justify-content: space-between;
             align-items: center;
         }
-
         .modal-title {
             margin: 0;
             font-size: 1.8rem;
             color: var(--text-light);
         }
-
         .close {
             color: var(--text-gray);
             font-size: 28px;
@@ -327,18 +321,15 @@
             padding: 0;
             margin: 0;
         }
-
         .close:hover,
         .close:focus {
             color: var(--text-light);
         }
-
         .modal-body {
             padding: 20px;
             max-height: 60vh; /* Limit height and allow scrolling */
             overflow-y: auto; /* Add scrollbar if needed */
         }
-
         .modal-banner {
             width: 100%;
             height: 300px; /* Adjust height as needed */
@@ -346,21 +337,18 @@
             border-radius: 8px 8px 0 0; /* Round top corners */
             display: block;
         }
-
         .modal-date {
             color: var(--gray);
             font-size: 0.9rem;
             margin-top: 10px;
             display: block;
         }
-
         .modal-description {
             margin-top: 20px;
             color: var(--text-light);
             line-height: 1.7;
             white-space: pre-wrap; /* Preserve line breaks from textarea */
         }
-
         .no-news {
             text-align: center;
             color: var(--text-gray);
@@ -368,7 +356,6 @@
             padding: 40px 20px;
             grid-column: 1 / -1; /* Span full width in grid */
         }
-
         /* Footer */
         footer {
             background: var(--darkest);
@@ -521,14 +508,12 @@
             </nav>
         </div>
     </header>
-
     <div class="hero">
         <div class="container hero-content">
             <h1>Latest News</h1>
             <p>Stay updated with the latest happenings in SNM Esports</p>
         </div>
     </div>
-
     <div class="container">
         <section class="section">
             <div class="section-title">
@@ -540,7 +525,6 @@
             </div>
         </section>
     </div>
-
     <!-- The Modal -->
     <div id="newsModal" class="modal">
         <div class="modal-content">
@@ -557,7 +541,6 @@
             </div>
         </div>
     </div>
-
     <footer>
         <div class="container">
             <div class="footer-content">
@@ -606,13 +589,11 @@
             </div>
         </div>
     </footer>
-
     <script>
         // Mobile Menu Toggle
         document.querySelector('.mobile-menu').addEventListener('click', () => {
             document.querySelector('nav ul').classList.toggle('active');
         });
-
         // Modal Elements
         const modal = document.getElementById("newsModal");
         const modalTitle = document.getElementById("modalNewsTitle");
@@ -620,7 +601,6 @@
         const modalDate = document.getElementById("modalNewsDate");
         const modalDescription = document.getElementById("modalNewsDescription");
         const span = document.getElementsByClassName("close")[0]; // Get the close button
-
         // Function to open the modal and populate it
         function openModal(newsItem) {
             modalTitle.textContent = newsItem.title;
@@ -643,28 +623,25 @@
             modal.style.display = "block";
             document.body.style.overflow = 'hidden'; // Prevent background scrolling
         }
-
         // Function to close the modal
         function closeModal() {
             modal.style.display = "none";
             document.body.style.overflow = 'auto'; // Re-enable scrolling
         }
-
         // When the user clicks on <span> (x), close the modal
         span.onclick = closeModal;
-
         // When the user clicks anywhere outside of the modal, close it
         window.onclick = function(event) {
             if (event.target == modal) {
                 closeModal();
             }
         };
-
         // Function to get the first line of text
         function getFirstLine(text) {
             if (!text) return 'No description available.';
             // Split by newlines and take the first non-empty line
-            const lines = text.split(/\r?\n/);
+            const lines = text.split(/\r?
+/);
             for (const line of lines) {
                 const trimmedLine = line.trim();
                 if (trimmedLine) {
@@ -673,7 +650,6 @@
             }
             return 'No description available.'; // In case all lines are empty/whitespace
         }
-
         // Function to load and display news
         async function loadNews() {
             const newsContainer = document.getElementById('newsContainer');
@@ -681,7 +657,6 @@
             loadingMessage.textContent = 'Loading news...';
             loadingMessage.style.display = 'block';
             newsContainer.innerHTML = ''; // Clear previous content
-
             try {
                 const response = await fetch('/api/news');
                 if (!response.ok) {
@@ -689,22 +664,17 @@
                 }
                 const data = await response.json();
                 const newsItems = data.news || []; // Expecting { news: [...] }
-
                 if (newsItems.length === 0) {
                     loadingMessage.textContent = 'No news articles found.';
                     loadingMessage.className = 'no-news'; // Apply no-news styling
                     return;
                 }
-
                 loadingMessage.style.display = 'none'; // Hide loading message
-
                 // Sort news by published date (newest first)
                 newsItems.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
-
                 newsItems.forEach(item => {
                     const newsCard = document.createElement('div');
                     newsCard.className = 'news-card';
-
                     // Sanitize text for display (basic)
                     const escapeHtml = (text) => {
                         if (typeof text !== 'string') return text;
@@ -715,9 +685,7 @@
                             .replace(/"/g, "&quot;")
                             .replace(/'/g, "&#039;");
                     };
-
                     const firstLine = escapeHtml(getFirstLine(item.description));
-
                     newsCard.innerHTML = `
                         ${item.bannerUrl ? `<img class="news-banner" src="${escapeHtml(item.bannerUrl)}" alt="${escapeHtml(item.title)} Banner">` : ''}
                         <div class="news-content">
@@ -725,32 +693,31 @@
                             <p class="news-excerpt">${firstLine}</p>
                             <span class="news-date">${new Date(item.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
                             <div class="news-actions">
-                                <button class="read-more-btn" data-id="${item.id}">Read More</button>
+                                <!-- CHANGED: Use item._id for MongoDB -->
+                                <button class="read-more-btn" data-id="${item._id}">Read More</button>
                             </div>
                         </div>
                     `;
                     newsContainer.appendChild(newsCard);
                 });
-
                 // Add event listeners to the "Read More" buttons after they are created
                 document.querySelectorAll('.read-more-btn').forEach(button => {
                     button.addEventListener('click', (e) => {
+                        // CHANGED: Get the _id from data-id
                         const newsId = e.target.getAttribute('data-id');
-                        const newsItem = newsItems.find(item => item.id == newsId);
+                        // CHANGED: Find item by _id (assuming MongoDB ObjectId string)
+                        const newsItem = newsItems.find(item => item._id == newsId);
                         if (newsItem) {
                             openModal(newsItem);
                         }
                     });
                 });
-
-
             } catch (error) {
                 console.error('Error loading news:', error);
                 loadingMessage.textContent = 'Error loading news. Please try again later.';
                 loadingMessage.className = 'no-news'; // Apply no-news styling
             }
         }
-
         // Load news when the page loads
         document.addEventListener('DOMContentLoaded', loadNews);
     </script>
