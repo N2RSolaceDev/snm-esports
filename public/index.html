@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SNM Esports News</title>
+    <title>SNM Esports</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -78,6 +78,7 @@
             background: var(--secondary);
             color: white;
         }
+
         /* Header Styles */
         header {
             background: var(--darkest);
@@ -153,16 +154,16 @@
             cursor: pointer;
             color: var(--text-light);
         }
+
         /* Hero Section */
         .hero {
-            height: 50vh;
-            min-height: 400px;
+            height: 100vh;
+            min-height: 700px;
             background: url('snm.png') center/cover no-repeat;
             display: flex;
             align-items: center;
             position: relative;
             text-align: center;
-            margin-bottom: 60px;
         }
         .hero::before {
             content: '';
@@ -181,7 +182,7 @@
             z-index: 2;
         }
         .hero h1 {
-            font-size: 3rem;
+            font-size: 3.5rem;
             color: white;
             margin-bottom: 20px;
             letter-spacing: 1px;
@@ -196,13 +197,19 @@
             margin-right: auto;
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
         }
-        /* News Section */
+        .hero-btns {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        /* Section Styles */
         .section {
-            padding: 60px 0;
+            padding: 100px 0;
         }
         .section-title {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 60px;
         }
         .section-title h2 {
             font-size: 2.2rem;
@@ -221,169 +228,124 @@
             height: 2px;
             background: var(--secondary);
         }
-        /* News Grid */
-        .news-grid {
+        .section-title p {
+            max-width: 700px;
+            margin: 20px auto 0;
+            color: var(--text-gray);
+            font-size: 1.1rem;
+        }
+
+        /* About Section */
+        .about-content {
+            display: flex;
+            gap: 50px;
+            align-items: center;
+        }
+        .about-text {
+            flex: 1;
+        }
+        .about-text h3 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: var(--text-light);
+        }
+        .about-text p {
+            margin-bottom: 20px;
+            color: var(--text-gray);
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+        .about-image {
+            flex: 1;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        .about-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: var(--transition);
+        }
+        .about-image:hover img {
+            transform: scale(1.05);
+        }
+
+        /* Games Section */
+        .games-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 30px;
         }
-        /* News Card */
-        .news-card {
+        .game-card {
             background: var(--card-bg);
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             transition: var(--transition);
             border: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            height: 100%;
         }
-        .news-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        .game-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
         }
-        .news-banner {
+        .game-image {
             width: 100%;
             height: 200px;
             object-fit: cover;
             display: block;
         }
-        .news-content {
-            padding: 20px;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
+        .game-info {
+            padding: 25px 20px;
         }
-        .news-content h3 {
+        .game-info h3 {
             font-size: 1.4rem;
             margin-bottom: 15px;
             color: var(--text-light);
         }
-        .news-excerpt {
+        .game-info p {
             color: var(--text-gray);
+            font-size: 0.95rem;
             margin-bottom: 20px;
-            flex-grow: 1;
         }
-        .news-date {
-            font-size: 0.85rem;
-            color: var(--gray);
-            margin-top: auto;
-            margin-bottom: 15px;
-        }
-        .news-actions {
-            margin-top: auto;
-        }
-        .read-more-btn {
-            background: var(--secondary);
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-family: 'Inter', sans-serif;
-            font-weight: 500;
-            transition: var(--transition);
-            font-size: 0.9rem;
-            text-decoration: none;
-            display: inline-block;
-        }
-        .read-more-btn:hover {
-            background: var(--primary);
-        }
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1100;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.7);
-            padding-top: 60px;
-        }
-        .modal-content {
-            background-color: var(--card-bg);
-            margin: auto;
-            padding: 0;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            width: 90%;
-            max-width: 800px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-            position: relative;
-            animation: modalopen 0.4s;
-        }
-        @keyframes modalopen {
-            from { opacity: 0; transform: translateY(-60px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .modal-header {
-            padding: 20px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .modal-title {
-            margin: 0;
-            font-size: 1.8rem;
-            color: var(--text-light);
-        }
-        .close {
-            color: var(--text-gray);
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            background: none;
-            border: none;
-            padding: 0;
-            margin: 0;
-        }
-        .close:hover,
-        .close:focus {
-            color: var(--text-light);
-        }
-        .modal-body {
-            padding: 20px;
-            max-height: 60vh;
-            overflow-y: auto;
-        }
-        .modal-banner {
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
-            border-radius: 8px 8px 0 0;
-            display: block;
-        }
-        .modal-date {
-            color: var(--gray);
-            font-size: 0.9rem;
-            margin-top: 10px;
-            display: block;
-        }
-        .modal-description {
-            margin-top: 20px;
-            color: var(--text-light);
-            line-height: 1.7;
-            white-space: pre-wrap;
-        }
-        .no-news {
+
+        /* Stats Section */
+        .stats {
+            background: var(--darkest);
+            padding: 80px 0;
             text-align: center;
-            color: var(--text-gray);
-            font-style: italic;
-            padding: 40px 20px;
-            grid-column: 1 / -1;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
         }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+        }
+        .stat-card {
+            padding: 30px 20px;
+        }
+        .stat-card i {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--secondary);
+        }
+        .stat-card h3 {
+            font-size: 2.5rem;
+            color: var(--text-light);
+            margin-bottom: 10px;
+        }
+        .stat-card p {
+            color: var(--text-gray);
+            font-size: 1rem;
+        }
+
         /* Footer */
         footer {
             background: var(--darkest);
             color: var(--text-light);
             padding: 70px 0 30px;
             border-top: 1px solid var(--border);
-            margin-top: auto;
         }
         .footer-content {
             display: grid;
@@ -464,6 +426,7 @@
             color: var(--text-gray);
             font-size: 0.9rem;
         }
+
         /* Responsive Design */
         @media (max-width: 992px) {
             .logo {
@@ -491,6 +454,9 @@
             .mobile-menu {
                 display: block;
             }
+            .about-content {
+                flex-direction: column;
+            }
         }
         @media (max-width: 768px) {
             .section {
@@ -505,16 +471,12 @@
             .hero p {
                 font-size: 1.1rem;
             }
-            .news-grid {
-                grid-template-columns: 1fr;
+            .hero-btns {
+                flex-direction: column;
+                gap: 15px;
             }
-        }
-        @media (max-width: 576px) {
-            .hero h1 {
-                font-size: 2rem;
-            }
-            .modal-content {
-                width: 95%;
+            .hero-btns .btn {
+                width: 100%;
             }
         }
     </style>
@@ -549,41 +511,101 @@
     </header>
 
     <!-- Hero Section -->
-    <div class="hero">
+    <section class="hero">
         <div class="container hero-content">
-            <h1>Latest News</h1>
-            <p>Stay updated with the latest happenings in SNM Esports</p>
+            <h1>REDEFINING COMPETITIVE GAMING</h1>
+            <p>Join SNM Esports and become part of a revolutionary esports organization that transcends traditional boundaries</p>
+            <div class="hero-btns">
+                <a href="/about.html" class="btn">Discover Our Story</a>
+                <a href="/merch.html" class="btn btn-outline">Team Merch</a>
+            </div>
         </div>
-    </div>
+    </section>
 
-    <!-- News Section -->
-    <div class="container">
-        <section class="section">
+    <!-- About Section -->
+    <section class="section">
+        <div class="container">
             <div class="section-title">
-                <h2>News & Announcements</h2>
+                <h2>About Us</h2>
+                <p>Discover the story behind SNM Esports</p>
             </div>
-            <div class="news-grid" id="newsContainer">
-                <div class="no-news" id="loadingMessage">Loading news...</div>
-            </div>
-        </section>
-    </div>
-
-    <!-- Modal -->
-    <div id="newsModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title" id="modalNewsTitle">News Title</h2>
-                <button class="close">&times;</button>
-            </div>
-            <img class="modal-banner" id="modalNewsBanner" src="" alt="News Banner">
-            <div class="modal-body">
-                <span class="modal-date" id="modalNewsDate">January 1, 2024</span>
-                <div class="modal-description" id="modalNewsDescription">
-                    Full news description will appear here.
+            <div class="about-content">
+                <div class="about-text">
+                    <h3>Our Mission</h3>
+                    <p>SNM Esports is dedicated to fostering a world-class environment for competitive gaming. We strive to nurture talent, build a strong community, and compete at the highest levels across multiple titles.</p>
+                    <p>Founded on the principles of innovation, teamwork, and integrity, we aim to be a leading force in the esports industry, inspiring players and fans alike.</p>
+                    <a href="/about.html" class="btn">Our Story</a>
+                </div>
+                <div class="about-image">
+                    <img src="snm.png" alt="SNM Esports Team">
                 </div>
             </div>
         </div>
-    </div>
+    </section>
+
+    <!-- Games Section -->
+    <section class="section" style="background: var(--darker);">
+        <div class="container">
+            <div class="section-title">
+                <h2>Our Teams</h2>
+                <p>Competing across the most popular esports titles</p>
+            </div>
+            <div class="games-grid">
+                <div class="game-card">
+                    <img src="snm.png" alt="Counter-Strike 2" class="game-image">
+                    <div class="game-info">
+                        <h3>Counter-Strike 2</h3>
+                        <p>Strategic teamwork and precise gunplay define our CS2 roster.</p>
+                        <a href="#" class="btn btn-outline">Team Roster</a>
+                    </div>
+                </div>
+                <div class="game-card">
+                    <img src="snm.png" alt="Valorant" class="game-image">
+                    <div class="game-info">
+                        <h3>Valorant</h3>
+                        <p>Tactical shooters with unique agent abilities and clutch plays.</p>
+                        <a href="#" class="btn btn-outline">Team Roster</a>
+                    </div>
+                </div>
+                <div class="game-card">
+                    <img src="snm.png" alt="Rocket League" class="game-image">
+                    <div class="game-info">
+                        <h3>Rocket League</h3>
+                        <p>High-octane soccer with cars, skill, and spectacular goals.</p>
+                        <a href="#" class="btn btn-outline">Team Roster</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="fas fa-trophy"></i>
+                    <h3>N/A</h3>
+                    <p>Tournaments Won</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-users"></i>
+                    <h3>3k+</h3>
+                    <p>Team Members</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-calendar-alt"></i>
+                    <h3>2024</h3>
+                    <p>Founded</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-globe"></i>
+                    <h3>Global</h3>
+                    <p>Presence</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Footer -->
     <footer>
@@ -613,8 +635,9 @@
                 <div class="footer-column">
                     <h3>Competitive Teams</h3>
                     <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Fortnite /a></li>
                         <li><a href="#"><i class="fas fa-chevron-right"></i> Valorant</a></li>
-                        <li><a href="#"><i class="fas fa-chevron-right"></i> Fortnite</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Rocket League - Coming Soon</a></li>
                         <li><a href="#"><i class="fas fa-chevron-right"></i> Content Creators</a></li>
                         <li><a href="#"><i class="fas fa-chevron-right"></i> Academy Program</a></li>
                     </ul>
@@ -623,8 +646,8 @@
                     <h3>Contact</h3>
                     <ul class="footer-links">
                         <li><a href="mailto:contact@snmesports.com"><i class="fas fa-envelope"></i> contact@snmesports.com</a></li>
-                        <li><a href="#"><i class="fas fa-map-marker-alt"></i> Los Angeles, CA</a></li>
-                        <li><a href="#"><i class="fas fa-phone"></i> +1 (555) 123-4567</a></li>
+                        <li><a href="#"><i class="fas fa-map-marker-alt"></i> Global</a></li>
+                        <li><a href="#"><i class="fas fa-phone"></i> </a></li>
                         <li><a href="#"><i class="fas fa-headset"></i> Support Center</a></li>
                     </ul>
                 </div>
@@ -635,128 +658,11 @@
         </div>
     </footer>
 
-    <!-- Scripts -->
     <script>
         // Mobile Menu Toggle
         document.querySelector('.mobile-menu').addEventListener('click', () => {
             document.querySelector('nav ul').classList.toggle('active');
         });
-
-        // Modal Elements
-        const modal = document.getElementById("newsModal");
-        const modalTitle = document.getElementById("modalNewsTitle");
-        const modalBanner = document.getElementById("modalNewsBanner");
-        const modalDate = document.getElementById("modalNewsDate");
-        const modalDescription = document.getElementById("modalNewsDescription");
-        const span = document.getElementsByClassName("close")[0];
-
-        function openModal(newsItem) {
-            modalTitle.textContent = newsItem.title;
-            if (newsItem.bannerUrl) {
-                modalBanner.src = newsItem.bannerUrl;
-                modalBanner.alt = newsItem.title + " Banner";
-                modalBanner.style.display = 'block';
-            } else {
-                modalBanner.style.display = 'none';
-            }
-            modalDate.textContent = new Date(newsItem.publishedAt).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
-            modalDescription.textContent = newsItem.description;
-            modal.style.display = "block";
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeModal() {
-            modal.style.display = "none";
-            document.body.style.overflow = 'auto';
-        }
-
-        span.onclick = closeModal;
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                closeModal();
-            }
-        };
-
-        function getFirstLine(text) {
-            if (!text) return 'No description available.';
-            const lines = text.split(/\r?\n/);
-            for (const line of lines) {
-                const trimmedLine = line.trim();
-                if (trimmedLine) return trimmedLine;
-            }
-            return 'No description available.';
-        }
-
-        async function loadNews() {
-            const newsContainer = document.getElementById('newsContainer');
-            const loadingMessage = document.getElementById('loadingMessage');
-            loadingMessage.textContent = 'Loading news...';
-            loadingMessage.style.display = 'block';
-            newsContainer.innerHTML = '';
-
-            try {
-                const response = await fetch('/api/news');
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                const data = await response.json();
-                const newsItems = data.news || [];
-
-                if (newsItems.length === 0) {
-                    loadingMessage.textContent = 'No news articles found.';
-                    loadingMessage.className = 'no-news';
-                    return;
-                }
-
-                loadingMessage.style.display = 'none';
-                newsItems.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
-
-                const escapeHtml = (text) => {
-                    if (typeof text !== 'string') return text;
-                    return text
-                        .replace(/&/g, "&amp;")
-                        .replace(/</g, "<")
-                        .replace(/>/g, ">")
-                        .replace(/"/g, "&quot;")
-                        .replace(/'/g, "&#039;");
-                };
-
-                newsItems.forEach(item => {
-                    const firstLine = escapeHtml(getFirstLine(item.description));
-                    const newsCard = document.createElement('div');
-                    newsCard.className = 'news-card';
-                    newsCard.innerHTML = `
-                        ${item.bannerUrl ? `<img class="news-banner" src="${escapeHtml(item.bannerUrl)}" alt="${escapeHtml(item.title)} Banner">` : ''}
-                        <div class="news-content">
-                            <h3>${escapeHtml(item.title)}</h3>
-                            <p class="news-excerpt">${firstLine}</p>
-                            <span class="news-date">${new Date(item.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
-                            <div class="news-actions">
-                                <button class="read-more-btn" data-id="${item._id}">Read More</button>
-                            </div>
-                        </div>
-                    `;
-                    newsContainer.appendChild(newsCard);
-                });
-
-                document.querySelectorAll('.read-more-btn').forEach(button => {
-                    button.addEventListener('click', (e) => {
-                        const newsId = e.target.getAttribute('data-id');
-                        const newsItem = newsItems.find(item => item._id == newsId);
-                        if (newsItem) openModal(newsItem);
-                    });
-                });
-
-            } catch (error) {
-                console.error('Error loading news:', error);
-                loadingMessage.textContent = 'Error loading news. Please try again later.';
-                loadingMessage.className = 'no-news';
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', loadNews);
     </script>
 </body>
 </html>
