@@ -405,7 +405,6 @@
             </nav>
         </div>
     </header>
-
     <!-- Login Form Container -->
     <div class="login-container" id="loginContainer">
         <form class="login-form" id="loginForm">
@@ -422,7 +421,6 @@
             <div class="error-message" id="errorMessage">Invalid credentials. Please try again.</div>
         </form>
     </div>
-
     <!-- Admin Dashboard Container -->
     <div class="admin-dashboard" id="adminDashboard">
         <div class="container">
@@ -430,7 +428,6 @@
                 <h1>Admin Dashboard</h1>
                 <button class="btn logout-btn" id="logoutBtn">Logout</button>
             </div>
-
             <div class="stats-grid">
                 <div class="stat-card">
                     <i class="fas fa-users"></i>
@@ -453,7 +450,6 @@
                     <p>Rejected</p>
                 </div>
             </div>
-
             <div class="applications-section">
                 <h2>Applications</h2>
                 <div class="applications-list" id="applicationsList">
@@ -463,7 +459,6 @@
             </div>
         </div>
     </div>
-
     <script>
         // --- Client-side JavaScript for admin.html ---
         document.addEventListener('DOMContentLoaded', function () {
@@ -481,14 +476,12 @@
             const pendingAppsEl = document.getElementById('pendingApps');
             const approvedAppsEl = document.getElementById('approvedApps');
             const rejectedAppsEl = document.getElementById('rejectedApps');
-
             // Mobile Menu Toggle
             if (mobileMenu) {
                 mobileMenu.addEventListener('click', () => {
                     navMenu.classList.toggle('active');
                 });
             }
-
             // Check for existing token on page load
             const token = localStorage.getItem('adminToken');
             if (token) {
@@ -496,13 +489,11 @@
                 adminDashboard.style.display = 'block';
                 loadApplications();
             }
-
             // Login Form Submission
             loginForm.addEventListener('submit', async function (e) {
                 e.preventDefault();
                 const username = document.getElementById('username').value;
                 const password = document.getElementById('password').value;
-
                 try {
                     const response = await fetch('/api/login', {
                         method: 'POST',
@@ -511,9 +502,7 @@
                         },
                         body: JSON.stringify({ username, password })
                     });
-
                     const data = await response.json();
-
                     if (data.success && data.token) {
                         localStorage.setItem('adminToken', data.token);
                         loginContainer.style.display = 'none';
@@ -529,7 +518,6 @@
                     errorMessage.textContent = 'An error occurred during login. Please try again.';
                 }
             });
-
             // Logout Function
             logoutBtn.addEventListener('click', function () {
                 localStorage.removeItem('adminToken');
@@ -538,13 +526,11 @@
                 loginForm.reset();
                 errorMessage.style.display = 'none';
             });
-
             // Load Applications Function
             async function loadApplications() {
                 noApplicationsMessage.textContent = 'Loading applications...';
                 noApplicationsMessage.style.display = 'block';
                 applicationsList.innerHTML = ''; // Clear previous list
-
                 try {
                     const token = localStorage.getItem('adminToken');
                     const response = await fetch('/api/applications', {
@@ -553,7 +539,6 @@
                             'Authorization': `Bearer ${token}`
                         }
                     });
-
                     if (!response.ok) {
                         if (response.status === 401 || response.status === 403) {
                             alert('Session expired or invalid. Please log in again.');
@@ -562,10 +547,9 @@
                         }
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
-
                     const data = await response.json();
-                    displayApplications(data.applications);
-                    updateStats(data.applications);
+                    displayApplications(data.applications); // <-- Key Change: Use data.applications
+                    updateStats(data.applications);        // <-- Key Change: Use data.applications
                 } catch (error) {
                     console.error('Error loading applications:', error);
                     noApplicationsMessage.textContent = 'Error loading applications. Please try again.';
@@ -577,21 +561,17 @@
                     rejectedAppsEl.textContent = '0';
                 }
             }
-
             // Display Applications Function
             function displayApplications(applications) {
                  applicationsList.innerHTML = ''; // Clear the list
-
                 if (!applications || applications.length === 0) {
                     noApplicationsMessage.textContent = 'No applications found.';
                     noApplicationsMessage.style.display = 'block';
                     return;
                 }
                 noApplicationsMessage.style.display = 'none'; // Hide the "no apps" message
-
                 // Sort applications by submission date (newest first)
                 applications.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
-
                 applications.forEach(app => {
                     const appCard = document.createElement('div');
                     appCard.className = 'application-card';
@@ -600,7 +580,6 @@
                          if (typeof text !== 'string') return text;
                          return text.replace(/[&<>"']/g, match => ({'&': '&amp;', '<': '<', '>': '>', '"': '&quot;', "'": '&#39;'}[match]));
                     };
-
                     let roleSpecificDetails = '';
                     if (app.role === 'player') {
                         roleSpecificDetails = `
@@ -624,8 +603,6 @@
                             <p><strong>Portfolio:</strong> ${escapeHtml(app.portfolio || 'N/A')}</p>
                         `;
                     }
-
-
                     appCard.innerHTML = `
                         <div class="application-header">
                             <h3>${escapeHtml(app.fullName || 'N/A')}</h3>
@@ -648,26 +625,22 @@
                     applicationsList.appendChild(appCard);
                 });
             }
-
             // Update Statistics Function
             function updateStats(applications) {
                 const total = applications.length;
                 const pending = applications.filter(app => app.status === 'pending').length;
                 const approved = applications.filter(app => app.status === 'approved').length;
                 const rejected = applications.filter(app => app.status === 'rejected').length;
-
                 totalAppsEl.textContent = total;
                 pendingAppsEl.textContent = pending;
                 approvedAppsEl.textContent = approved;
                 rejectedAppsEl.textContent = rejected;
             }
-
             // Make updateApplicationStatus globally accessible for inline onclick
             window.updateApplicationStatus = async function(id, status) {
                  if (!confirm(`Are you sure you want to set application ID ${id} to ${status}?`)) {
                     return; // Do nothing if user cancels
                  }
-
                 try {
                     const token = localStorage.getItem('adminToken');
                     const response = await fetch(`/api/applications/${id}`, {
@@ -678,9 +651,7 @@
                         },
                         body: JSON.stringify({ status: status })
                     });
-
                     const data = await response.json();
-
                     if (data.success) {
                         // Reload the list to show the updated status
                         loadApplications();
@@ -697,7 +668,6 @@
                     alert('An error occurred while updating the status.');
                 }
             };
-
         });
     </script>
 </body>
