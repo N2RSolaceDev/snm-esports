@@ -14,60 +14,48 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// --- In-memory storage for applications (in production, use a database) ---
-// Make sure this is declared before the routes that use it
+// --- In-memory storage for applications ---
 let applications = [];
 
 // --- Helper Functions ---
 
 // Middleware to verify JWT token
 const authenticateToken = (req, res, next) => {
-    // Get auth header value
     const authHeader = req.headers['authorization'];
-    // Check if bearer is undefined
+
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return res.status(401).json({ success: false, message: 'Access Denied. No Token Provided.' });
     }
 
-    // Get token from "Bearer TOKEN"
     const token = authHeader.split(' ')[1];
 
-    // Check if token is present
     if (!token) {
         return res.status(401).json({ success: false, message: 'Access Denied. Token Missing.' });
     }
 
     try {
-        // Verify token
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        // Add user from payload
         req.user = decoded;
         next();
     } catch (err) {
-        // If token is invalid
+        console.error("Token verification error:", err.message); // Log for debugging
         res.status(403).json({ success: false, message: 'Invalid Token.' });
     }
 };
 
 // --- Serve HTML Pages ---
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
-app.get('/about.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'about.html'));
-});
-
-app.get('/merch.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'merch.html'));
-});
-
-app.get('/apply.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'apply.html'));
-});
-
-app.get('/admin.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+// Simplified route to serve any HTML file from /public
+app.get(['/', '/about.html', '/merch.html', '/apply.html', '/admin.html'], (req, res) => {
+    let filename = 'index.html'; // Default
+    if (req.path !== '/') {
+        filename = req.path.substring(1); // Remove leading slash
+    }
+    res.sendFile(path.join(__dirname, 'public', filename), (err) => {
+        if (err) {
+            console.error(`Error sending file ${filename}:`, err);
+            res.status(404).send('File not found');
+        }
+    });
 });
 
 // --- API Routes ---
@@ -76,9 +64,11 @@ app.get('/admin.html', (req, res) => {
 app.post('/api/login', (req, res) => {
     const { username, password } = req.body;
 
-    // Check credentials against environment variables
+    if (!username || !password) {
+        return res.status(400).json({ success: false, message: 'Username and password are required.' });
+    }
+
     if (username === process.env.ADMIN_USERNAME && password === process.env.ADMIN_PASSWORD) {
-        // Sign a JWT token with the username
         const token = jwt.sign({ username: username }, process.env.JWT_SECRET, { expiresIn: '1h' });
         return res.json({ success: true, token: token });
     } else {
@@ -89,8 +79,7 @@ app.post('/api/login', (req, res) => {
 // Get all applications (Protected Route)
 // Apply the authenticateToken middleware
 app.get('/api/applications', authenticateToken, (req, res) => {
-    // If authentication passes, send the applications
-    // Wrap in an object for consistency with frontend expectations
+    // Send the applications array wrapped in an object for consistency
     res.json({ success: true, applications: applications });
 });
 
@@ -98,7 +87,7 @@ app.get('/api/applications', authenticateToken, (req, res) => {
 app.post('/api/applications', (req, res) => {
     // Basic validation could be added here if needed
     const newApplication = {
-        id: Date.now(), // Simple ID generation, use uuid in production
+        id: Date.now(), // Simple ID generation
         ...req.body,
         status: 'pending',
         submittedAt: new Date().toISOString()
@@ -135,5 +124,13 @@ app.put('/api/applications/:id', authenticateToken, (req, res) => {
 
 // --- Start Server ---
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+    console.log(`\n==========================================`);
+    console.log(`  Server is running on http://localhost:${PORT}`);
+    console.log(`==========================================\n`);
+    // It's helpful to log the expected credentials on startup
+    console.log(`Expected Admin Credentials:`);
+    console.log(`  Username: ${process.env.ADMIN_USERNAME || 'NOT SET (check .env)'}`);
+    console.log(`  Password: ${process.env.ADMIN_PASSWORD ? '[SET]' : 'NOT SET (check .env)'}`);
+    console.log(`  JWT Secret: ${process.env.JWT_SECRET ? '[SET]' : 'NOT SET (check .env)'}`);
+    console.log(`==========================================\n`);
 });
