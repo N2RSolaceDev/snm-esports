@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SNM Esports News</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* Dark Mode Variables */
         :root {
@@ -22,6 +22,7 @@
             --border: #2d3a52;
             --card-bg: #1b263b;
             --transition: all 0.3s ease;
+            --nav-link-color: #ff00ff; /* Vibrant pink for nav links */
         }
         * {
             margin: 0;
@@ -36,7 +37,7 @@
             overflow-x: hidden;
         }
         h1, h2, h3, h4, h5 {
-            font-family: 'Playfair Display', serif; /* Note: This font wasn't loaded in the original */
+            font-family: 'Playfair Display', serif;
             font-weight: 600;
             color: var(--text-light);
         }
@@ -89,43 +90,62 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 0;
+            padding: 15px 0;
         }
-        .logo h1 {
-            font-size: 1.6rem;
-            color: var(--text-light);
+        .logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .logo img {
+            width: 100px;
+            height: auto;
         }
         nav ul {
             display: flex;
             list-style: none;
+            gap: 20px;
         }
         nav ul li {
-            margin-left: 30px;
+            position: relative;
         }
         nav ul li a {
-            color: var(--text-light);
+            color: var(--nav-link-color);
             text-decoration: none;
-            font-weight: 500;
-            transition: var(--transition);
-            position: relative;
-            padding: 5px 0;
-            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
         }
         nav ul li a::after {
             content: '';
             position: absolute;
-            bottom: 0;
+            bottom: -5px;
             left: 0;
             width: 0;
             height: 2px;
-            background: var(--secondary);
-            transition: var(--transition);
+            background: var(--nav-link-color);
+            transition: width 0.3s ease;
         }
         nav ul li a:hover {
-            color: var(--secondary);
+            color: var(--nav-link-color);
         }
         nav ul li a:hover::after {
             width: 100%;
+        }
+        .social-icons {
+            display: flex;
+            gap: 15px;
+        }
+        .social-icons a {
+            color: var(--nav-link-color);
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        }
+        .social-icons a:hover {
+            color: white;
         }
         .mobile-menu {
             display: none;
@@ -137,12 +157,12 @@
         .hero {
             height: 50vh;
             min-height: 400px;
-            background: url('snm.png') center/cover no-repeat; /* CHANGED: Uses local snm.png */
+            background: url('snm.png') center/cover no-repeat;
             display: flex;
             align-items: center;
             position: relative;
             text-align: center;
-            margin-bottom: 60px; /* Add space below hero */
+            margin-bottom: 60px;
         }
         .hero::before {
             content: '';
@@ -178,7 +198,7 @@
         }
         /* News Section */
         .section {
-            padding: 60px 0; /* Reduced padding */
+            padding: 60px 0;
         }
         .section-title {
             text-align: center;
@@ -189,6 +209,7 @@
             position: relative;
             display: inline-block;
             padding-bottom: 15px;
+            color: var(--text-light);
         }
         .section-title h2::after {
             content: '';
@@ -203,20 +224,20 @@
         /* News Grid */
         .news-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Responsive grid */
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 30px;
         }
         /* News Card */
         .news-card {
             background: var(--card-bg);
             border-radius: 8px;
-            overflow: hidden; /* Ensures banner image respects border-radius */
+            overflow: hidden;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             transition: var(--transition);
             border: 1px solid var(--border);
             display: flex;
             flex-direction: column;
-            height: 100%; /* Make cards equal height if needed */
+            height: 100%;
         }
         .news-card:hover {
             transform: translateY(-5px);
@@ -224,13 +245,13 @@
         }
         .news-banner {
             width: 100%;
-            height: 200px; /* Set a fixed height for the banner */
-            object-fit: cover; /* Cover the area, potentially cropping */
+            height: 200px;
+            object-fit: cover;
             display: block;
         }
         .news-content {
             padding: 20px;
-            flex-grow: 1; /* Allow content to grow and push button down */
+            flex-grow: 1;
             display: flex;
             flex-direction: column;
         }
@@ -242,16 +263,16 @@
         .news-excerpt {
             color: var(--text-gray);
             margin-bottom: 20px;
-            flex-grow: 1; /* Take available space */
+            flex-grow: 1;
         }
         .news-date {
             font-size: 0.85rem;
             color: var(--gray);
-            margin-top: auto; /* Push date to the bottom */
+            margin-top: auto;
             margin-bottom: 15px;
         }
         .news-actions {
-             margin-top: auto; /* Push actions to the bottom */
+            margin-top: auto;
         }
         .read-more-btn {
             background: var(--secondary);
@@ -264,24 +285,24 @@
             font-weight: 500;
             transition: var(--transition);
             font-size: 0.9rem;
-            text-decoration: none; /* Remove default link underline */
-            display: inline-block; /* Allow padding/margin */
+            text-decoration: none;
+            display: inline-block;
         }
         .read-more-btn:hover {
             background: var(--primary);
         }
         /* Modal Styles */
         .modal {
-            display: none; /* Hidden by default */
+            display: none;
             position: fixed;
-            z-index: 1100; /* Sit on top, higher than header */
+            z-index: 1100;
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
-            overflow: auto; /* Enable scroll if needed */
-            background-color: rgba(0,0,0,0.7); /* Black w/ opacity */
-            padding-top: 60px; /* Add top padding to prevent content from touching top */
+            overflow: auto;
+            background-color: rgba(0,0,0,0.7);
+            padding-top: 60px;
         }
         .modal-content {
             background-color: var(--card-bg);
@@ -293,11 +314,11 @@
             max-width: 800px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
             position: relative;
-            animation: modalopen 0.4s; /* Add animation */
+            animation: modalopen 0.4s;
         }
         @keyframes modalopen {
-            from {opacity: 0; transform: translateY(-60px);}
-            to {opacity: 1; transform: translateY(0);}
+            from { opacity: 0; transform: translateY(-60px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .modal-header {
             padding: 20px;
@@ -327,14 +348,14 @@
         }
         .modal-body {
             padding: 20px;
-            max-height: 60vh; /* Limit height and allow scrolling */
-            overflow-y: auto; /* Add scrollbar if needed */
+            max-height: 60vh;
+            overflow-y: auto;
         }
         .modal-banner {
             width: 100%;
-            height: 300px; /* Adjust height as needed */
+            height: 300px;
             object-fit: cover;
-            border-radius: 8px 8px 0 0; /* Round top corners */
+            border-radius: 8px 8px 0 0;
             display: block;
         }
         .modal-date {
@@ -347,14 +368,14 @@
             margin-top: 20px;
             color: var(--text-light);
             line-height: 1.7;
-            white-space: pre-wrap; /* Preserve line breaks from textarea */
+            white-space: pre-wrap;
         }
         .no-news {
             text-align: center;
             color: var(--text-gray);
             font-style: italic;
             padding: 40px 20px;
-            grid-column: 1 / -1; /* Span full width in grid */
+            grid-column: 1 / -1;
         }
         /* Footer */
         footer {
@@ -362,7 +383,7 @@
             color: var(--text-light);
             padding: 70px 0 30px;
             border-top: 1px solid var(--border);
-            margin-top: auto; /* Push footer to bottom if using flex on body */
+            margin-top: auto;
         }
         .footer-content {
             display: grid;
@@ -414,12 +435,12 @@
             color: var(--secondary);
             padding-left: 5px;
         }
-        .social-icons {
+        .social-icons.footer-social {
             display: flex;
             gap: 15px;
             margin-top: 20px;
         }
-        .social-icons a {
+        .social-icons.footer-social a {
             display: flex;
             align-items: center;
             justify-content: center;
@@ -431,7 +452,7 @@
             transition: var(--transition);
             font-size: 1rem;
         }
-        .social-icons a:hover {
+        .social-icons.footer-social a:hover {
             background: var(--secondary);
             color: white;
             transform: translateY(-3px);
@@ -444,29 +465,39 @@
             font-size: 0.9rem;
         }
         /* Responsive Design */
-        @media (max-width: 768px) {
-            .mobile-menu {
-                display: block;
+        @media (max-width: 992px) {
+            .logo {
+                order: 1;
             }
             nav ul {
-                position: fixed;
-                top: 80px;
-                left: -100%;
+                display: none;
+            }
+            nav ul.active {
+                display: flex;
                 flex-direction: column;
+                position: fixed;
+                top: 70px;
+                left: 0;
                 background: var(--darkest);
                 width: 100%;
                 text-align: center;
-                transition: var(--transition);
                 padding: 20px 0;
                 box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
                 border: 1px solid var(--border);
-                z-index: 999;
             }
-            nav ul.active {
-                left: 0;
+            .social-icons:not(.footer-social) {
+                display: none;
             }
-            nav ul li {
-                margin: 15px 0;
+            .mobile-menu {
+                display: block;
+            }
+        }
+        @media (max-width: 768px) {
+            .section {
+                padding: 70px 0;
+            }
+            .section-title h2 {
+                font-size: 1.8rem;
             }
             .hero h1 {
                 font-size: 2.5rem;
@@ -474,58 +505,70 @@
             .hero p {
                 font-size: 1.1rem;
             }
-             .news-grid {
-                grid-template-columns: 1fr; /* Single column on small screens */
+            .news-grid {
+                grid-template-columns: 1fr;
             }
         }
         @media (max-width: 576px) {
             .hero h1 {
                 font-size: 2rem;
             }
-             .modal-content {
+            .modal-content {
                 width: 95%;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Header -->
     <header>
         <div class="container header-container">
-            <div class="logo">
-                <h1>SNM ESPORTS</h1>
-            </div>
-            <div class="mobile-menu">
-                <i class="fas fa-bars"></i>
-            </div>
             <nav>
                 <ul>
                     <li><a href="/">Home</a></li>
                     <li><a href="/about.html">About</a></li>
                     <li><a href="/merch.html">Merch</a></li>
-                    <li><a href="/news.html">News</a></li> <!-- Added News link -->
+                    <li><a href="/news.html">News</a></li>
                     <li><a href="/admin.html">Admin</a></li>
                 </ul>
             </nav>
+            <div class="logo">
+                <img src="snm.png" alt="SNM Esports Logo">
+            </div>
+            <div class="social-icons">
+                <a href="https://twitch.tv/snmesportsggs" target="_blank"><i class="fab fa-twitch"></i></a>
+                <a href="https://twitter.com/snmesportsggs" target="_blank"><i class="fab fa-twitter"></i></a>
+                <a href="https://youtube.com/@snmesportsggs" target="_blank"><i class="fab fa-youtube"></i></a>
+                <a href="https://discord.gg/fearsnm" target="_blank"><i class="fab fa-discord"></i></a>
+                <a href="https://instagram.com/snmesportsggs" target="_blank"><i class="fab fa-instagram"></i></a>
+            </div>
+            <div class="mobile-menu">
+                <i class="fas fa-bars"></i>
+            </div>
         </div>
     </header>
+
+    <!-- Hero Section -->
     <div class="hero">
         <div class="container hero-content">
             <h1>Latest News</h1>
             <p>Stay updated with the latest happenings in SNM Esports</p>
         </div>
     </div>
+
+    <!-- News Section -->
     <div class="container">
         <section class="section">
             <div class="section-title">
                 <h2>News & Announcements</h2>
             </div>
             <div class="news-grid" id="newsContainer">
-                <!-- News items will be loaded here -->
                 <div class="no-news" id="loadingMessage">Loading news...</div>
             </div>
         </section>
     </div>
-    <!-- The Modal -->
+
+    <!-- Modal -->
     <div id="newsModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -541,18 +584,20 @@
             </div>
         </div>
     </div>
+
+    <!-- Footer -->
     <footer>
         <div class="container">
             <div class="footer-content">
                 <div class="footer-column">
                     <h3>SNM Esports</h3>
                     <p>Redefining competitive gaming through innovation, excellence, and community since 2023.</p>
-                    <div class="social-icons">
-                        <a href="#"><i class="fab fa-twitch"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-youtube"></i></a>
-                        <a href="#"><i class="fab fa-discord"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    <div class="social-icons footer-social">
+                        <a href="https://twitch.tv/snmesportsggs" target="_blank"><i class="fab fa-twitch"></i></a>
+                        <a href="https://twitter.com/snmesportsggs" target="_blank"><i class="fab fa-twitter"></i></a>
+                        <a href="https://youtube.com/@snmesportsggs" target="_blank"><i class="fab fa-youtube"></i></a>
+                        <a href="https://discord.gg/fearsnm" target="_blank"><i class="fab fa-discord"></i></a>
+                        <a href="https://instagram.com/snmesportsggs" target="_blank"><i class="fab fa-instagram"></i></a>
                     </div>
                 </div>
                 <div class="footer-column">
@@ -577,7 +622,7 @@
                 <div class="footer-column">
                     <h3>Contact</h3>
                     <ul class="footer-links">
-                        <li><a href="#"><i class="fas fa-envelope"></i> contact@snmesports.com</a></li>
+                        <li><a href="mailto:contact@snmesports.com"><i class="fas fa-envelope"></i> contact@snmesports.com</a></li>
                         <li><a href="#"><i class="fas fa-map-marker-alt"></i> Los Angeles, CA</a></li>
                         <li><a href="#"><i class="fas fa-phone"></i> +1 (555) 123-4567</a></li>
                         <li><a href="#"><i class="fas fa-headset"></i> Support Center</a></li>
@@ -589,102 +634,99 @@
             </div>
         </div>
     </footer>
+
+    <!-- Scripts -->
     <script>
         // Mobile Menu Toggle
         document.querySelector('.mobile-menu').addEventListener('click', () => {
             document.querySelector('nav ul').classList.toggle('active');
         });
+
         // Modal Elements
         const modal = document.getElementById("newsModal");
         const modalTitle = document.getElementById("modalNewsTitle");
         const modalBanner = document.getElementById("modalNewsBanner");
         const modalDate = document.getElementById("modalNewsDate");
         const modalDescription = document.getElementById("modalNewsDescription");
-        const span = document.getElementsByClassName("close")[0]; // Get the close button
-        // Function to open the modal and populate it
+        const span = document.getElementsByClassName("close")[0];
+
         function openModal(newsItem) {
             modalTitle.textContent = newsItem.title;
-            // Set banner image source
             if (newsItem.bannerUrl) {
                 modalBanner.src = newsItem.bannerUrl;
                 modalBanner.alt = newsItem.title + " Banner";
-                modalBanner.style.display = 'block'; // Show banner if URL exists
+                modalBanner.style.display = 'block';
             } else {
-                 modalBanner.style.display = 'none'; // Hide banner if no URL
-                 // Optionally set a default image or placeholder
-                 // modalBanner.src = 'default-banner.png';
+                modalBanner.style.display = 'none';
             }
             modalDate.textContent = new Date(newsItem.publishedAt).toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric'
             });
-            modalDescription.textContent = newsItem.description; // Use textContent for safety
+            modalDescription.textContent = newsItem.description;
             modal.style.display = "block";
-            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            document.body.style.overflow = 'hidden';
         }
-        // Function to close the modal
+
         function closeModal() {
             modal.style.display = "none";
-            document.body.style.overflow = 'auto'; // Re-enable scrolling
+            document.body.style.overflow = 'auto';
         }
-        // When the user clicks on <span> (x), close the modal
+
         span.onclick = closeModal;
-        // When the user clicks anywhere outside of the modal, close it
         window.onclick = function(event) {
             if (event.target == modal) {
                 closeModal();
             }
         };
-        // Function to get the first line of text
+
         function getFirstLine(text) {
             if (!text) return 'No description available.';
-            // Split by newlines and take the first non-empty line
             const lines = text.split(/\r?\n/);
             for (const line of lines) {
                 const trimmedLine = line.trim();
-                if (trimmedLine) {
-                    return trimmedLine;
-                }
+                if (trimmedLine) return trimmedLine;
             }
-            return 'No description available.'; // In case all lines are empty/whitespace
+            return 'No description available.';
         }
-        // Function to load and display news
+
         async function loadNews() {
             const newsContainer = document.getElementById('newsContainer');
             const loadingMessage = document.getElementById('loadingMessage');
             loadingMessage.textContent = 'Loading news...';
             loadingMessage.style.display = 'block';
-            newsContainer.innerHTML = ''; // Clear previous content
+            newsContainer.innerHTML = '';
+
             try {
                 const response = await fetch('/api/news');
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 const data = await response.json();
-                const newsItems = data.news || []; // Expecting { news: [...] }
+                const newsItems = data.news || [];
+
                 if (newsItems.length === 0) {
                     loadingMessage.textContent = 'No news articles found.';
-                    loadingMessage.className = 'no-news'; // Apply no-news styling
+                    loadingMessage.className = 'no-news';
                     return;
                 }
-                loadingMessage.style.display = 'none'; // Hide loading message
-                // Sort news by published date (newest first)
+
+                loadingMessage.style.display = 'none';
                 newsItems.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
+
+                const escapeHtml = (text) => {
+                    if (typeof text !== 'string') return text;
+                    return text
+                        .replace(/&/g, "&amp;")
+                        .replace(/</g, "<")
+                        .replace(/>/g, ">")
+                        .replace(/"/g, "&quot;")
+                        .replace(/'/g, "&#039;");
+                };
+
                 newsItems.forEach(item => {
+                    const firstLine = escapeHtml(getFirstLine(item.description));
                     const newsCard = document.createElement('div');
                     newsCard.className = 'news-card';
-                    // Sanitize text for display (basic)
-                    const escapeHtml = (text) => {
-                        if (typeof text !== 'string') return text;
-                        return text
-                            .replace(/&/g, "&amp;")
-                            .replace(/</g, "<")
-                            .replace(/>/g, ">")
-                            .replace(/"/g, "&quot;")
-                            .replace(/'/g, "&#039;");
-                    };
-                    const firstLine = escapeHtml(getFirstLine(item.description));
                     newsCard.innerHTML = `
                         ${item.bannerUrl ? `<img class="news-banner" src="${escapeHtml(item.bannerUrl)}" alt="${escapeHtml(item.title)} Banner">` : ''}
                         <div class="news-content">
@@ -692,32 +734,28 @@
                             <p class="news-excerpt">${firstLine}</p>
                             <span class="news-date">${new Date(item.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
                             <div class="news-actions">
-                                <!-- CHANGED: Use item._id for MongoDB -->
                                 <button class="read-more-btn" data-id="${item._id}">Read More</button>
                             </div>
                         </div>
                     `;
                     newsContainer.appendChild(newsCard);
                 });
-                // Add event listeners to the "Read More" buttons after they are created
+
                 document.querySelectorAll('.read-more-btn').forEach(button => {
                     button.addEventListener('click', (e) => {
-                        // CHANGED: Get the _id from data-id
                         const newsId = e.target.getAttribute('data-id');
-                        // CHANGED: Find item by _id (assuming MongoDB ObjectId string)
                         const newsItem = newsItems.find(item => item._id == newsId);
-                        if (newsItem) {
-                            openModal(newsItem);
-                        }
+                        if (newsItem) openModal(newsItem);
                     });
                 });
+
             } catch (error) {
                 console.error('Error loading news:', error);
                 loadingMessage.textContent = 'Error loading news. Please try again later.';
-                loadingMessage.className = 'no-news'; // Apply no-news styling
+                loadingMessage.className = 'no-news';
             }
         }
-        // Load news when the page loads
+
         document.addEventListener('DOMContentLoaded', loadNews);
     </script>
 </body>
