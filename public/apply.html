@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apply - SNM Esports</title>
+    <title>Join SNM Esports</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+      <style>
         /* Dark Mode Variables */
         :root {
             --primary: #1a3a5f;
@@ -452,15 +452,8 @@
     </style>
 </head>
 <body>
-    <!-- Header -->
     <header>
         <div class="container header-container">
-            <div class="logo">
-                <h1>SNM ESPORTS</h1>
-            </div>
-            <div class="mobile-menu">
-                <i class="fas fa-bars"></i>
-            </div>
             <nav>
                 <ul>
                     <li><a href="/">Home</a></li>
@@ -470,152 +463,64 @@
                     <li><a href="/admin.html">Admin</a></li>
                 </ul>
             </nav>
+            <div class="mobile-menu">
+                <i class="fas fa-bars"></i>
+            </div>
         </div>
     </header>
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="container hero-content">
-            <h1>JOIN OUR TEAM</h1>
+
+    <div class="container">
+        <div class="hero">
+            <h1>Join Our Team</h1>
             <p>Fill out the application form below to become part of SNM Esports. We're always looking for talented players and passionate individuals to join our growing community.</p>
-            <div class="hero-btns">
-                <a href="/about.html" class="btn">Our Story</a>
-                <a href="/merch.html" class="btn btn-outline">Get Merch</a>
-            </div>
         </div>
-    </section>
-    <!-- Application Form Section -->
-    <section class="section">
-        <div class="container">
-            <div class="section-title">
-                <h2>Application Form</h2>
-                <p>Select your role and provide the required information</p>
+
+        <form class="application-form" id="applicationForm">
+            <h2 class="form-title">Application Form</h2>
+            
+            <div class="form-group">
+                <label for="fullName">Full Name</label>
+                <input type="text" id="fullName" required>
             </div>
-            <form class="application-form" id="applicationForm">
-                <h2 class="form-title">Join SNM Esports</h2>
-                <div class="form-group">
-                    <label for="fullName">Full Name *</label>
-                    <input type="text" id="fullName" name="fullName" required>
-                </div>
-                <div class="form-group">
-                    <label for="email">Email Address *</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="discord">Discord Username + ID *</label>
-                    <input type="text" id="discord" name="discord" placeholder="username#1234 or username (ID: 1234567890)" required>
-                </div>
-                <div class="form-group">
-                    <label for="inDiscord">Are you in our Discord server? *</label>
-                    <select id="inDiscord" name="inDiscord" required>
-                        <option value="">Select an option</option>
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Role Selection *</label>
-                    <div class="role-selection">
-                        <div class="role-option" data-role="player">
-                            <i class="fas fa-gamepad"></i>
-                            <h3>Player</h3>
-                            <p>Competitive player looking to join our teams</p>
-                        </div>
-                        <div class="role-option" data-role="staff">
-                            <i class="fas fa-user-tie"></i>
-                            <h3>Staff</h3>
-                            <p>Support our organization in non-playing roles</p>
-                        </div>
-                    </div>
-                    <input type="hidden" id="role" name="role" required>
-                </div>
-                <!-- Player Specific Fields -->
-                <div class="player-specific" id="playerFields">
-                    <div class="form-group">
-                        <label for="playerType">Player Type *</label>
-                        <select id="playerType" name="playerType">
-                            <option value="">Select player type</option>
-                            <option value="competitive">Competitive Player</option>
-                            <option value="creative">Creative Content Creator</option>
-                        </select>
-                    </div>
-                    <div class="competitive-fields" id="competitiveFields" style="display: none;">
-                        <div class="form-group">
-                            <label for="game">Primary Game *</label>
-                            <select id="game" name="game">
-                                <option value="">Select a game</option>
-                                <option value="Fortnite">Fortnite</option>
-                                <option value="Valorant">Valorant</option>
-                                <option value="Rocket League">Rocket League</option>
-                                <option value="League of Legends">League of Legends</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="trackerLink">Fortnite Tracker Link *</label>
-                            <input type="url" id="trackerLink" name="trackerLink" placeholder="https://fortnitetracker.com/profile/all/yourusername">
-                            <small>Please provide your Fortnite tracker link for verification</small>
-                        </div>
-                    </div>
-                    <div class="creative-fields" id="creativeFields" style="display: none;">
-                        <div class="form-group">
-                            <label for="socialLinks">Social Media Links *</label>
-                            <textarea id="socialLinks" name="socialLinks" placeholder="Provide links to your social media accounts (Twitter, Instagram, TikTok, YouTube, etc.)"></textarea>
-                            <small>Please include links to your main social platforms</small>
-                        </div>
-                        <div class="form-group">
-                            <label for="contentSample">Content Sample Link *</label>
-                            <input type="url" id="contentSample" name="contentSample" placeholder="https://youtube.com/yourcontent">
-                            <small>Provide a link to your best content sample (YouTube, Twitch, TikTok, etc.)</small>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="gamingExperience">Gaming Experience *</label>
-                        <textarea id="gamingExperience" name="gamingExperience" placeholder="Tell us about your competitive gaming experience, achievements, and what makes you a good fit for SNM Esports" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="availability">Availability *</label>
-                        <textarea id="availability" name="availability" placeholder="When are you available for practice and competitions? (e.g., weekdays after 6 PM, weekends)" required></textarea>
-                    </div>
-                </div>
-                <!-- Staff Specific Fields -->
-                <div class="staff-specific" id="staffFields">
-                    <div class="form-group">
-                        <label for="position">Position Interested In *</label>
-                        <select id="position" name="position">
-                            <option value="">Select a position</option>
-                            <option value="content-creator">Content Creator</option>
-                            <option value="coach">Coach</option>
-                            <option value="analyst">Analyst</option>
-                            <option value="manager">Manager</option>
-                            <option value="other">Other</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="skills">Relevant Skills and Experience *</label>
-                        <textarea id="skills" name="skills" placeholder="Describe your relevant skills, experience, and why you'd be a good fit for this position" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="resumeLink">Resume/CV Link *</label>
-                        <input type="url" id="resumeLink" name="resumeLink" placeholder="https://drive.google.com/your-resume" required>
-                        <small>Please upload your resume to Google Drive or similar service and provide the link</small>
-                    </div>
-                    <div class="form-group">
-                        <label for="portfolio">Portfolio/Work Examples (Optional)</label>
-                        <input type="url" id="portfolio" name="portfolio" placeholder="https://example.com/your-portfolio">
-                        <small>If applicable, provide examples of your previous work</small>
-                    </div>
-                </div>
-                <button type="submit" class="btn">Submit Application</button>
-            </form>
-            <div class="success-message" id="successMessage">
-                <h3>Application Submitted Successfully!</h3>
-                <p>Thank you for your interest in joining SNM Esports. Our team will review your application and get back to you soon.</p>
+            
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" required>
             </div>
+            
+            <div class="form-group">
+                <label for="game">Primary Game</label>
+                <select id="game" required>
+                    <option value="">Select a game</option>
+                    <option value="CS2">Counter-Strike 2</option>
+                    <option value="Valorant">Valorant</option>
+                    <option value="Rocket League">Rocket League</option>
+                    <option value="League of Legends">League of Legends</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="experience">Gaming Experience</label>
+                <textarea id="experience" placeholder="Tell us about your competitive gaming experience, achievements, and what makes you a good fit for SNM Esports" required></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="availability">Availability</label>
+                <textarea id="availability" placeholder="When are you available for practice and competitions? (e.g., weekdays after 6 PM, weekends)" required></textarea>
+            </div>
+            
+            <button type="submit" class="btn">Submit Application</button>
+        </form>
+        
+        <div class="success-message" id="successMessage">
+            <h3>Application Submitted Successfully!</h3>
+            <p>Thank you for your interest in joining SNM Esports. Our team will review your application and get back to you soon.</p>
         </div>
-    </section>
-    <!-- Footer -->
+    </div>
+
     <footer>
-       <div class="container">
+        <div class="container">
             <div class="footer-content">
                 <div class="footer-column">
                     <h3>SNM Esports</h3>
@@ -641,7 +546,7 @@
                 <div class="footer-column">
                     <h3>Competitive Teams</h3>
                     <ul class="footer-links">
-                        <li><a href="#"><i class="fas fa-chevron-right"></i> Fortnite</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Counter-Strike 2</a></li>
                         <li><a href="#"><i class="fas fa-chevron-right"></i> Valorant</a></li>
                         <li><a href="#"><i class="fas fa-chevron-right"></i> Rocket League</a></li>
                         <li><a href="#"><i class="fas fa-chevron-right"></i> Content Creators</a></li>
@@ -652,8 +557,8 @@
                     <h3>Contact</h3>
                     <ul class="footer-links">
                         <li><a href="#"><i class="fas fa-envelope"></i> contact@snmesports.com</a></li>
-                        <li><a href="#"><i class="fas fa-map-marker-alt"></i> Global</a></li>
-                        <li><a href="#"><i class="fas fa-phone"></i> </a></li>
+                        <li><a href="#"><i class="fas fa-map-marker-alt"></i> Los Angeles, CA</a></li>
+                        <li><a href="#"><i class="fas fa-phone"></i> +1 (555) 123-4567</a></li>
                         <li><a href="#"><i class="fas fa-headset"></i> Support Center</a></li>
                     </ul>
                 </div>
@@ -663,107 +568,23 @@
             </div>
         </div>
     </footer>
+
     <script>
-        // --- Client-side JavaScript for apply.html ---
-        document.addEventListener('DOMContentLoaded', function() {
-            // DOM Elements
-            const mobileMenu = document.querySelector('.mobile-menu');
-            const navMenu = document.querySelector('nav ul');
-            const applicationForm = document.getElementById('applicationForm');
-            const successMessage = document.getElementById('successMessage');
-            const roleOptions = document.querySelectorAll('.role-option');
-            const playerFields = document.getElementById('playerFields');
-            const staffFields = document.getElementById('staffFields');
-            const playerType = document.getElementById('playerType');
-            const competitiveFields = document.getElementById('competitiveFields');
-            const creativeFields = document.getElementById('creativeFields');
-            // Mobile Menu Toggle
-            if (mobileMenu) {
-                mobileMenu.addEventListener('click', () => {
-                    navMenu.classList.toggle('active');
-                });
-            }
-            // Role Selection
-            roleOptions.forEach(option => {
-                option.addEventListener('click', () => {
-                    // Remove selected class from all options
-                    roleOptions.forEach(opt => opt.classList.remove('selected'));
-                    // Add selected class to clicked option
-                    option.classList.add('selected');
-                    // Set hidden input value
-                    document.getElementById('role').value = option.dataset.role;
-                    // Show appropriate fields
-                    if (option.dataset.role === 'player') {
-                        playerFields.classList.add('active');
-                        staffFields.classList.remove('active');
-                    } else if (option.dataset.role === 'staff') {
-                        playerFields.classList.remove('active');
-                        staffFields.classList.add('active');
-                    }
-                });
-            });
-            // Player Type Selection
-            if (playerType) {
-                playerType.addEventListener('change', function() {
-                    if (this.value === 'competitive') {
-                        competitiveFields.style.display = 'block';
-                        creativeFields.style.display = 'none';
-                    } else if (this.value === 'creative') {
-                        competitiveFields.style.display = 'none';
-                        creativeFields.style.display = 'block';
-                    } else {
-                        competitiveFields.style.display = 'none';
-                        creativeFields.style.display = 'none';
-                    }
-                });
-            }
-            // Application Form Submission
-            if (applicationForm) {
-                applicationForm.addEventListener('submit', async function(e) {
-                    e.preventDefault();
-                    // Get form data
-                    const formData = new FormData(this);
-                    const applicationData = {};
-                    for (let [key, value] of formData.entries()) {
-                        applicationData[key] = value;
-                    }
-                    console.log("apply.html: Submitting application data:", applicationData); // Debug log
-                    try {
-                        const response = await fetch('/api/applications', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify(applicationData)
-                        });
-                        console.log("apply.html: Received response:", response); // Debug log
-                        const data = await response.json();
-                        console.log("apply.html: Parsed JSON data:", data); // Debug log
-                        if (data.success) {
-                            // Show success message
-                            applicationForm.style.display = 'none';
-                            successMessage.style.display = 'block';
-                            // Reset form after 5 seconds
-                            setTimeout(() => {
-                                applicationForm.style.display = 'block';
-                                successMessage.style.display = 'none';
-                                this.reset();
-                                roleOptions.forEach(opt => opt.classList.remove('selected'));
-                                document.getElementById('role').value = '';
-                                playerFields.classList.remove('active');
-                                staffFields.classList.remove('active');
-                                competitiveFields.style.display = 'none';
-                                creativeFields.style.display = 'none';
-                            }, 5000);
-                        } else {
-                             alert('Failed to submit application: ' + (data.message || 'Unknown error'));
-                        }
-                    } catch (error) {
-                        console.error('Error submitting application:', error);
-                        alert('An error occurred while submitting the application. Please try again.');
-                    }
-                });
-            }
+        // Mobile Menu Toggle
+        document.querySelector('.mobile-menu').addEventListener('click', () => {
+            document.querySelector('nav ul').classList.toggle('active');
+        });
+
+        // Application Form Submission
+        document.getElementById('applicationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Show success message
+            document.getElementById('applicationForm').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'block';
+            
+            // Reset form
+            this.reset();
         });
     </script>
 </body>
