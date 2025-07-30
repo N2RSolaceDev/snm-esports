@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-       /* Reuse your existing CSS from the file */
         /* Dark Mode Variables */
         :root {
             --primary: #1a3a5f;
@@ -172,13 +171,14 @@
             margin-bottom: 8px;
             color: var(--text-light);
         }
-        .form-group input {
+        .form-group input, .form-group textarea {
             width: 100%;
             padding: 12px;
             border: 1px solid var(--border);
             border-radius: 4px;
             background: var(--darkest);
             color: var(--text-light);
+            font-family: 'Inter', sans-serif;
         }
         .error-message {
             color: var(--accent);
@@ -197,9 +197,12 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 40px;
+            flex-wrap: wrap; /* Allow wrapping on small screens */
+            gap: 20px;
         }
         .dashboard-header h1 {
             color: var(--text-light);
+            margin: 0; /* Remove default margin */
         }
         .logout-btn {
             background: var(--accent);
@@ -242,6 +245,51 @@
             color: var(--text-gray);
             font-size: 1rem;
         }
+
+        /* Tab Navigation */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 30px;
+        }
+        .tab-button {
+            padding: 15px 25px;
+            background: none;
+            border: none;
+            color: var(--text-gray);
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            font-size: 1rem;
+        }
+        .tab-button.active {
+            color: var(--text-light);
+        }
+        .tab-button.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px; /* Align with border */
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--secondary);
+        }
+        .tab-button:hover:not(.active) {
+            color: var(--text-light);
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+
+        /* Applications Section */
         .applications-section {
             background: var(--card-bg);
             border-radius: 8px;
@@ -318,6 +366,8 @@
             cursor: pointer;
             transition: var(--transition);
             font-size: 0.9rem; /* Slightly smaller font */
+            text-decoration: none; /* Remove underline for links styled as buttons */
+            display: inline-block; /* Allow padding */
         }
         .approve-btn {
             background: #28a745; /* Green */
@@ -340,12 +390,82 @@
         .delete-btn:hover {
              background: #c1121f; /* Darker red on hover */
         }
-        .no-applications {
+        .no-applications, .no-news {
             text-align: center;
             color: var(--text-gray);
             font-style: italic;
             padding: 20px;
         }
+
+        /* News Section */
+        .news-section {
+             background: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            margin-top: 30px;
+            border: 1px solid var(--border);
+        }
+        .news-section h2 {
+            color: var(--text-light);
+            margin-bottom: 25px;
+        }
+        .news-form {
+            background: var(--darkest);
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            border: 1px solid var(--border);
+        }
+        .news-form h3 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: var(--text-light);
+        }
+        .news-grid {
+            display: grid;
+            gap: 20px;
+        }
+        .news-card {
+            background: var(--darkest);
+            border-radius: 8px;
+            padding: 20px;
+            transition: var(--transition);
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+        }
+        .news-card:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        .news-card-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .news-card-header h3 {
+            color: var(--text-light);
+            margin: 0;
+            flex-grow: 1; /* Allow title to take space */
+        }
+         .news-card-content {
+            flex-grow: 1; /* Allow content to grow */
+            margin-bottom: 15px;
+        }
+        .news-card-content p {
+            color: var(--text-gray);
+            margin: 0 0 10px 0;
+            font-size: 0.95rem;
+        }
+        .news-card-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end; /* Align buttons to the right */
+        }
+
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .mobile-menu {
@@ -376,19 +496,38 @@
                 gap: 20px;
                 text-align: center;
             }
-            .applications-section {
+             .applications-section, .news-section {
                 padding: 20px 15px;
             }
-            .application-header {
+            .application-header, .news-card-header {
                 flex-direction: column;
                 gap: 10px;
             }
-            .application-actions {
+            .application-actions, .news-card-actions {
                 flex-direction: column;
                 align-items: stretch; /* Stretch buttons to full width */
             }
              .action-btn {
                 width: 100%; /* Make buttons full width on small screens */
+            }
+            .tabs {
+                 flex-direction: column;
+                 border-bottom: none;
+                 border-right: 1px solid var(--border);
+            }
+            .tab-button {
+                text-align: left;
+                border-bottom: 1px solid var(--border);
+            }
+            .tab-button:last-child {
+                border-bottom: none;
+            }
+            .tab-button.active::after {
+                 /* Change active indicator for vertical tabs */
+                 bottom: 0;
+                 left: 0;
+                 width: 3px;
+                 height: 100%;
             }
         }
     </style>
@@ -409,6 +548,7 @@
                     <li><a href="/about.html">About</a></li>
                     <li><a href="/merch.html">Merch</a></li>
                     <li><a href="/apply.html">Apply</a></li>
+                    <li><a href="/news.html">News</a></li> <!-- Add News link -->
                     <li><a href="/admin.html">Admin</a></li>
                 </ul>
             </nav>
@@ -458,14 +598,65 @@
                     <h3 id="rejectedApps">0</h3>
                     <p>Rejected</p>
                 </div>
-            </div>
-            <div class="applications-section">
-                <h2>Applications</h2>
-                <div class="applications-list" id="applicationsList">
-                    <!-- Applications will be loaded here -->
-                    <div class="no-applications" id="noApplicationsMessage">Loading applications...</div>
+                 <div class="stat-card">
+                    <i class="fas fa-newspaper"></i>
+                    <h3 id="totalNews">0</h3>
+                    <p>News Articles</p>
                 </div>
             </div>
+
+            <!-- Tab Navigation -->
+            <div class="tabs">
+                <button class="tab-button active" data-tab="applications">Applications</button>
+                <button class="tab-button" data-tab="news">News Management</button>
+            </div>
+
+            <!-- Applications Tab Content -->
+            <div id="applications" class="tab-content active">
+                <div class="applications-section">
+                    <h2>Applications</h2>
+                    <div class="applications-list" id="applicationsList">
+                        <!-- Applications will be loaded here -->
+                        <div class="no-applications" id="noApplicationsMessage">Loading applications...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- News Tab Content -->
+            <div id="news" class="tab-content">
+                <div class="news-section">
+                    <h2>Manage News</h2>
+
+                    <!-- News Creation Form -->
+                    <div class="news-form">
+                        <h3>Publish New Article</h3>
+                        <form id="newsForm">
+                            <div class="form-group">
+                                <label for="newsTitle">Title</label>
+                                <input type="text" id="newsTitle" name="title" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="newsDescription">Description</label>
+                                <textarea id="newsDescription" name="description" rows="5" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="newsBannerUrl">Banner Image URL</label>
+                                <input type="url" id="newsBannerUrl" name="bannerUrl" placeholder="https://example.com/image.jpg">
+                            </div>
+                            <button type="submit" class="btn">Publish News</button>
+                            <div class="error-message" id="newsErrorMessage"></div>
+                        </form>
+                    </div>
+
+                    <!-- News List -->
+                    <h3>Existing Articles</h3>
+                    <div class="news-grid" id="newsList">
+                        <!-- News items will be loaded here -->
+                        <div class="no-news" id="noNewsMessage">Loading news...</div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
     <script>
@@ -479,25 +670,59 @@
             const loginForm = document.getElementById('loginForm');
             const errorMessage = document.getElementById('errorMessage');
             const logoutBtn = document.getElementById('logoutBtn');
+            // Applications
             const applicationsList = document.getElementById('applicationsList');
             const noApplicationsMessage = document.getElementById('noApplicationsMessage');
             const totalAppsEl = document.getElementById('totalApps');
             const pendingAppsEl = document.getElementById('pendingApps');
             const approvedAppsEl = document.getElementById('approvedApps');
             const rejectedAppsEl = document.getElementById('rejectedApps');
+            // News
+            const newsForm = document.getElementById('newsForm');
+            const newsList = document.getElementById('newsList');
+            const noNewsMessage = document.getElementById('noNewsMessage');
+            const newsErrorMessage = document.getElementById('newsErrorMessage');
+            const totalNewsEl = document.getElementById('totalNews');
+            // Tabs
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+
             // Mobile Menu Toggle
             if (mobileMenu) {
                 mobileMenu.addEventListener('click', () => {
                     navMenu.classList.toggle('active');
                 });
             }
+
+            // Tab Switching Logic
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabId = button.getAttribute('data-tab');
+
+                    // Update active tab button
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+
+                    // Update active tab content
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                        if (content.id === tabId) {
+                            content.classList.add('active');
+                        }
+                    });
+                });
+            });
+
             // Check for existing token on page load
             const token = localStorage.getItem('adminToken');
             if (token) {
                 loginContainer.style.display = 'none';
                 adminDashboard.style.display = 'block';
                 loadApplications();
+                loadNews(); // Load news on login
             }
+
             // Login Form Submission
             loginForm.addEventListener('submit', async function (e) {
                 e.preventDefault();
@@ -517,6 +742,7 @@
                         loginContainer.style.display = 'none';
                         adminDashboard.style.display = 'block';
                         loadApplications();
+                        loadNews(); // Load news after login
                     } else {
                         errorMessage.style.display = 'block';
                         errorMessage.textContent = data.message || 'Login failed.';
@@ -527,6 +753,7 @@
                     errorMessage.textContent = 'An error occurred during login. Please try again.';
                 }
             });
+
             // Logout Function
             logoutBtn.addEventListener('click', function () {
                 localStorage.removeItem('adminToken');
@@ -534,7 +761,13 @@
                 loginContainer.style.display = 'flex'; // Use flex to center
                 loginForm.reset();
                 errorMessage.style.display = 'none';
+                // Reset news form and messages
+                 newsForm.reset();
+                 newsErrorMessage.style.display = 'none';
             });
+
+            // --- Applications Management ---
+
             // Load Applications Function
             async function loadApplications() {
                 noApplicationsMessage.textContent = 'Loading applications...';
@@ -558,7 +791,7 @@
                     }
                     const data = await response.json();
                     displayApplications(data.applications); // <-- Key Change: Use data.applications
-                    updateStats(data.applications);        // <-- Key Change: Use data.applications
+                    updateApplicationStats(data.applications);        // <-- Key Change: Use data.applications
                 } catch (error) {
                     console.error('Error loading applications:', error);
                     noApplicationsMessage.textContent = 'Error loading applications. Please try again.';
@@ -570,6 +803,7 @@
                     rejectedAppsEl.textContent = '0';
                 }
             }
+
             // Display Applications Function
             function displayApplications(applications) {
                  applicationsList.innerHTML = ''; // Clear the list
@@ -590,26 +824,20 @@
                          return text.replace(/[&<>"']/g, match => ({'&': '&amp;', '<': '<', '>': '>', '"': '&quot;', "'": '&#39;'}[match]));
                     };
                     let roleSpecificDetails = '';
+                    // Assuming the application structure is similar to the previous version
                     if (app.role === 'player') {
                         roleSpecificDetails = `
-                            <p><strong>Player Type:</strong> ${escapeHtml(app.playerType || 'N/A')}</p>
-                            ${app.playerType === 'competitive' ? `
-                                <p><strong>Game:</strong> ${escapeHtml(app.game || 'N/A')}</p>
-                                <p><strong>Tracker Link:</strong> ${escapeHtml(app.trackerLink || 'N/A')}</p>
-                            ` : ''}
-                            ${app.playerType === 'creative' ? `
-                                <p><strong>Social Links:</strong> ${escapeHtml(app.socialLinks || 'N/A')}</p>
-                                <p><strong>Content Sample:</strong> ${escapeHtml(app.contentSample || 'N/A')}</p>
-                            ` : ''}
+                            <p><strong>Game:</strong> ${escapeHtml(app.game || 'N/A')}</p>
+                            <p><strong>Social Links:</strong> ${escapeHtml(app.socialLinks || 'N/A')}</p>
                             <p><strong>Gaming Experience:</strong> ${escapeHtml(app.gamingExperience || 'N/A')}</p>
                             <p><strong>Availability:</strong> ${escapeHtml(app.availability || 'N/A')}</p>
                         `;
                     } else if (app.role === 'staff') {
-                        roleSpecificDetails = `
+                         roleSpecificDetails = `
                             <p><strong>Position:</strong> ${escapeHtml(app.position || 'N/A')}</p>
                             <p><strong>Skills:</strong> ${escapeHtml(app.skills || 'N/A')}</p>
                             <p><strong>Resume Link:</strong> ${escapeHtml(app.resumeLink || 'N/A')}</p>
-                            <p><strong>Portfolio:</strong> ${escapeHtml(app.portfolio || 'N/A')}</p>
+                            <p><strong>Additional Info:</strong> ${escapeHtml(app.additionalInfo || 'N/A')}</p>
                         `;
                     }
                     // Determine if status actions (approve/reject) should be shown
@@ -638,8 +866,9 @@
                     applicationsList.appendChild(appCard);
                 });
             }
-            // Update Statistics Function
-            function updateStats(applications) {
+
+            // Update Application Statistics Function
+            function updateApplicationStats(applications) {
                 const total = applications.length;
                 const pending = applications.filter(app => app.status === 'pending').length;
                 const approved = applications.filter(app => app.status === 'approved').length;
@@ -649,7 +878,8 @@
                 approvedAppsEl.textContent = approved;
                 rejectedAppsEl.textContent = rejected;
             }
-            // Update Application Status Function
+
+            // Update Application Status Function (Make globally accessible)
             window.updateApplicationStatus = async function(id, status) {
                  if (!confirm(`Are you sure you want to set application ID ${id} to ${status}?`)) {
                     return; // Do nothing if user cancels
@@ -682,7 +912,7 @@
                 }
             };
 
-            // Delete Application Function
+            // Delete Application Function (Make globally accessible)
             window.deleteApplication = async function(id) {
                 if (!confirm(`Are you sure you want to permanently delete application ID ${id}? This action cannot be undone.`)) {
                     return; // Do nothing if user cancels
@@ -722,6 +952,180 @@
                     alert('An error occurred while deleting the application.');
                 }
             };
+
+
+            // --- News Management ---
+
+            // Load News Function
+            async function loadNews() {
+                 noNewsMessage.textContent = 'Loading news...';
+                 noNewsMessage.style.display = 'block';
+                 newsList.innerHTML = ''; // Clear previous list
+                 try {
+                     const token = localStorage.getItem('adminToken');
+                     const response = await fetch('/api/news', {
+                         method: 'GET',
+                         headers: {
+                             'Authorization': `Bearer ${token}`
+                         }
+                     });
+                     if (!response.ok) {
+                         if (response.status === 401 || response.status === 403) {
+                             // Don't logout immediately on news load fail, just show error
+                             noNewsMessage.textContent = 'Authentication required. Please refresh or log in again.';
+                             return;
+                         }
+                         throw new Error(`HTTP error! status: ${response.status}`);
+                     }
+                     const data = await response.json();
+                     displayNews(data.news || []); // Expecting { news: [...] }
+                     // Update news stats
+                     totalNewsEl.textContent = (data.news || []).length;
+                 } catch (error) {
+                     console.error('Error loading news:', error);
+                     noNewsMessage.textContent = 'Error loading news. Please try again.';
+                     // Reset news stats on error
+                     totalNewsEl.textContent = '0';
+                 }
+             }
+
+             // Display News Function
+             function displayNews(newsItems) {
+                 newsList.innerHTML = ''; // Clear the list
+                 if (!newsItems || newsItems.length === 0) {
+                     noNewsMessage.textContent = 'No news articles found.';
+                     noNewsMessage.style.display = 'block';
+                     return;
+                 }
+                 noNewsMessage.style.display = 'none'; // Hide the "no news" message
+                 // Sort news by published date (newest first)
+                 newsItems.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
+                 newsItems.forEach(item => {
+                     const newsCard = document.createElement('div');
+                     newsCard.className = 'news-card';
+                     // Simple HTML escaping for display (basic protection)
+                     const escapeHtml = (text) => {
+                         if (typeof text !== 'string') return text;
+                         return text.replace(/[&<>"']/g, match => ({'&': '&amp;', '<': '<', '>': '>', '"': '&quot;', "'": '&#39;'}[match]));
+                     };
+
+                     // Get first line for preview
+                     const firstLine = escapeHtml((item.description || '').split(/\r?\n/)[0] || 'No description available.');
+
+                     newsCard.innerHTML = `
+                         <div class="news-card-header">
+                             <h3>${escapeHtml(item.title || 'Untitled')}</h3>
+                         </div>
+                         <div class="news-card-content">
+                             <p><strong>Date:</strong> ${new Date(item.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</p>
+                             <p><strong>Preview:</strong> ${firstLine}</p>
+                             ${item.bannerUrl ? `<p><strong>Banner:</strong> <a href="${escapeHtml(item.bannerUrl)}" target="_blank">View Image</a></p>` : ''}
+                         </div>
+                         <div class="news-card-actions">
+                             <button class="action-btn delete-btn" onclick="deleteNews(${item.id})">Delete</button>
+                         </div>
+                     `;
+                     newsList.appendChild(newsCard);
+                 });
+             }
+
+             // News Form Submission
+             newsForm.addEventListener('submit', async function(e) {
+                 e.preventDefault();
+                 newsErrorMessage.style.display = 'none';
+                 newsErrorMessage.textContent = '';
+
+                 const formData = new FormData(this);
+                 const newsData = {
+                     title: formData.get('title'),
+                     description: formData.get('description'),
+                     bannerUrl: formData.get('bannerUrl')
+                 };
+
+                 // Basic validation
+                 if (!newsData.title || !newsData.description) {
+                     newsErrorMessage.textContent = 'Title and Description are required.';
+                     newsErrorMessage.style.display = 'block';
+                     return;
+                 }
+
+                 try {
+                     const token = localStorage.getItem('adminToken');
+                     const response = await fetch('/api/news', {
+                         method: 'POST',
+                         headers: {
+                             'Content-Type': 'application/json',
+                             'Authorization': `Bearer ${token}`
+                         },
+                         body: JSON.stringify(newsData)
+                     });
+
+                     if (response.ok) {
+                         const data = await response.json();
+                         if (data.success) {
+                             alert('News article published successfully!');
+                             newsForm.reset(); // Clear the form
+                             loadNews(); // Reload the news list
+                         } else {
+                             throw new Error(data.message || 'Unknown error from server.');
+                         }
+                     } else {
+                         if (response.status === 401 || response.status === 403) {
+                             alert('Session expired or invalid. Please log in again.');
+                             logoutBtn.click();
+                             return;
+                         } else {
+                             const errorData = await response.json();
+                             throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                         }
+                     }
+                 } catch (error) {
+                     console.error('Error publishing news:', error);
+                     newsErrorMessage.textContent = 'Failed to publish news: ' + error.message;
+                     newsErrorMessage.style.display = 'block';
+                 }
+             });
+
+             // Delete News Function (Make globally accessible)
+             window.deleteNews = async function(id) {
+                 if (!confirm(`Are you sure you want to permanently delete news article ID ${id}? This action cannot be undone.`)) {
+                     return; // Do nothing if user cancels
+                 }
+                 try {
+                     const token = localStorage.getItem('adminToken');
+                     const response = await fetch(`/api/news/${id}`, {
+                         method: 'DELETE',
+                         headers: {
+                             'Authorization': `Bearer ${token}`
+                         }
+                     });
+
+                     if (response.ok) {
+                         const data = await response.json();
+                         if (data.success) {
+                             alert('News article deleted successfully.');
+                             loadNews(); // Reload the list to reflect the deletion
+                         } else {
+                             alert('Failed to delete news article: ' + (data.message || 'Unknown error'));
+                         }
+                     } else {
+                         // Handle specific HTTP errors
+                         if (response.status === 401 || response.status === 403) {
+                             alert('Session expired or invalid. Please log in again.');
+                             logoutBtn.click();
+                             return;
+                         } else if (response.status === 404) {
+                             alert('News article not found.');
+                         } else {
+                             const errorData = await response.json();
+                             throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                         }
+                     }
+                 } catch (error) {
+                     console.error('Error deleting news article:', error);
+                     alert('An error occurred while deleting the news article: ' + error.message);
+                 }
+             };
 
         });
     </script>
