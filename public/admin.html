@@ -12,7 +12,7 @@
         :root {
             --primary: #1a3a5f;
             --secondary: #2d5a87;
-            --accent: #e63946;
+            --accent: #e63946; /* Red for primary actions like Reject/Delete */
             --light: #f1faee;
             --dark: #0d1b2a;
             --darker: #0a1424;
@@ -307,6 +307,7 @@
             gap: 15px;
             margin-top: 20px;
             flex-wrap: wrap; /* Allow buttons to wrap */
+            align-items: center; /* Align items vertically */
         }
         .action-btn {
             padding: 8px 15px;
@@ -319,18 +320,25 @@
             font-size: 0.9rem; /* Slightly smaller font */
         }
         .approve-btn {
-            background: #28a745;
+            background: #28a745; /* Green */
             color: white;
         }
         .approve-btn:hover {
             background: #218838;
         }
         .reject-btn {
-            background: #dc3545;
+            background: #dc3545; /* Red */
             color: white;
         }
         .reject-btn:hover {
             background: #c82333;
+        }
+        .delete-btn {
+             background: var(--accent); /* Use accent color (red) */
+             color: white;
+        }
+        .delete-btn:hover {
+             background: #c1121f; /* Darker red on hover */
         }
         .no-applications {
             text-align: center;
@@ -377,6 +385,7 @@
             }
             .application-actions {
                 flex-direction: column;
+                align-items: stretch; /* Stretch buttons to full width */
             }
              .action-btn {
                 width: 100%; /* Make buttons full width on small screens */
@@ -603,6 +612,12 @@
                             <p><strong>Portfolio:</strong> ${escapeHtml(app.portfolio || 'N/A')}</p>
                         `;
                     }
+                    // Determine if status actions (approve/reject) should be shown
+                    const statusActions = app.status === 'pending' ?
+                        `<button class="action-btn approve-btn" onclick="updateApplicationStatus(${app.id}, 'approved')">Approve</button>
+                         <button class="action-btn reject-btn" onclick="updateApplicationStatus(${app.id}, 'rejected')">Reject</button>` :
+                        `<span>Status is final.</span>`;
+
                     appCard.innerHTML = `
                         <div class="application-header">
                             <h3>${escapeHtml(app.fullName || 'N/A')}</h3>
@@ -616,10 +631,8 @@
                             ${roleSpecificDetails}
                         </div>
                         <div class="application-actions">
-                            ${app.status === 'pending' ? `
-                                <button class="action-btn approve-btn" onclick="updateApplicationStatus(${app.id}, 'approved')">Approve</button>
-                                <button class="action-btn reject-btn" onclick="updateApplicationStatus(${app.id}, 'rejected')">Reject</button>
-                            ` : `<span>Status is final.</span>`}
+                            ${statusActions}
+                            <button class="action-btn delete-btn" onclick="deleteApplication(${app.id})">Delete</button>
                         </div>
                     `;
                     applicationsList.appendChild(appCard);
@@ -636,7 +649,7 @@
                 approvedAppsEl.textContent = approved;
                 rejectedAppsEl.textContent = rejected;
             }
-            // Make updateApplicationStatus globally accessible for inline onclick
+            // Update Application Status Function
             window.updateApplicationStatus = async function(id, status) {
                  if (!confirm(`Are you sure you want to set application ID ${id} to ${status}?`)) {
                     return; // Do nothing if user cancels
@@ -668,6 +681,48 @@
                     alert('An error occurred while updating the status.');
                 }
             };
+
+            // Delete Application Function
+            window.deleteApplication = async function(id) {
+                if (!confirm(`Are you sure you want to permanently delete application ID ${id}? This action cannot be undone.`)) {
+                    return; // Do nothing if user cancels
+                }
+                try {
+                    const token = localStorage.getItem('adminToken');
+                    const response = await fetch(`/api/applications/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.success) {
+                            alert('Application deleted successfully.');
+                            // Reload the list to reflect the deletion
+                            loadApplications();
+                        } else {
+                             alert('Failed to delete application: ' + (data.message || 'Unknown error'));
+                        }
+                    } else {
+                         // Handle specific HTTP errors
+                        if (response.status === 401 || response.status === 403) {
+                            alert('Session expired or invalid. Please log in again.');
+                            logoutBtn.click();
+                            return;
+                        } else if (response.status === 404) {
+                             alert('Application not found.');
+                        } else {
+                             throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error deleting application:', error);
+                    alert('An error occurred while deleting the application.');
+                }
+            };
+
         });
     </script>
 </body>
