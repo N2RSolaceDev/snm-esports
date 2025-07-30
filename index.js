@@ -14,8 +14,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// --- In-memory storage for applications ---
+// --- In-memory storage for applications and news ---
 let applications = [];
+let news = []; // Array to store news articles
 
 // --- Helper Functions ---
 
@@ -45,7 +46,7 @@ const authenticateToken = (req, res, next) => {
 
 // --- Serve HTML Pages ---
 // Simplified route to serve any HTML file from /public
-app.get(['/', '/about.html', '/merch.html', '/news.html', '/admin.html'], (req, res) => {
+app.get(['/', '/about.html', '/merch.html', '/apply.html', '/news.html', '/admin.html'], (req, res) => {
     let filename = 'index.html'; // Default
     if (req.path !== '/') {
         filename = req.path.substring(1); // Remove leading slash
@@ -76,16 +77,15 @@ app.post('/api/login', (req, res) => {
     }
 });
 
+// --- Application Management Routes ---
+
 // Get all applications (Protected Route)
-// Apply the authenticateToken middleware
 app.get('/api/applications', authenticateToken, (req, res) => {
-    // Send the applications array wrapped in an object for consistency
     res.json({ success: true, applications: applications });
 });
 
 // Submit application (Public Route)
 app.post('/api/applications', (req, res) => {
-    // Basic validation could be added here if needed
     const newApplication = {
         id: Date.now(), // Simple ID generation
         ...req.body,
@@ -99,7 +99,6 @@ app.post('/api/applications', (req, res) => {
 });
 
 // Update application status (Protected Route)
-// Apply the authenticateToken middleware
 app.put('/api/applications/:id', authenticateToken, (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
@@ -109,16 +108,74 @@ app.put('/api/applications/:id', authenticateToken, (req, res) => {
         return res.status(400).json({ success: false, message: 'Invalid status. Must be "approved" or "rejected".' });
     }
 
-    // Find the application by ID
     const applicationIndex = applications.findIndex(app => app.id === parseInt(id, 10));
 
     if (applicationIndex !== -1) {
-        // Update the status
         applications[applicationIndex].status = status;
         console.log(`Application ID ${id} status updated to ${status}`);
         res.json({ success: true, message: `Application status updated to ${status}` });
     } else {
         res.status(404).json({ success: false, message: 'Application not found' });
+    }
+});
+
+// Delete an application (Protected Route)
+app.delete('/api/applications/:id', authenticateToken, (req, res) => {
+    const { id } = req.params;
+    const applicationIndex = applications.findIndex(app => app.id === parseInt(id, 10));
+
+    if (applicationIndex !== -1) {
+        const deletedApp = applications.splice(applicationIndex, 1);
+        console.log(`Application ID ${id} deleted`);
+        res.json({ success: true, message: 'Application deleted successfully', deletedApplication: deletedApp[0] });
+    } else {
+        res.status(404).json({ success: false, message: 'Application not found' });
+    }
+});
+
+// --- News Management Routes (Protected) ---
+
+// Get all news articles (Public Route - for news.html)
+app.get('/api/news', (req, res) => {
+    // Send the news array wrapped in an object for consistency
+    // Sort by publishedAt descending (newest first) before sending
+    const sortedNews = [...news].sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
+    res.json({ success: true, news: sortedNews });
+});
+
+// Create a new news article (Protected Route)
+app.post('/api/news', authenticateToken, (req, res) => {
+    const { title, description, bannerUrl } = req.body;
+
+    // Basic validation
+    if (!title || !description) {
+        return res.status(400).json({ success: false, message: 'Title and Description are required.' });
+    }
+
+    const newNewsItem = {
+        id: Date.now(), // Simple ID generation
+        title,
+        description,
+        bannerUrl: bannerUrl || '', // Allow empty banner URL
+        publishedAt: new Date().toISOString()
+    };
+
+    news.push(newNewsItem);
+    console.log(`New news article created (ID: ${newNewsItem.id})`);
+    res.status(201).json({ success: true, message: 'News article created successfully', newsItem: newNewsItem });
+});
+
+// Delete a news article (Protected Route)
+app.delete('/api/news/:id', authenticateToken, (req, res) => {
+    const { id } = req.params;
+    const newsIndex = news.findIndex(item => item.id === parseInt(id, 10));
+
+    if (newsIndex !== -1) {
+        const deletedNews = news.splice(newsIndex, 1);
+        console.log(`News article ID ${id} deleted`);
+        res.json({ success: true, message: 'News article deleted successfully', deletedNewsItem: deletedNews[0] });
+    } else {
+        res.status(404).json({ success: false, message: 'News article not found' });
     }
 });
 
