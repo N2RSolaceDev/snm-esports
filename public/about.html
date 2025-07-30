@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-       /* Dark Mode Variables */
+        /* Dark Mode Variables */
         :root {
             --primary: #1a3a5f;
             --secondary: #2d5a87;
@@ -22,6 +22,7 @@
             --border: #2d3a52;
             --card-bg: #1b263b;
             --transition: all 0.3s ease;
+            --nav-link-color: #ff00ff; /* Vibrant pink for nav links */
         }
         * {
             margin: 0;
@@ -77,6 +78,7 @@
             background: var(--secondary);
             color: white;
         }
+
         /* Header Styles */
         header {
             background: var(--darkest);
@@ -89,43 +91,62 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 0;
+            padding: 15px 0;
         }
-        .logo h1 {
-            font-size: 1.6rem;
-            color: var(--text-light);
+        .logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .logo img {
+            width: 100px;
+            height: auto;
         }
         nav ul {
             display: flex;
             list-style: none;
+            gap: 20px;
         }
         nav ul li {
-            margin-left: 30px;
+            position: relative;
         }
         nav ul li a {
-            color: var(--text-light);
+            color: var(--nav-link-color);
             text-decoration: none;
-            font-weight: 500;
-            transition: var(--transition);
-            position: relative;
-            padding: 5px 0;
-            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
         }
         nav ul li a::after {
             content: '';
             position: absolute;
-            bottom: 0;
+            bottom: -5px;
             left: 0;
             width: 0;
             height: 2px;
-            background: var(--secondary);
-            transition: var(--transition);
+            background: var(--nav-link-color);
+            transition: width 0.3s ease;
         }
         nav ul li a:hover {
-            color: var(--secondary);
+            color: var(--nav-link-color);
         }
         nav ul li a:hover::after {
             width: 100%;
+        }
+        .social-icons {
+            display: flex;
+            gap: 15px;
+        }
+        .social-icons a {
+            color: var(--nav-link-color);
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        }
+        .social-icons a:hover {
+            color: white;
         }
         .mobile-menu {
             display: none;
@@ -133,11 +154,11 @@
             cursor: pointer;
             color: var(--text-light);
         }
+
         /* Hero Section */
         .hero {
             height: 500px;
-            /* CHANGED: Replaced Discord URL with local file reference */
-            background: url('snm.png') center/cover no-repeat; /* CHANGED: Uses local snm.png */
+            background: url('snm.png') center/cover no-repeat;
             display: flex;
             align-items: center;
             position: relative;
@@ -176,6 +197,7 @@
             margin-right: auto;
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
         }
+
         /* Section Styles */
         .section {
             padding: 100px 0;
@@ -189,6 +211,7 @@
             position: relative;
             display: inline-block;
             padding-bottom: 15px;
+            color: var(--text-light);
         }
         .section-title h2::after {
             content: '';
@@ -206,6 +229,7 @@
             color: var(--text-gray);
             font-size: 1.1rem;
         }
+
         /* About Section */
         .about-content {
             display: flex;
@@ -275,6 +299,7 @@
             color: var(--text-gray);
             font-size: 1rem;
         }
+
         /* Team Section */
         .team-grid {
             display: grid;
@@ -320,6 +345,7 @@
             font-size: 0.95rem;
             margin-bottom: 0;
         }
+
         /* Footer */
         footer {
             background: var(--darkest);
@@ -377,12 +403,12 @@
             color: var(--secondary);
             padding-left: 5px;
         }
-        .social-icons {
+        .social-icons.footer-social {
             display: flex;
             gap: 15px;
             margin-top: 20px;
         }
-        .social-icons a {
+        .social-icons.footer-social a {
             display: flex;
             align-items: center;
             justify-content: center;
@@ -394,7 +420,7 @@
             transition: var(--transition);
             font-size: 1rem;
         }
-        .social-icons a:hover {
+        .social-icons.footer-social a:hover {
             background: var(--secondary);
             color: white;
             transform: translateY(-3px);
@@ -406,8 +432,34 @@
             color: var(--text-gray);
             font-size: 0.9rem;
         }
+
         /* Responsive Design */
         @media (max-width: 992px) {
+            .logo {
+                order: 1;
+            }
+            nav ul {
+                display: none;
+            }
+            nav ul.active {
+                display: flex;
+                flex-direction: column;
+                position: fixed;
+                top: 70px;
+                left: 0;
+                background: var(--darkest);
+                width: 100%;
+                text-align: center;
+                padding: 20px 0;
+                box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
+                border: 1px solid var(--border);
+            }
+            .social-icons:not(.footer-social) {
+                display: none;
+            }
+            .mobile-menu {
+                display: block;
+            }
             .about-content {
                 flex-direction: column;
             }
@@ -416,28 +468,6 @@
             }
         }
         @media (max-width: 768px) {
-            .mobile-menu {
-                display: block;
-            }
-            nav ul {
-                position: fixed;
-                top: 80px;
-                left: -100%;
-                flex-direction: column;
-                background: var(--darkest);
-                width: 100%;
-                text-align: center;
-                transition: var(--transition);
-                padding: 20px 0;
-                box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
-                border: 1px solid var(--border);
-            }
-            nav ul.active {
-                left: 0;
-            }
-            nav ul li {
-                margin: 15px 0;
-            }
             .section {
                 padding: 70px 0;
             }
@@ -465,23 +495,31 @@
     <!-- Header -->
     <header>
         <div class="container header-container">
-            <div class="logo">
-                <h1>SNM ESPORTS</h1>
-            </div>
-            <div class="mobile-menu">
-                <i class="fas fa-bars"></i>
-            </div>
             <nav>
                 <ul>
                     <li><a href="/">Home</a></li>
                     <li><a href="/about.html">About</a></li>
                     <li><a href="/merch.html">Merch</a></li>
-                    <li><a href="/news.html">News</a></li> <!-- Added News link -->
+                    <li><a href="/news.html">News</a></li>
                     <li><a href="/admin.html">Admin</a></li>
                 </ul>
             </nav>
+            <div class="logo">
+                <img src="snm.png" alt="SNM Esports Logo">
+            </div>
+            <div class="social-icons">
+                <a href="https://twitch.tv/snmesportsggs" target="_blank"><i class="fab fa-twitch"></i></a>
+                <a href="https://twitter.com/snmesportsggs" target="_blank"><i class="fab fa-twitter"></i></a>
+                <a href="https://youtube.com/@snmesportsggs" target="_blank"><i class="fab fa-youtube"></i></a>
+                <a href="https://discord.gg/fearsnm" target="_blank"><i class="fab fa-discord"></i></a>
+                <a href="https://instagram.com/snmesportsggs" target="_blank"><i class="fab fa-instagram"></i></a>
+            </div>
+            <div class="mobile-menu">
+                <i class="fas fa-bars"></i>
+            </div>
         </div>
     </header>
+
     <!-- Hero Section -->
     <section class="hero">
         <div class="container hero-content">
@@ -489,6 +527,7 @@
             <p>From humble beginnings to global recognition</p>
         </div>
     </section>
+
     <!-- About Section -->
     <section class="section">
         <div class="container">
@@ -506,7 +545,6 @@
                     <p>To build a world-class esports organization that champions competitive excellence, personal growth, and positive community impact. We aim to be a beacon of innovation and integrity in the esports landscape.</p>
                 </div>
                 <div class="about-image">
-                    <!-- CHANGED: Uses local snm.png -->
                     <img src="snm.png" alt="SNM Esports Team">
                 </div>
             </div>
@@ -534,6 +572,7 @@
             </div>
         </div>
     </section>
+
     <!-- Team Section -->
     <section class="section" style="background: var(--darker);">
         <div class="container">
@@ -543,7 +582,6 @@
             </div>
             <div class="team-grid">
                 <div class="team-member">
-                    <!-- CHANGED: Uses local snm.png -->
                     <img src="snm.png" alt="Team Member" class="member-image">
                     <div class="member-info">
                         <h3>Max</h3>
@@ -552,7 +590,6 @@
                     </div>
                 </div>
                 <div class="team-member">
-                    <!-- CHANGED: Uses local snm.png -->
                     <img src="snm.png" alt="Team Member" class="member-image">
                     <div class="member-info">
                         <h3>Solace</h3>
@@ -560,8 +597,7 @@
                         <p class="bio">Ensures seamless day-to-day operations and efficient team coordination across all departments.</p>
                     </div>
                 </div>
-                 <div class="team-member">
-                    <!-- CHANGED: Uses local snm.png -->
+                <div class="team-member">
                     <img src="snm.png" alt="Team Member" class="member-image">
                     <div class="member-info">
                         <h3>Vixzzy</h3>
@@ -570,7 +606,6 @@
                     </div>
                 </div>
                 <div class="team-member">
-                    <!-- CHANGED: Uses local snm.png -->
                     <img src="snm.png" alt="Team Member" class="member-image">
                     <div class="member-info">
                         <h3>Popular</h3>
@@ -579,7 +614,6 @@
                     </div>
                 </div>
                 <div class="team-member">
-                    <!-- CHANGED: Uses local snm.png -->
                     <img src="snm.png" alt="Team Member" class="member-image">
                     <div class="member-info">
                         <h3>Vexz</h3>
@@ -590,6 +624,7 @@
             </div>
         </div>
     </section>
+
     <!-- Footer -->
     <footer>
         <div class="container">
@@ -597,12 +632,12 @@
                 <div class="footer-column">
                     <h3>SNM Esports</h3>
                     <p>Redefining competitive gaming through innovation, excellence, and community since 2024.</p>
-                    <div class="social-icons">
-                        <a href="#"><i class="fab fa-twitch"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-youtube"></i></a>
-                        <a href="#"><i class="fab fa-discord"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    <div class="social-icons footer-social">
+                        <a href="https://twitch.tv/snmesportsggs" target="_blank"><i class="fab fa-twitch"></i></a>
+                        <a href="https://twitter.com/snmesportsggs" target="_blank"><i class="fab fa-twitter"></i></a>
+                        <a href="https://youtube.com/@snmesportsggs" target="_blank"><i class="fab fa-youtube"></i></a>
+                        <a href="https://discord.gg/fearsnm" target="_blank"><i class="fab fa-discord"></i></a>
+                        <a href="https://instagram.com/snmesportsggs" target="_blank"><i class="fab fa-instagram"></i></a>
                     </div>
                 </div>
                 <div class="footer-column">
@@ -628,7 +663,7 @@
                 <div class="footer-column">
                     <h3>Contact</h3>
                     <ul class="footer-links">
-                        <li><a href="#"><i class="fas fa-envelope"></i> contact@snmesports.com</a></li>
+                        <li><a href="mailto:contact@snmesports.com"><i class="fas fa-envelope"></i> contact@snmesports.com</a></li>
                         <li><a href="#"><i class="fas fa-map-marker-alt"></i> Global</a></li>
                         <li><a href="#"><i class="fas fa-phone"></i> </a></li>
                         <li><a href="#"><i class="fas fa-headset"></i> Support Center</a></li>
@@ -640,6 +675,7 @@
             </div>
         </div>
     </footer>
+
     <script>
         // Mobile Menu Toggle
         document.querySelector('.mobile-menu').addEventListener('click', () => {
