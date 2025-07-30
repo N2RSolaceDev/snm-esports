@@ -640,8 +640,7 @@
         function getFirstLine(text) {
             if (!text) return 'No description available.';
             // Split by newlines and take the first non-empty line
-            const lines = text.split(/\r?
-/);
+            const lines = text.split(/\r?\n/);
             for (const line of lines) {
                 const trimmedLine = line.trim();
                 if (trimmedLine) {
