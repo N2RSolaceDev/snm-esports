@@ -23,13 +23,11 @@
             --card-bg: #1b263b;
             --transition: all 0.3s ease;
         }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--darker);
@@ -37,20 +35,17 @@
             line-height: 1.6;
             overflow-x: hidden;
         }
-
         h1, h2, h3, h4, h5 {
             font-family: 'Playfair Display', serif;
             font-weight: 600;
             color: var(--text-light);
         }
-
         .container {
             width: 90%;
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 15px;
         }
-
         .btn {
             display: inline-block;
             padding: 12px 30px;
@@ -68,24 +63,20 @@
             box-shadow: 0 2px 8px rgba(45, 90, 135, 0.2);
             font-size: 0.9rem;
         }
-
         .btn:hover {
             background-color: var(--primary);
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(45, 90, 135, 0.3);
         }
-
         .btn-outline {
             background: transparent;
             border: 2px solid var(--secondary);
             color: var(--secondary);
         }
-
         .btn-outline:hover {
             background: var(--secondary);
             color: white;
         }
-
         /* Header Styles */
         header {
             background: var(--darkest);
@@ -94,28 +85,23 @@
             top: 0;
             z-index: 1000;
         }
-
         .header-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 20px 0;
         }
-
         .logo h1 {
             font-size: 1.6rem;
             color: var(--text-light);
         }
-
         nav ul {
             display: flex;
             list-style: none;
         }
-
         nav ul li {
             margin-left: 30px;
         }
-
         nav ul li a {
             color: var(--text-light);
             text-decoration: none;
@@ -125,7 +111,6 @@
             padding: 5px 0;
             font-size: 0.95rem;
         }
-
         nav ul li a::after {
             content: '';
             position: absolute;
@@ -136,33 +121,28 @@
             background: var(--secondary);
             transition: var(--transition);
         }
-
         nav ul li a:hover {
             color: var(--secondary);
         }
-
         nav ul li a:hover::after {
             width: 100%;
         }
-
         .mobile-menu {
             display: none;
             font-size: 1.4rem;
             cursor: pointer;
             color: var(--text-light);
         }
-
         /* Hero Section */
         .hero {
             height: 500px;
-            background: url('https://media.discordapp.net/attachments/1239211291881504828/1365355519526703315/zWmZq1n.png?ex=6885a32a&is=688451aa&hm=9a58bd333a00b0d1e52c503f52120f2abca8e6bce7a7efd9a26add752098cb3d&=&format=webp&quality=lossless&width=1214&height=405') center/cover no-repeat;
+            background: url('snm.png') center/cover no-repeat; /* Changed to local image */
             display: flex;
             align-items: center;
             position: relative;
             text-align: center;
             margin-bottom: 80px;
         }
-
         .hero::before {
             content: '';
             position: absolute;
@@ -172,7 +152,6 @@
             height: 100%;
             background: rgba(13, 27, 42, 0.7);
         }
-
         .hero-content {
             max-width: 800px;
             margin: 0 auto;
@@ -180,7 +159,6 @@
             position: relative;
             z-index: 2;
         }
-
         .hero h1 {
             font-size: 3rem;
             color: white;
@@ -188,7 +166,6 @@
             letter-spacing: 1px;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
         }
-
         .hero p {
             font-size: 1.2rem;
             color: rgba(255, 255, 255, 0.9);
@@ -198,24 +175,20 @@
             margin-right: auto;
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
         }
-
         /* Section Styles */
         .section {
             padding: 100px 0;
         }
-
         .section-title {
             text-align: center;
             margin-bottom: 60px;
         }
-
         .section-title h2 {
             font-size: 2.2rem;
             position: relative;
             display: inline-block;
             padding-bottom: 15px;
         }
-
         .section-title h2::after {
             content: '';
             position: absolute;
@@ -226,34 +199,29 @@
             height: 2px;
             background: var(--secondary);
         }
-
         .section-title p {
             max-width: 700px;
             margin: 20px auto 0;
             color: var(--text-gray);
             font-size: 1.1rem;
         }
-
         /* Shop Section */
         .shop-content {
             max-width: 700px;
             margin: 0 auto 50px;
             text-align: center;
         }
-
         .shop-content p {
             font-size: 1.1rem;
             color: var(--text-gray);
             margin-bottom: 30px;
         }
-
         .shop-features {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 30px;
             margin-top: 50px;
         }
-
         .feature-card {
             background: var(--card-bg);
             border-radius: 8px;
@@ -263,29 +231,24 @@
             transition: var(--transition);
             border: 1px solid var(--border);
         }
-
         .feature-card:hover {
             transform: translateY(-8px);
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
         }
-
         .feature-card i {
             font-size: 2.2rem;
             margin-bottom: 25px;
             color: var(--secondary);
         }
-
         .feature-card h3 {
             font-size: 1.4rem;
             margin-bottom: 15px;
             color: var(--text-light);
         }
-
         .feature-card p {
             color: var(--text-gray);
             font-size: 0.95rem;
         }
-
         /* Footer */
         footer {
             background: var(--darkest);
@@ -293,14 +256,12 @@
             padding: 70px 0 30px;
             border-top: 1px solid var(--border);
         }
-
         .footer-content {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 40px;
             margin-bottom: 50px;
         }
-
         .footer-column h3 {
             font-size: 1.3rem;
             margin-bottom: 25px;
@@ -308,7 +269,6 @@
             padding-bottom: 10px;
             color: var(--text-light);
         }
-
         .footer-column h3::after {
             content: '';
             position: absolute;
@@ -318,21 +278,17 @@
             height: 2px;
             background: var(--secondary);
         }
-
         .footer-column p {
             margin-bottom: 20px;
             color: var(--text-gray);
             font-size: 0.95rem;
         }
-
         .footer-links {
             list-style: none;
         }
-
         .footer-links li {
             margin-bottom: 12px;
         }
-
         .footer-links a {
             color: var(--text-gray);
             text-decoration: none;
@@ -341,24 +297,20 @@
             align-items: center;
             font-size: 0.95rem;
         }
-
         .footer-links a i {
             margin-right: 10px;
             color: var(--secondary);
             width: 20px;
         }
-
         .footer-links a:hover {
             color: var(--secondary);
             padding-left: 5px;
         }
-
         .social-icons {
             display: flex;
             gap: 15px;
             margin-top: 20px;
         }
-
         .social-icons a {
             display: flex;
             align-items: center;
@@ -371,13 +323,11 @@
             transition: var(--transition);
             font-size: 1rem;
         }
-
         .social-icons a:hover {
             background: var(--secondary);
             color: white;
             transform: translateY(-3px);
         }
-
         .copyright {
             text-align: center;
             padding-top: 30px;
@@ -385,13 +335,11 @@
             color: var(--text-gray);
             font-size: 0.9rem;
         }
-
         /* Responsive Design */
         @media (max-width: 768px) {
             .mobile-menu {
                 display: block;
             }
-            
             nav ul {
                 position: fixed;
                 top: 80px;
@@ -405,32 +353,25 @@
                 box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
                 border: 1px solid var(--border);
             }
-            
             nav ul.active {
                 left: 0;
             }
-            
             nav ul li {
                 margin: 15px 0;
             }
-            
             .section {
                 padding: 70px 0;
             }
-            
             .section-title h2 {
                 font-size: 1.8rem;
             }
-            
             .hero h1 {
                 font-size: 2.5rem;
             }
-            
             .hero p {
                 font-size: 1.1rem;
             }
         }
-
         @media (max-width: 576px) {
             .section-title h2 {
                 font-size: 1.6rem;
@@ -459,7 +400,6 @@
             </nav>
         </div>
     </header>
-
     <!-- Hero Section -->
     <section class="hero">
         <div class="container hero-content">
@@ -467,7 +407,6 @@
             <p>Represent SNM Esports with our exclusive merchandise</p>
         </div>
     </section>
-
     <!-- Shop Section -->
     <section class="section shop">
         <div class="container">
@@ -479,7 +418,6 @@
                 <p>Our collection features premium apparel, accessories, and collectibles that embody the spirit of innovation and excellence that defines SNM Esports.</p>
                 <a href="https://snmesports.store/" target="_blank" class="btn">Visit Our Store</a>
             </div>
-            
             <div class="shop-features">
                 <div class="feature-card">
                     <i class="fas fa-tshirt"></i>
@@ -499,7 +437,6 @@
             </div>
         </div>
     </section>
-
     <!-- Footer -->
     <footer>
         <div class="container">
@@ -550,7 +487,6 @@
             </div>
         </div>
     </footer>
-
     <script>
         // Mobile Menu Toggle
         document.querySelector('.mobile-menu').addEventListener('click', () => {
