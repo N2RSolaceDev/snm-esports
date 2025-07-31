@@ -3,19 +3,18 @@ const express = require('express');
 const path = require('path');
 const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
-// --- Import MongoDB ---
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // --- MongoDB Connection Setup ---
-const uri = process.env.MONGODB_URI; // Add your MongoDB connection string to Render Dashboard Env Vars
+const uri = process.env.MONGODB_URI;
 if (!uri) {
     console.error("Error: MONGODB_URI is not defined in the environment variables.");
 }
 
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
     serverApi: {
         version: ServerApiVersion.v1,
@@ -29,22 +28,18 @@ let newsCollection;
 let popupCollection;
 
 async function connectToDatabase() {
-    if (!uri) return; // Skip if URI not set
+    if (!uri) return;
     try {
-        // Connect the client to the server
         await client.connect();
-        // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
 
-        // Select the database and collections
-        db = client.db(process.env.MONGODB_DB_NAME || "snm_esports"); // Use DB name from env or default
+        db = client.db(process.env.MONGODB_DB_NAME || "snm_esports");
         newsCollection = db.collection("news");
         popupCollection = db.collection("popup");
 
-        // Create indexes
-        await newsCollection.createIndex({ publishedAt: -1 }); // For sorting news
-        await popupCollection.createIndex({ active: 1 });     // For fast active popup lookup
+        await newsCollection.createIndex({ publishedAt: -1 });
+        await popupCollection.createIndex({ active: 1 });
 
         console.log(`Using database: ${db.databaseName}, collections: news, popup`);
     } catch (error) {
@@ -57,8 +52,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// --- Helper Functions ---
-// Middleware to verify JWT token
+// --- JWT Authentication ---
 const authenticateToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -92,21 +86,18 @@ app.get(['/', '/about.html', '/merch.html', '/apply.html', '/news.html', '/admin
     });
 });
 
-// --- API Routes ---
-// Login endpoint (supports two admin users)
+// --- Login Route ---
 app.post('/api/login', (req, res) => {
     const { username, password } = req.body;
     if (!username || !password) {
         return res.status(400).json({ success: false, message: 'Username and password are required.' });
     }
 
-    // Define valid admin credential pairs from environment variables
     const validCredentials = [
         { user: process.env.ADMIN_USERNAME, pass: process.env.ADMIN_PASSWORD },
         { user: process.env.ADMIN2_USERNAME, pass: process.env.ADMIN2_PASSWORD }
     ];
 
-    // Check if credentials match any valid pair
     const isValid = validCredentials.some(cred => {
         return cred.user && cred.pass && username === cred.user && password === cred.pass;
     });
@@ -119,13 +110,13 @@ app.post('/api/login', (req, res) => {
     }
 });
 
-// --- Application Management Routes ---
-// GET all applications
+// --- In-memory Applications ---
+let applications = [];
+
 app.get('/api/applications', (req, res) => {
     res.json({ success: true, applications });
 });
 
-// POST a new application
 app.post('/api/applications', (req, res) => {
     const { ign, rank, region, experience, favoriteHero, whyJoin } = req.body;
     if (!ign || !rank || !region || !experience || !favoriteHero || !whyJoin) {
@@ -133,12 +124,7 @@ app.post('/api/applications', (req, res) => {
     }
     const newApplication = {
         id: Date.now().toString(),
-        ign,
-        rank,
-        region,
-        experience,
-        favoriteHero,
-        whyJoin,
+        ign, rank, region, experience, favoriteHero, whyJoin,
         submittedAt: new Date().toISOString()
     };
     applications.push(newApplication);
@@ -146,7 +132,6 @@ app.post('/api/applications', (req, res) => {
     res.status(201).json({ success: true, message: 'Application submitted successfully!' });
 });
 
-// PUT (update) an application
 app.put('/api/applications/:id', (req, res) => {
     const { id } = req.params;
     const { ign, rank, region, experience, favoriteHero, whyJoin } = req.body;
@@ -154,109 +139,74 @@ app.put('/api/applications/:id', (req, res) => {
         return res.status(400).json({ success: false, message: 'All fields are required.' });
     }
     const index = applications.findIndex(app => app.id === id);
-    if (index === -1) {
-        return res.status(404).json({ success: false, message: 'Application not found.' });
-    }
+    if (index === -1) return res.status(404).json({ success: false, message: 'Application not found.' });
     applications[index] = { ...applications[index], ign, rank, region, experience, favoriteHero, whyJoin };
     console.log(`Application ID ${id} updated`);
     res.json({ success: true, message: 'Application updated successfully!' });
 });
 
-// DELETE an application
 app.delete('/api/applications/:id', authenticateToken, (req, res) => {
     const { id } = req.params;
     const index = applications.findIndex(app => app.id === id);
-    if (index === -1) {
-        return res.status(404).json({ success: false, message: 'Application not found.' });
-    }
+    if (index === -1) return res.status(404).json({ success: false, message: 'Application not found.' });
     applications.splice(index, 1);
     console.log(`Application ID ${id} deleted`);
     res.json({ success: true, message: 'Application deleted successfully!' });
 });
 
-// --- News Management Routes (Modified for MongoDB) ---
-// Get all news articles (Public Route)
+// --- News Management ---
 app.get('/api/news', async (req, res) => {
-    if (!newsCollection) {
-        console.error("Database not connected for /api/news GET");
-        return res.status(500).json({ success: false, message: 'Database connection error.' });
-    }
+    if (!newsCollection) return res.status(500).json({ success: false, message: 'Database connection error.' });
     try {
         const newsItems = await newsCollection.find({}).sort({ publishedAt: -1 }).toArray();
-        const serializedNews = newsItems.map(item => ({
-            ...item,
-            id: item._id.toString(),
-            _id: item._id.toString()
-        }));
+        const serializedNews = newsItems.map(item => ({ ...item, id: item._id.toString() }));
         res.json({ success: true, news: serializedNews });
     } catch (error) {
-        console.error('Error fetching news from MongoDB:', error);
+        console.error('Error fetching news:', error);
         res.status(500).json({ success: false, message: 'Failed to load news articles.' });
     }
 });
 
-// Create a new news article (Protected Route)
 app.post('/api/news', authenticateToken, async (req, res) => {
-    if (!newsCollection) {
-        console.error("Database not connected for /api/news POST");
-        return res.status(500).json({ success: false, message: 'Database connection error.' });
-    }
+    if (!newsCollection) return res.status(500).json({ success: false, message: 'Database connection error.' });
     const { title, description, bannerUrl } = req.body;
     if (!title || !description) {
         return res.status(400).json({ success: false, message: 'Title and Description are required.' });
     }
-    const newNewsItem = {
-        title,
-        description,
-        bannerUrl: bannerUrl || '',
-        publishedAt: new Date()
-    };
+    const newNewsItem = { title, description, bannerUrl: bannerUrl || '', publishedAt: new Date() };
     try {
         const result = await newsCollection.insertOne(newNewsItem);
         const insertedItem = { _id: result.insertedId.toString(), ...newNewsItem, id: result.insertedId.toString() };
-        console.log(`New news article created with ID: ${result.insertedId}`);
-        res.status(201).json({ success: true, message: 'News article created successfully', newsItem: insertedItem });
+        console.log(`News created with ID: ${result.insertedId}`);
+        res.status(201).json({ success: true, message: 'News article created', newsItem: insertedItem });
     } catch (error) {
-        console.error('Error creating news article in MongoDB:', error);
+        console.error('Error creating news:', error);
         res.status(500).json({ success: false, message: 'Failed to create news article.' });
     }
 });
 
-// Delete a news article (Protected Route)
 app.delete('/api/news/:id', authenticateToken, async (req, res) => {
-    if (!newsCollection) {
-        console.error("Database not connected for /api/news DELETE");
-        return res.status(500).json({ success: false, message: 'Database connection error.' });
-    }
+    if (!newsCollection) return res.status(500).json({ success: false, message: 'Database connection error.' });
     const { id } = req.params;
     let objectId;
-    try {
-        objectId = new ObjectId(id);
-    } catch (err) {
-        console.error("Invalid ObjectId format for deletion:", id);
-        return res.status(400).json({ success: false, message: 'Invalid news article ID format.' });
-    }
+    try { objectId = new ObjectId(id); } catch (err) { return res.status(400).json({ success: false, message: 'Invalid ID.' }); }
     try {
         const result = await newsCollection.deleteOne({ _id: objectId });
         if (result.deletedCount === 1) {
-            console.log(`News article ID ${id} deleted`);
-            res.json({ success: true, message: 'News article deleted successfully' });
+            console.log(`News ID ${id} deleted`);
+            res.json({ success: true, message: 'News article deleted' });
         } else {
-            console.log(`News article ID ${id} not found for deletion`);
             res.status(404).json({ success: false, message: 'News article not found' });
         }
     } catch (error) {
-        console.error('Error deleting news article from MongoDB:', error);
+        console.error('Error deleting news:', error);
         res.status(500).json({ success: false, message: 'Failed to delete news article.' });
     }
 });
 
-// --- Popup Management Routes ---
-// GET active popup (Public)
+// --- Popup Management ---
 app.get('/api/popup', async (req, res) => {
-    if (!popupCollection) {
-        return res.status(500).json({ success: false, message: 'Database connection error.' });
-    }
+    if (!popupCollection) return res.status(500).json({ success: false, message: 'Database connection error.' });
     try {
         const activePopup = await popupCollection.findOne({ active: true });
         if (activePopup) {
@@ -264,6 +214,7 @@ app.get('/api/popup', async (req, res) => {
                 success: true,
                 popup: {
                     id: activePopup._id.toString(),
+                    title: activePopup.title,
                     message: activePopup.message,
                     link: activePopup.link || null,
                     linkText: activePopup.linkText || 'More Info'
@@ -278,23 +229,15 @@ app.get('/api/popup', async (req, res) => {
     }
 });
 
-// CREATE or UPDATE active popup (Only one active at a time)
 app.post('/api/popup', authenticateToken, async (req, res) => {
-    if (!popupCollection) {
-        return res.status(500).json({ success: false, message: 'Database connection error.' });
-    }
-    const { message, link, linkText } = req.body;
-
-    if (!message) {
-        return res.status(400).json({ success: false, message: 'Message is required.' });
-    }
+    if (!popupCollection) return res.status(500).json({ success: false, message: 'Database connection error.' });
+    const { title, message, link, linkText } = req.body;
+    if (!title || !message) return res.status(400).json({ success: false, message: 'Title and message are required.' });
 
     try {
-        // Deactivate any existing popup
         await popupCollection.updateMany({ active: true }, { $set: { active: false } });
-
-        // Insert new active popup
         const newPopup = {
+            title,
             message,
             link: link || '',
             linkText: linkText || 'More Info',
@@ -302,9 +245,8 @@ app.post('/api/popup', authenticateToken, async (req, res) => {
             createdAt: new Date(),
             updatedAt: new Date()
         };
-
         const result = await popupCollection.insertOne(newPopup);
-        console.log(`New popup created with ID: ${result.insertedId}`);
+        console.log(`Popup created with ID: ${result.insertedId}`);
         res.status(201).json({
             success: true,
             message: 'Popup published successfully',
@@ -316,24 +258,13 @@ app.post('/api/popup', authenticateToken, async (req, res) => {
     }
 });
 
-// DELETE popup (deactivate)
 app.delete('/api/popup/:id', authenticateToken, async (req, res) => {
-    if (!popupCollection) {
-        return res.status(500).json({ success: false, message: 'Database connection error.' });
-    }
+    if (!popupCollection) return res.status(500).json({ success: false, message: 'Database connection error.' });
     const { id } = req.params;
     let objectId;
+    try { objectId = new ObjectId(id); } catch (err) { return res.status(400).json({ success: false, message: 'Invalid ID.' }); }
     try {
-        objectId = new ObjectId(id);
-    } catch (err) {
-        return res.status(400).json({ success: false, message: 'Invalid popup ID.' });
-    }
-
-    try {
-        const result = await popupCollection.updateOne(
-            { _id: objectId },
-            { $set: { active: false, updatedAt: new Date() } }
-        );
+        const result = await popupCollection.updateOne({ _id: objectId }, { $set: { active: false } });
         if (result.modifiedCount === 1) {
             console.log(`Popup ID ${id} deactivated`);
             res.json({ success: true, message: 'Popup removed successfully' });
@@ -349,43 +280,29 @@ app.delete('/api/popup/:id', authenticateToken, async (req, res) => {
 // --- Graceful Shutdown ---
 process.on('SIGINT', async () => {
     console.log('\nShutting down gracefully (SIGINT)...');
-    if (client) {
-        await client.close();
-        console.log('MongoDB connection closed.');
-    }
+    if (client) await client.close();
     process.exit(0);
 });
 
 process.on('SIGTERM', async () => {
     console.log('\nShutting down gracefully (SIGTERM)...');
-    if (client) {
-        await client.close();
-        console.log('MongoDB connection closed.');
-    }
+    if (client) await client.close();
     process.exit(0);
 });
 
 // --- Start Server ---
 connectToDatabase().then(() => {
     const server = app.listen(PORT, '0.0.0.0', () => {
-        console.log(`\n==========================================`);
+        console.log(`
+==========================================`);
         console.log(`  Server is running on http://0.0.0.0:${PORT}`);
         console.log(`==========================================`);
-        console.log(`Expected Admin Credentials:`);
-        console.log(`  Username: ${process.env.ADMIN_USERNAME || 'NOT SET (check Render Env Vars)'}`);
-        console.log(`  Password: ${process.env.ADMIN_PASSWORD ? '[SET]' : 'NOT SET (check Render Env Vars)'}`);
-        console.log(`  Admin2 Username: ${process.env.ADMIN2_USERNAME || 'NOT SET (check Render Env Vars)'}`);
-        console.log(`  Admin2 Password: ${process.env.ADMIN2_PASSWORD ? '[SET]' : 'NOT SET (check Render Env Vars)'}`);
-        console.log(`  JWT Secret: ${process.env.JWT_SECRET ? '[SET]' : 'NOT SET (check Render Env Vars)'}`);
-        console.log(`  MongoDB URI Set: ${process.env.MONGODB_URI ? 'YES' : 'NO (check Render Env Vars)'}`);
-        console.log(`==========================================`);
     });
-
     server.on('error', (err) => {
         console.error('Server failed to start:', err);
         process.exit(1);
     });
 }).catch(err => {
-    console.error("Failed to start server due to database connection setup error:", err);
+    console.error("Failed to start server:", err);
     process.exit(1);
 });
