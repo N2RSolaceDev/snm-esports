@@ -22,7 +22,7 @@
             --border: #2d3a52;
             --card-bg: #1b263b;
             --transition: all 0.3s ease;
-            --nav-link-color: #ff00ff; /* Vibrant pink for nav links */
+            --nav-link-color: #ff00ff;
         }
         * {
             margin: 0;
@@ -419,7 +419,6 @@
             color: var(--text-gray);
             font-size: 0.9rem;
         }
-        /* Responsive Design */
         @media (max-width: 992px) {
             .logo {
                 order: 1;
@@ -475,10 +474,16 @@
 </head>
 <body>
 
-    <!-- ✅ Popup Notification -->
-    <div id="popupNotification" style="display: none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #e63946; color: white; padding: 15px 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 9999; max-width: 90%; text-align: center; font-weight: 500; font-size: 14px;">
-        <span id="popupMessage"></span>
-        <a href="#" id="popupLink" style="color: #fff; text-decoration: underline; margin-left: 10px;" target="_blank"></a>
+    <!-- Modal Popup Notification -->
+    <div id="popupModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center;">
+        <div style="background: var(--card-bg); border-radius: 12px; width: 90%; max-width: 500px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.4); border: 1px solid var(--border); color: var(--text-light); position: relative;">
+            <button id="popupClose" style="position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 1.5rem; color: var(--text-gray); cursor: pointer; z-index: 10;">&times;</button>
+            <div style="padding: 30px;">
+                <h3 id="popupTitle" style="margin: 0 0 15px; color: var(--text-light);"></h3>
+                <p id="popupMessage" style="margin: 0 0 20px; color: var(--text-gray); line-height: 1.6; white-space: pre-line;"></p>
+                <a href="#" id="popupLink" style="color: var(--secondary); text-decoration: none; font-weight: 500;" target="_blank">More Info</a>
+            </div>
+        </div>
     </div>
 
     <!-- Header -->
@@ -657,40 +662,36 @@
         </div>
     </footer>
 
-    <!-- ✅ Popup Script -->
+    <!-- Popup Script -->
     <script>
-        // Fetch and display active popup notification
         async function loadPopup() {
             try {
                 const response = await fetch('/api/popup');
                 const data = await response.json();
                 const popup = data.popup;
-                const popupEl = document.getElementById('popupNotification');
+                const modal = document.getElementById('popupModal');
+                const titleEl = document.getElementById('popupTitle');
                 const messageEl = document.getElementById('popupMessage');
                 const linkEl = document.getElementById('popupLink');
+                const closeBtn = document.getElementById('popupClose');
 
                 if (popup) {
+                    titleEl.textContent = popup.title;
                     messageEl.textContent = popup.message;
-                    if (popup.link) {
-                        linkEl.href = popup.link;
-                        linkEl.textContent = popup.linkText || 'More Info';
-                        linkEl.style.display = 'inline';
-                    } else {
-                        linkEl.style.display = 'none';
-                    }
-                    popupEl.style.display = 'block';
+                    linkEl.href = popup.link || '#';
+                    linkEl.textContent = popup.linkText || 'More Info';
+                    modal.style.display = 'flex';
 
-                    // Auto-hide after 10 seconds
-                    setTimeout(() => {
-                        popupEl.style.display = 'none';
-                    }, 10000);
+                    closeBtn.onclick = () => modal.style.display = 'none';
+                    window.onclick = (e) => {
+                        if (e.target === modal) modal.style.display = 'none';
+                    };
                 }
             } catch (error) {
                 console.error('Failed to load popup:', error);
             }
         }
 
-        // Run on page load
         document.addEventListener('DOMContentLoaded', loadPopup);
     </script>
 
