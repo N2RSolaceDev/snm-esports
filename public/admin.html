@@ -11,7 +11,7 @@
         :root {
             --primary: #1a3a5f;
             --secondary: #2d5a87;
-            --accent: #e63946; /* Red for primary actions like Delete */
+            --accent: #e63946;
             --light: #f1faee;
             --dark: #0d1b2a;
             --darker: #0a1424;
@@ -139,7 +139,7 @@
             cursor: pointer;
             color: var(--text-light);
         }
-         /* Login Form */
+        /* Login Form */
         .login-container {
             display: flex;
             justify-content: center;
@@ -190,7 +190,7 @@
             padding: 40px 0;
             background-color: var(--darker);
             min-height: 100vh;
-            display: none; /* Hidden by default */
+            display: none;
         }
         .dashboard-header {
             display: flex;
@@ -361,7 +361,6 @@
             margin-bottom: 15px;
         }
 
-        /* Responsive Design */
         @media (max-width: 768px) {
             .mobile-menu {
                 display: block;
@@ -388,28 +387,15 @@
             }
             .dashboard-header {
                 flex-direction: column;
-                gap: 20px;
                 text-align: center;
             }
             .news-section, .popup-section {
                 padding: 20px 15px;
             }
-            .news-card-header, .popup-card-header {
-                flex-direction: column;
-                gap: 10px;
-            }
-            .news-card-actions, .popup-card-actions {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .action-btn {
-                width: 100%;
-            }
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
     <header>
         <div class="container header-container">
             <div class="logo">
@@ -430,7 +416,6 @@
         </div>
     </header>
 
-    <!-- Login Form Container -->
     <div class="login-container" id="loginContainer">
         <form class="login-form" id="loginForm">
             <h2>Admin Login</h2>
@@ -447,7 +432,6 @@
         </form>
     </div>
 
-    <!-- Admin Dashboard Container -->
     <div class="admin-dashboard" id="adminDashboard">
         <div class="container">
             <div class="dashboard-header">
@@ -462,7 +446,6 @@
                 </div>
             </div>
 
-            <!-- News Management -->
             <div class="news-section">
                 <h2>Manage News</h2>
                 <div class="news-form">
@@ -490,15 +473,19 @@
                 </div>
             </div>
 
-            <!-- Popup Management -->
+            <!-- Popup Management Section -->
             <div class="popup-section">
                 <h2>Manage Popup Notification</h2>
                 <div class="news-form">
-                    <h3>Set Active Popup</h3>
+                    <h3>Publish New Popup</h3>
                     <form id="popupForm">
                         <div class="form-group">
-                            <label for="popupMessage">Message</label>
-                            <input type="text" id="popupMessage" name="message" required placeholder="Limited time event! Join now!">
+                            <label for="popupTitle">Title</label>
+                            <input type="text" id="popupTitle" name="title" required placeholder="Urgent Announcement!">
+                        </div>
+                        <div class="form-group">
+                            <label for="popupMessage">Description</label>
+                            <textarea id="popupMessage" name="message" rows="4" required placeholder="This is an important update for all members..."></textarea>
                         </div>
                         <div class="form-group">
                             <label for="popupLink">Link URL (Optional)</label>
@@ -530,14 +517,12 @@
             const errorMessage = document.getElementById('errorMessage');
             const logoutBtn = document.getElementById('logoutBtn');
 
-            // News elements
             const newsForm = document.getElementById('newsForm');
             const newsList = document.getElementById('newsList');
             const noNewsMessage = document.getElementById('noNewsMessage');
             const newsErrorMessage = document.getElementById('newsErrorMessage');
             const totalNewsEl = document.getElementById('totalNews');
 
-            // Popup elements
             const popupForm = document.getElementById('popupForm');
             const popupErrorMessage = document.getElementById('popupErrorMessage');
             const currentPopup = document.getElementById('currentPopup');
@@ -560,7 +545,7 @@
 
             if (mobileMenu) {
                 mobileMenu.addEventListener('click', () => {
-                    if (navMenu) navMenu.classList.toggle('active');
+                    navMenu.classList.toggle('active');
                 });
             }
 
@@ -573,7 +558,6 @@
                 showLogin();
             }
 
-            // Login
             if (loginForm) {
                 loginForm.addEventListener('submit', async function (e) {
                     e.preventDefault();
@@ -614,7 +598,6 @@
                 });
             }
 
-            // Logout
             if (logoutBtn) {
                 logoutBtn.addEventListener('click', function () {
                     localStorage.removeItem('adminToken');
@@ -795,7 +778,8 @@
                 currentPopup.innerHTML = `
                     <div class="news-card">
                         <div class="news-card-content">
-                            <p><strong>Message:</strong> ${escapeHtml(popup.message)}</p>
+                            <p><strong>Title:</strong> ${escapeHtml(popup.title)}</p>
+                            <p><strong>Description:</strong> ${escapeHtml(popup.message)}</p>
                             ${popup.link ? `<p><strong>Link:</strong> <a href="${escapeHtml(popup.link)}" target="_blank">${escapeHtml(popup.linkText)}</a></p>` : ''}
                         </div>
                         <div class="news-card-actions">
@@ -817,12 +801,13 @@
                     popupErrorMessage.style.display = 'none';
                     const formData = new FormData(this);
                     const popupData = {
+                        title: formData.get('title')?.trim(),
                         message: formData.get('message')?.trim(),
                         link: formData.get('link')?.trim() || '',
                         linkText: formData.get('linkText')?.trim() || 'More Info'
                     };
-                    if (!popupData.message) {
-                        popupErrorMessage.textContent = 'Message is required.';
+                    if (!popupData.title || !popupData.message) {
+                        popupErrorMessage.textContent = 'Title and Description are required.';
                         popupErrorMessage.style.display = 'block';
                         return;
                     }
