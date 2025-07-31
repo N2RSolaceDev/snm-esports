@@ -5,9 +5,7 @@ const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
 // --- Import MongoDB ---
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-
 dotenv.config();
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -28,6 +26,7 @@ const client = new MongoClient(uri, {
 
 let db;
 let newsCollection;
+let popupCollection;
 
 async function connectToDatabase() {
     if (!uri) return; // Skip if URI not set
@@ -38,13 +37,16 @@ async function connectToDatabase() {
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
 
-        // Select the database and collection
+        // Select the database and collections
         db = client.db(process.env.MONGODB_DB_NAME || "snm_esports"); // Use DB name from env or default
-        newsCollection = db.collection("news"); // Collection name
+        newsCollection = db.collection("news");
+        popupCollection = db.collection("popup");
 
-        // --- Optional: Create an index on publishedAt for sorting ---
-        await newsCollection.createIndex({ publishedAt: -1 }); // -1 for descending order
-        console.log(`Using database: ${db.databaseName}, collection: news`);
+        // Create indexes
+        await newsCollection.createIndex({ publishedAt: -1 }); // For sorting news
+        await popupCollection.createIndex({ active: 1 });     // For fast active popup lookup
+
+        console.log(`Using database: ${db.databaseName}, collections: news, popup`);
     } catch (error) {
         console.error("Error connecting to MongoDB:", error);
     }
@@ -54,9 +56,6 @@ async function connectToDatabase() {
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// --- In-memory storage for applications (unchanged) ---
-let applications = [];
 
 // --- Helper Functions ---
 // Middleware to verify JWT token
@@ -94,11 +93,9 @@ app.get(['/', '/about.html', '/merch.html', '/apply.html', '/news.html', '/admin
 });
 
 // --- API Routes ---
-
 // Login endpoint (supports two admin users)
 app.post('/api/login', (req, res) => {
     const { username, password } = req.body;
-
     if (!username || !password) {
         return res.status(400).json({ success: false, message: 'Username and password are required.' });
     }
@@ -131,11 +128,9 @@ app.get('/api/applications', (req, res) => {
 // POST a new application
 app.post('/api/applications', (req, res) => {
     const { ign, rank, region, experience, favoriteHero, whyJoin } = req.body;
-
     if (!ign || !rank || !region || !experience || !favoriteHero || !whyJoin) {
         return res.status(400).json({ success: false, message: 'All fields are required.' });
     }
-
     const newApplication = {
         id: Date.now().toString(),
         ign,
@@ -146,7 +141,6 @@ app.post('/api/applications', (req, res) => {
         whyJoin,
         submittedAt: new Date().toISOString()
     };
-
     applications.push(newApplication);
     console.log(`New application received: ${ign}`);
     res.status(201).json({ success: true, message: 'Application submitted successfully!' });
@@ -156,16 +150,13 @@ app.post('/api/applications', (req, res) => {
 app.put('/api/applications/:id', (req, res) => {
     const { id } = req.params;
     const { ign, rank, region, experience, favoriteHero, whyJoin } = req.body;
-
     if (!ign || !rank || !region || !experience || !favoriteHero || !whyJoin) {
         return res.status(400).json({ success: false, message: 'All fields are required.' });
     }
-
     const index = applications.findIndex(app => app.id === id);
     if (index === -1) {
         return res.status(404).json({ success: false, message: 'Application not found.' });
     }
-
     applications[index] = { ...applications[index], ign, rank, region, experience, favoriteHero, whyJoin };
     console.log(`Application ID ${id} updated`);
     res.json({ success: true, message: 'Application updated successfully!' });
@@ -175,18 +166,15 @@ app.put('/api/applications/:id', (req, res) => {
 app.delete('/api/applications/:id', authenticateToken, (req, res) => {
     const { id } = req.params;
     const index = applications.findIndex(app => app.id === id);
-
     if (index === -1) {
         return res.status(404).json({ success: false, message: 'Application not found.' });
     }
-
     applications.splice(index, 1);
     console.log(`Application ID ${id} deleted`);
     res.json({ success: true, message: 'Application deleted successfully!' });
 });
 
 // --- News Management Routes (Modified for MongoDB) ---
-
 // Get all news articles (Public Route)
 app.get('/api/news', async (req, res) => {
     if (!newsCollection) {
@@ -213,20 +201,16 @@ app.post('/api/news', authenticateToken, async (req, res) => {
         console.error("Database not connected for /api/news POST");
         return res.status(500).json({ success: false, message: 'Database connection error.' });
     }
-
     const { title, description, bannerUrl } = req.body;
-
     if (!title || !description) {
         return res.status(400).json({ success: false, message: 'Title and Description are required.' });
     }
-
     const newNewsItem = {
         title,
         description,
         bannerUrl: bannerUrl || '',
         publishedAt: new Date()
     };
-
     try {
         const result = await newsCollection.insertOne(newNewsItem);
         const insertedItem = { _id: result.insertedId.toString(), ...newNewsItem, id: result.insertedId.toString() };
@@ -244,7 +228,6 @@ app.delete('/api/news/:id', authenticateToken, async (req, res) => {
         console.error("Database not connected for /api/news DELETE");
         return res.status(500).json({ success: false, message: 'Database connection error.' });
     }
-
     const { id } = req.params;
     let objectId;
     try {
@@ -253,7 +236,6 @@ app.delete('/api/news/:id', authenticateToken, async (req, res) => {
         console.error("Invalid ObjectId format for deletion:", id);
         return res.status(400).json({ success: false, message: 'Invalid news article ID format.' });
     }
-
     try {
         const result = await newsCollection.deleteOne({ _id: objectId });
         if (result.deletedCount === 1) {
@@ -266,6 +248,101 @@ app.delete('/api/news/:id', authenticateToken, async (req, res) => {
     } catch (error) {
         console.error('Error deleting news article from MongoDB:', error);
         res.status(500).json({ success: false, message: 'Failed to delete news article.' });
+    }
+});
+
+// --- Popup Management Routes ---
+// GET active popup (Public)
+app.get('/api/popup', async (req, res) => {
+    if (!popupCollection) {
+        return res.status(500).json({ success: false, message: 'Database connection error.' });
+    }
+    try {
+        const activePopup = await popupCollection.findOne({ active: true });
+        if (activePopup) {
+            res.json({
+                success: true,
+                popup: {
+                    id: activePopup._id.toString(),
+                    message: activePopup.message,
+                    link: activePopup.link || null,
+                    linkText: activePopup.linkText || 'More Info'
+                }
+            });
+        } else {
+            res.json({ success: true, popup: null });
+        }
+    } catch (error) {
+        console.error('Error fetching popup:', error);
+        res.status(500).json({ success: false, message: 'Server error.' });
+    }
+});
+
+// CREATE or UPDATE active popup (Only one active at a time)
+app.post('/api/popup', authenticateToken, async (req, res) => {
+    if (!popupCollection) {
+        return res.status(500).json({ success: false, message: 'Database connection error.' });
+    }
+    const { message, link, linkText } = req.body;
+
+    if (!message) {
+        return res.status(400).json({ success: false, message: 'Message is required.' });
+    }
+
+    try {
+        // Deactivate any existing popup
+        await popupCollection.updateMany({ active: true }, { $set: { active: false } });
+
+        // Insert new active popup
+        const newPopup = {
+            message,
+            link: link || '',
+            linkText: linkText || 'More Info',
+            active: true,
+            createdAt: new Date(),
+            updatedAt: new Date()
+        };
+
+        const result = await popupCollection.insertOne(newPopup);
+        console.log(`New popup created with ID: ${result.insertedId}`);
+        res.status(201).json({
+            success: true,
+            message: 'Popup published successfully',
+            popup: { id: result.insertedId.toString(), ...newPopup }
+        });
+    } catch (error) {
+        console.error('Error creating popup:', error);
+        res.status(500).json({ success: false, message: 'Failed to create popup.' });
+    }
+});
+
+// DELETE popup (deactivate)
+app.delete('/api/popup/:id', authenticateToken, async (req, res) => {
+    if (!popupCollection) {
+        return res.status(500).json({ success: false, message: 'Database connection error.' });
+    }
+    const { id } = req.params;
+    let objectId;
+    try {
+        objectId = new ObjectId(id);
+    } catch (err) {
+        return res.status(400).json({ success: false, message: 'Invalid popup ID.' });
+    }
+
+    try {
+        const result = await popupCollection.updateOne(
+            { _id: objectId },
+            { $set: { active: false, updatedAt: new Date() } }
+        );
+        if (result.modifiedCount === 1) {
+            console.log(`Popup ID ${id} deactivated`);
+            res.json({ success: true, message: 'Popup removed successfully' });
+        } else {
+            res.status(404).json({ success: false, message: 'Popup not found' });
+        }
+    } catch (error) {
+        console.error('Error removing popup:', error);
+        res.status(500).json({ success: false, message: 'Failed to remove popup.' });
     }
 });
 
@@ -291,8 +368,7 @@ process.on('SIGTERM', async () => {
 // --- Start Server ---
 connectToDatabase().then(() => {
     const server = app.listen(PORT, '0.0.0.0', () => {
-        console.log(`
-==========================================`);
+        console.log(`\n==========================================`);
         console.log(`  Server is running on http://0.0.0.0:${PORT}`);
         console.log(`==========================================`);
         console.log(`Expected Admin Credentials:`);
