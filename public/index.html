@@ -4,8 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SNM Esports</title>
+
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <!-- CSS & Fonts -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
         /* Dark Mode Variables */
         :root {
@@ -484,6 +491,7 @@
             </div>
         </div>
     </div>
+
     <!-- Header -->
     <header>
         <div class="container header-container">
@@ -511,6 +519,7 @@
             </div>
         </div>
     </header>
+
     <!-- Hero Section -->
     <section class="hero">
         <div class="container hero-content">
@@ -522,6 +531,7 @@
             </div>
         </div>
     </section>
+
     <!-- About Section -->
     <section class="section">
         <div class="container">
@@ -542,6 +552,7 @@
             </div>
         </div>
     </section>
+
     <!-- Games Section -->
     <section class="section" style="background: var(--darker);">
         <div class="container">
@@ -577,6 +588,7 @@
             </div>
         </div>
     </section>
+
     <!-- Stats Section -->
     <section class="stats">
         <div class="container">
@@ -600,4 +612,107 @@
                     <i class="fas fa-globe"></i>
                     <h3>Global</h3>
                     <p>Presence</p>
-       
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>About SNM</h3>
+                    <p>SNM Esports is a next-generation competitive gaming organization focused on excellence, community, and innovation in esports.</p>
+                    <div class="social-icons footer-social">
+                        <a href="https://twitch.tv/snmesportsggs" target="_blank"><i class="fab fa-twitch"></i></a>
+                        <a href="https://twitter.com/snmesportsggs" target="_blank"><i class="fab fa-twitter"></i></a>
+                        <a href="https://youtube.com/@snmesportsggs" target="_blank"><i class="fab fa-youtube"></i></a>
+                        <a href="https://discord.gg/fearsnm" target="_blank"><i class="fab fa-discord"></i></a>
+                        <a href="https://instagram.com/snmesportsggs" target="_blank"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+                        <li><a href="/about.html"><i class="fas fa-info-circle"></i> About Us</a></li>
+                        <li><a href="/merch.html"><i class="fas fa-shopping-bag"></i> Merch</a></li>
+                        <li><a href="/news.html"><i class="fas fa-newspaper"></i> News</a></li>
+                        <li><a href="/apply.html"><i class="fas fa-user-plus"></i> Join Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact</h3>
+                    <p><i class="fas fa-envelope"></i> contact@snmesports.com</p>
+                    <p><i class="fas fa-globe"></i> Global Organization</p>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2024 SNM Esports. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenu = document.querySelector('.mobile-menu');
+        const navList = document.querySelector('nav ul');
+
+        mobileMenu.addEventListener('click', () => {
+            navList.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('nav ul li a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (navList.classList.contains('active')) {
+                    navList.classList.remove('active');
+                }
+            });
+        });
+
+        // Popup Notification
+        const popupModal = document.getElementById('popupModal');
+        const popupTitle = document.getElementById('popupTitle');
+        const popupMessage = document.getElementById('popupMessage');
+        const popupLink = document.getElementById('popupLink');
+        const popupClose = document.getElementById('popupClose');
+
+        async function checkPopup() {
+            try {
+                const response = await fetch('/api/popup');
+                const data = await response.json();
+
+                if (data.success && data.popup) {
+                    popupTitle.textContent = data.popup.title;
+                    popupMessage.textContent = data.popup.message;
+                    if (data.popup.link) {
+                        popupLink.href = data.popup.link;
+                        popupLink.textContent = data.popup.linkText || 'More Info';
+                        popupLink.style.display = 'inline';
+                    } else {
+                        popupLink.style.display = 'none';
+                    }
+                    popupModal.style.display = 'flex';
+                }
+            } catch (error) {
+                console.error('Error fetching popup:', error);
+            }
+        }
+
+        popupClose.addEventListener('click', () => {
+            popupModal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (event) => {
+            if (event.target === popupModal) {
+                popupModal.style.display = 'none';
+            }
+        });
+
+        // Load popup on page load
+        checkPopup();
+    </script>
+</body>
+</html>
