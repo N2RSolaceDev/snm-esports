@@ -197,12 +197,12 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 40px;
-            flex-wrap: wrap; /* Allow wrapping on small screens */
+            flex-wrap: wrap;
             gap: 20px;
         }
         .dashboard-header h1 {
             color: var(--text-light);
-            margin: 0; /* Remove default margin */
+            margin: 0;
         }
         .logout-btn {
             background: var(--accent);
@@ -245,10 +245,9 @@
             color: var(--text-gray);
             font-size: 1rem;
         }
-
         /* News Section */
         .news-section {
-             background: var(--card-bg);
+            background: var(--card-bg);
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             padding: 30px;
@@ -297,10 +296,10 @@
         .news-card-header h3 {
             color: var(--text-light);
             margin: 0;
-            flex-grow: 1; /* Allow title to take space */
+            flex-grow: 1;
         }
-         .news-card-content {
-            flex-grow: 1; /* Allow content to grow */
+        .news-card-content {
+            flex-grow: 1;
             margin-bottom: 15px;
         }
         .news-card-content p {
@@ -311,7 +310,7 @@
         .news-card-actions {
             display: flex;
             gap: 10px;
-            justify-content: flex-end; /* Align buttons to the right */
+            justify-content: flex-end;
         }
         .action-btn {
             padding: 8px 15px;
@@ -326,11 +325,11 @@
             display: inline-block;
         }
         .delete-btn {
-             background: var(--accent); /* Use accent color (red) */
-             color: white;
+            background: var(--accent);
+            color: white;
         }
         .delete-btn:hover {
-             background: #c1121f; /* Darker red on hover */
+            background: #c1121f;
         }
         .no-news {
             text-align: center;
@@ -339,6 +338,28 @@
             padding: 20px;
         }
 
+        /* Popup Section */
+        .popup-section {
+            background: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            margin-top: 30px;
+            border: 1px solid var(--border);
+        }
+        .popup-section h2 {
+            color: var(--text-light);
+            margin-bottom: 25px;
+        }
+        .popup-section .form-group {
+            margin-bottom: 15px;
+        }
+        .popup-section .btn {
+            margin-top: 10px;
+        }
+        .popup-section .news-card {
+            margin-bottom: 15px;
+        }
 
         /* Responsive Design */
         @media (max-width: 768px) {
@@ -370,19 +391,19 @@
                 gap: 20px;
                 text-align: center;
             }
-             .news-section {
+            .news-section, .popup-section {
                 padding: 20px 15px;
             }
-            .news-card-header {
+            .news-card-header, .popup-card-header {
                 flex-direction: column;
                 gap: 10px;
             }
-            .news-card-actions {
+            .news-card-actions, .popup-card-actions {
                 flex-direction: column;
-                align-items: stretch; /* Stretch buttons to full width */
+                align-items: stretch;
             }
-             .action-btn {
-                width: 100%; /* Make buttons full width on small screens */
+            .action-btn {
+                width: 100%;
             }
         }
     </style>
@@ -402,13 +423,13 @@
                     <li><a href="/">Home</a></li>
                     <li><a href="/about.html">About</a></li>
                     <li><a href="/merch.html">Merch</a></li>
-                    <!-- <li><a href="/apply.html">Apply</a></li> --> <!-- Removed Apply link -->
-                    <li><a href="/news.html">News</a></li> <!-- Added News link -->
-                    <li><a href="/admin.html">Admin</a></li> <!-- Current page -->
+                    <li><a href="/news.html">News</a></li>
+                    <li><a href="/admin.html">Admin</a></li>
                 </ul>
             </nav>
         </div>
     </header>
+
     <!-- Login Form Container -->
     <div class="login-container" id="loginContainer">
         <form class="login-form" id="loginForm">
@@ -425,6 +446,7 @@
             <div class="error-message" id="errorMessage">Invalid credentials. Please try again.</div>
         </form>
     </div>
+
     <!-- Admin Dashboard Container -->
     <div class="admin-dashboard" id="adminDashboard">
         <div class="container">
@@ -433,18 +455,16 @@
                 <button class="btn logout-btn" id="logoutBtn">Logout</button>
             </div>
             <div class="stats-grid">
-                 <div class="stat-card">
+                <div class="stat-card">
                     <i class="fas fa-newspaper"></i>
                     <h3 id="totalNews">0</h3>
                     <p>News Articles</p>
                 </div>
             </div>
 
-            <!-- News Management Content -->
+            <!-- News Management -->
             <div class="news-section">
                 <h2>Manage News</h2>
-
-                <!-- News Creation Form -->
                 <div class="news-form">
                     <h3>Publish New Article</h3>
                     <form id="newsForm">
@@ -464,75 +484,101 @@
                         <div class="error-message" id="newsErrorMessage"></div>
                     </form>
                 </div>
-
-                <!-- News List -->
                 <h3>Existing Articles</h3>
                 <div class="news-grid" id="newsList">
-                    <!-- News items will be loaded here -->
                     <div class="no-news" id="noNewsMessage">Loading news...</div>
                 </div>
             </div>
 
+            <!-- Popup Management -->
+            <div class="popup-section">
+                <h2>Manage Popup Notification</h2>
+                <div class="news-form">
+                    <h3>Set Active Popup</h3>
+                    <form id="popupForm">
+                        <div class="form-group">
+                            <label for="popupMessage">Message</label>
+                            <input type="text" id="popupMessage" name="message" required placeholder="Limited time event! Join now!">
+                        </div>
+                        <div class="form-group">
+                            <label for="popupLink">Link URL (Optional)</label>
+                            <input type="url" id="popupLink" name="link" placeholder="https://snmesports.com/event">
+                        </div>
+                        <div class="form-group">
+                            <label for="popupLinkText">Link Text (Optional)</label>
+                            <input type="text" id="popupLinkText" name="linkText" placeholder="Click here" value="More Info">
+                        </div>
+                        <button type="submit" class="btn">Publish Popup</button>
+                        <div class="error-message" id="popupErrorMessage"></div>
+                    </form>
+                </div>
+                <h3>Current Popup</h3>
+                <div id="currentPopup">
+                    <div class="no-news">No active popup.</div>
+                </div>
+            </div>
         </div>
     </div>
+
     <script>
-        // --- Client-side JavaScript for admin.html (News Management ONLY) ---
         document.addEventListener('DOMContentLoaded', function () {
-            // --- DOM Elements (Ensure these IDs match your simplified admin.html) ---
             const mobileMenu = document.querySelector('.mobile-menu');
             const navMenu = document.querySelector('nav ul');
             const loginContainer = document.getElementById('loginContainer');
             const adminDashboard = document.getElementById('adminDashboard');
             const loginForm = document.getElementById('loginForm');
-            const errorMessage = document.getElementById('errorMessage'); // For login errors
+            const errorMessage = document.getElementById('errorMessage');
             const logoutBtn = document.getElementById('logoutBtn');
 
-            // --- News Management Elements ---
+            // News elements
             const newsForm = document.getElementById('newsForm');
             const newsList = document.getElementById('newsList');
-            const noNewsMessage = document.getElementById('noNewsMessage'); // Message when list is empty/loading
-            const newsErrorMessage = document.getElementById('newsErrorMessage'); // For news form errors
-            const totalNewsEl = document.getElementById('totalNews'); // Stat card for total news
+            const noNewsMessage = document.getElementById('noNewsMessage');
+            const newsErrorMessage = document.getElementById('newsErrorMessage');
+            const totalNewsEl = document.getElementById('totalNews');
 
-            // --- Helper Functions ---
+            // Popup elements
+            const popupForm = document.getElementById('popupForm');
+            const popupErrorMessage = document.getElementById('popupErrorMessage');
+            const currentPopup = document.getElementById('currentPopup');
+
             function showLogin() {
-                if (loginContainer) loginContainer.style.display = 'flex';
-                if (adminDashboard) adminDashboard.style.display = 'none';
+                loginContainer.style.display = 'flex';
+                adminDashboard.style.display = 'none';
                 if (loginForm) loginForm.reset();
                 if (errorMessage) errorMessage.style.display = 'none';
-                // Reset news form/messages on logout if they exist
                 if (newsForm) newsForm.reset();
                 if (newsErrorMessage) newsErrorMessage.style.display = 'none';
+                if (popupForm) popupForm.reset();
+                if (popupErrorMessage) popupErrorMessage.style.display = 'none';
             }
 
             function hideLogin() {
-                if (loginContainer) loginContainer.style.display = 'none';
-                if (adminDashboard) adminDashboard.style.display = 'block';
+                loginContainer.style.display = 'none';
+                adminDashboard.style.display = 'block';
             }
 
-            // --- Mobile Menu Toggle ---
             if (mobileMenu) {
                 mobileMenu.addEventListener('click', () => {
                     if (navMenu) navMenu.classList.toggle('active');
                 });
             }
 
-            // --- Check for existing token on page load ---
             const token = localStorage.getItem('adminToken');
             if (token) {
                 hideLogin();
-                loadNews(); // Load news on initial check
+                loadNews();
+                loadPopup();
             } else {
                 showLogin();
             }
 
-            // --- Login Form Submission ---
+            // Login
             if (loginForm) {
                 loginForm.addEventListener('submit', async function (e) {
                     e.preventDefault();
                     const username = document.getElementById('username')?.value;
                     const password = document.getElementById('password')?.value;
-
                     if (!username || !password) {
                         if (errorMessage) {
                             errorMessage.style.display = 'block';
@@ -540,22 +586,18 @@
                         }
                         return;
                     }
-
                     try {
                         const response = await fetch('/api/login', {
                             method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
+                            headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ username, password })
                         });
-
                         const data = await response.json();
-
                         if (response.ok && data.success && data.token) {
                             localStorage.setItem('adminToken', data.token);
                             hideLogin();
-                            loadNews(); // Load news after successful login
+                            loadNews();
+                            loadPopup();
                         } else {
                             if (errorMessage) {
                                 errorMessage.style.display = 'block';
@@ -566,13 +608,13 @@
                         console.error('Login error:', error);
                         if (errorMessage) {
                             errorMessage.style.display = 'block';
-                            errorMessage.textContent = 'An error occurred during login. Please try again.';
+                            errorMessage.textContent = 'An error occurred during login.';
                         }
                     }
                 });
             }
 
-            // --- Logout Function ---
+            // Logout
             if (logoutBtn) {
                 logoutBtn.addEventListener('click', function () {
                     localStorage.removeItem('adminToken');
@@ -581,243 +623,257 @@
             }
 
             // --- News Management ---
-
-            // Load News Function
             async function loadNews() {
-                 if (noNewsMessage) {
-                     noNewsMessage.textContent = 'Loading news...';
-                     noNewsMessage.style.display = 'block';
-                 }
-                 if (newsList) newsList.innerHTML = ''; // Clear previous list
+                if (noNewsMessage) {
+                    noNewsMessage.textContent = 'Loading news...';
+                    noNewsMessage.style.display = 'block';
+                }
+                if (newsList) newsList.innerHTML = '';
+                try {
+                    const token = localStorage.getItem('adminToken');
+                    if (!token) throw new Error("No token");
+                    const response = await fetch('/api/news', {
+                        method: 'GET',
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    const data = await response.json();
+                    if (data.success && Array.isArray(data.news)) {
+                        displayNews(data.news);
+                        if (totalNewsEl) totalNewsEl.textContent = data.news.length;
+                    } else {
+                        throw new Error('Invalid data format');
+                    }
+                } catch (error) {
+                    console.error('Error loading news:', error);
+                    if (noNewsMessage) {
+                        noNewsMessage.textContent = 'Error loading news.';
+                        noNewsMessage.style.display = 'block';
+                    }
+                    if (totalNewsEl) totalNewsEl.textContent = '0';
+                }
+            }
 
-                 try {
-                     const token = localStorage.getItem('adminToken');
-                     if (!token) {
-                         throw new Error("No authentication token found.");
-                     }
+            function displayNews(newsItems) {
+                if (!newsList) return;
+                newsList.innerHTML = '';
+                if (!newsItems || newsItems.length === 0) {
+                    if (noNewsMessage) {
+                        noNewsMessage.textContent = 'No news articles found.';
+                        noNewsMessage.style.display = 'block';
+                    }
+                    return;
+                }
+                if (noNewsMessage) noNewsMessage.style.display = 'none';
+                const sortedNews = [...newsItems].sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
+                sortedNews.forEach(item => {
+                    const escapeHtml = (text) => {
+                        if (typeof text !== 'string') return text;
+                        return text.replace(/&/g, "&amp;").replace(/</g, "<").replace(/>/g, ">").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+                    };
+                    const firstLine = escapeHtml((item.description || '').split(/\r?\n/)[0] || 'No description');
+                    const newsCard = document.createElement('div');
+                    newsCard.className = 'news-card';
+                    newsCard.innerHTML = `
+                        <div class="news-card-header">
+                            <h3>${escapeHtml(item.title || 'Untitled')}</h3>
+                        </div>
+                        <div class="news-card-content">
+                            <p><strong>Date:</strong> ${new Date(item.publishedAt).toLocaleDateString()}</p>
+                            <p><strong>Preview:</strong> ${firstLine}</p>
+                            ${item.bannerUrl ? `<p><strong>Banner:</strong> <a href="${escapeHtml(item.bannerUrl)}" target="_blank">View Image</a></p>` : ''}
+                        </div>
+                        <div class="news-card-actions">
+                            <button class="action-btn delete-btn" data-id="${escapeHtml(item.id)}">Delete</button>
+                        </div>
+                    `;
+                    newsList.appendChild(newsCard);
+                });
+                newsList.addEventListener('click', function(e) {
+                    if (e.target.classList.contains('delete-btn')) {
+                        const id = e.target.getAttribute('data-id');
+                        if (id) deleteNews(id);
+                    }
+                });
+            }
 
-                     const response = await fetch('/api/news', {
-                         method: 'GET',
-                         headers: {
-                             'Authorization': `Bearer ${token}`
-                         }
-                     });
+            if (newsForm) {
+                newsForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    if (newsErrorMessage) {
+                        newsErrorMessage.style.display = 'none';
+                        newsErrorMessage.textContent = '';
+                    }
+                    const formData = new FormData(this);
+                    const newsData = {
+                        title: formData.get('title')?.trim(),
+                        description: formData.get('description')?.trim(),
+                        bannerUrl: formData.get('bannerUrl')?.trim() || ''
+                    };
+                    if (!newsData.title || !newsData.description) {
+                        if (newsErrorMessage) {
+                            newsErrorMessage.textContent = 'Title and Description are required.';
+                            newsErrorMessage.style.display = 'block';
+                        }
+                        return;
+                    }
+                    try {
+                        const token = localStorage.getItem('adminToken');
+                        const response = await fetch('/api/news', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify(newsData)
+                        });
+                        const data = await response.json();
+                        if (response.ok && data.success) {
+                            alert('News published!');
+                            newsForm.reset();
+                            loadNews();
+                        } else {
+                            throw new Error(data.message || 'Failed');
+                        }
+                    } catch (error) {
+                        if (newsErrorMessage) {
+                            newsErrorMessage.textContent = 'Error: ' + error.message;
+                            newsErrorMessage.style.display = 'block';
+                        }
+                    }
+                });
+            }
 
-                     if (!response.ok) {
-                         // If the error is due to authentication, logout
-                         if (response.status === 401 || response.status === 403) {
-                             console.warn("Authentication failed for news, redirecting to login.");
-                             alert('Session expired or invalid. Please log in again.');
-                             localStorage.removeItem('adminToken');
-                             showLogin();
-                             return;
-                         }
-                         // For other errors, throw a generic one
-                         throw new Error(`Failed to load news: ${response.status} ${response.statusText}`);
-                     }
+            async function deleteNews(id) {
+                if (!confirm(`Delete news ID ${id}?`)) return;
+                try {
+                    const token = localStorage.getItem('adminToken');
+                    const response = await fetch(`/api/news/${id}`, {
+                        method: 'DELETE',
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    const data = await response.json();
+                    if (response.ok && data.success) {
+                        alert('Deleted!');
+                        loadNews();
+                    } else {
+                        alert('Delete failed: ' + (data.message || 'Unknown'));
+                    }
+                } catch (error) {
+                    alert('Error deleting news.');
+                }
+            }
 
-                     const data = await response.json();
-                     // Ensure the data structure is as expected
-                     if (data.success && Array.isArray(data.news)) {
-                         displayNews(data.news);
-                         // Update news stats
-                         if (totalNewsEl) totalNewsEl.textContent = data.news.length;
-                     } else {
-                         throw new Error('Invalid data format received for news.');
-                     }
-                 } catch (error) {
-                     console.error('Error loading news:', error);
-                     if (noNewsMessage) {
-                         noNewsMessage.textContent = 'Error loading news. Please try again.';
-                         noNewsMessage.style.display = 'block';
-                     }
-                     // Reset news stats on error
-                     if (totalNewsEl) totalNewsEl.textContent = '0';
-                 }
-             }
+            // --- Popup Management ---
+            async function loadPopup() {
+                try {
+                    const token = localStorage.getItem('adminToken');
+                    if (!token) throw new Error("No token");
+                    const response = await fetch('/api/popup', {
+                        method: 'GET',
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    const data = await response.json();
+                    displayCurrentPopup(data.popup);
+                } catch (error) {
+                    console.error('Error loading popup:', error);
+                    displayCurrentPopup(null);
+                }
+            }
 
-             // Display News Function
-             function displayNews(newsItems) {
-                 if (!newsList) return; // Safety check
-                 newsList.innerHTML = ''; // Clear the list
+            function displayCurrentPopup(popup) {
+                if (!currentPopup) return;
+                if (!popup) {
+                    currentPopup.innerHTML = '<div class="no-news">No active popup.</div>';
+                    return;
+                }
+                const escapeHtml = (text) => {
+                    if (typeof text !== 'string') return text;
+                    return text.replace(/&/g, "&amp;").replace(/</g, "<").replace(/>/g, ">").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+                };
+                currentPopup.innerHTML = `
+                    <div class="news-card">
+                        <div class="news-card-content">
+                            <p><strong>Message:</strong> ${escapeHtml(popup.message)}</p>
+                            ${popup.link ? `<p><strong>Link:</strong> <a href="${escapeHtml(popup.link)}" target="_blank">${escapeHtml(popup.linkText)}</a></p>` : ''}
+                        </div>
+                        <div class="news-card-actions">
+                            <button class="action-btn delete-btn" data-id="${escapeHtml(popup.id)}">Remove</button>
+                        </div>
+                    </div>
+                `;
+                const removeBtn = currentPopup.querySelector('.delete-btn');
+                if (removeBtn) {
+                    removeBtn.addEventListener('click', () => {
+                        if (confirm("Remove popup?")) removePopup(popup.id);
+                    });
+                }
+            }
 
-                 if (!newsItems || newsItems.length === 0) {
-                     if (noNewsMessage) {
-                         noNewsMessage.textContent = 'No news articles found.';
-                         noNewsMessage.style.display = 'block';
-                     }
-                     return;
-                 }
+            if (popupForm) {
+                popupForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    popupErrorMessage.style.display = 'none';
+                    const formData = new FormData(this);
+                    const popupData = {
+                        message: formData.get('message')?.trim(),
+                        link: formData.get('link')?.trim() || '',
+                        linkText: formData.get('linkText')?.trim() || 'More Info'
+                    };
+                    if (!popupData.message) {
+                        popupErrorMessage.textContent = 'Message is required.';
+                        popupErrorMessage.style.display = 'block';
+                        return;
+                    }
+                    try {
+                        const token = localStorage.getItem('adminToken');
+                        const response = await fetch('/api/popup', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify(popupData)
+                        });
+                        const data = await response.json();
+                        if (response.ok && data.success) {
+                            alert('Popup published!');
+                            popupForm.reset();
+                            loadPopup();
+                        } else {
+                            throw new Error(data.message || 'Failed');
+                        }
+                    } catch (error) {
+                        popupErrorMessage.textContent = 'Error: ' + error.message;
+                        popupErrorMessage.style.display = 'block';
+                    }
+                });
+            }
 
-                 if (noNewsMessage) {
-                     noNewsMessage.style.display = 'none'; // Hide the "no news" message
-                 }
+            async function removePopup(id) {
+                try {
+                    const token = localStorage.getItem('adminToken');
+                    const response = await fetch(`/api/popup/${id}`, {
+                        method: 'DELETE',
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    const data = await response.json();
+                    if (response.ok && data.success) {
+                        alert('Popup removed.');
+                        loadPopup();
+                    } else {
+                        alert('Failed: ' + (data.message || 'Unknown'));
+                    }
+                } catch (error) {
+                    alert('Error removing popup.');
+                }
+            }
 
-                 // Sort news by published date (newest first)
-                 const sortedNews = [...newsItems].sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
-
-                 sortedNews.forEach(item => {
-                     const newsCard = document.createElement('div');
-                     newsCard.className = 'news-card';
-
-                     // Simple HTML escaping for display (basic protection)
-                     const escapeHtml = (text) => {
-                         if (typeof text !== 'string') return text;
-                         return text
-                             .replace(/&/g, "&amp;")
-                             .replace(/</g, "<")
-                             .replace(/>/g, ">")
-                             .replace(/"/g, "&quot;")
-                             .replace(/'/g, "&#039;");
-                     };
-
-                     // Get first line for preview
-                     const firstLine = escapeHtml((item.description || '').split(/\r?\n/)[0] || 'No description available.');
-
-                     newsCard.innerHTML = `
-                         <div class="news-card-header">
-                             <h3>${escapeHtml(item.title || 'Untitled')}</h3>
-                         </div>
-                         <div class="news-card-content">
-                             <p><strong>Date:</strong> ${new Date(item.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</p>
-                             <p><strong>Preview:</strong> ${firstLine}</p>
-                             ${item.bannerUrl ? `<p><strong>Banner:</strong> <a href="${escapeHtml(item.bannerUrl)}" target="_blank">View Image</a></p>` : ''}
-                         </div>
-                         <div class="news-card-actions">
-                             <button class="action-btn delete-btn" data-id="${escapeHtml(item.id)}">Delete</button>
-                         </div>
-                     `;
-                     newsList.appendChild(newsCard);
-                 });
-
-                 // --- Add event listeners for Delete buttons using event delegation ---
-                 if (newsList) {
-                     newsList.addEventListener('click', function(event) {
-                         if (event.target.classList.contains('delete-btn')) {
-                             const id = event.target.getAttribute('data-id');
-                             if (id) deleteNews(id);
-                         }
-                     });
-                 }
-             }
-
-
-             // News Form Submission Handler
-             if (newsForm) {
-                 newsForm.addEventListener('submit', async function(e) {
-                     e.preventDefault();
-                     if (newsErrorMessage) {
-                         newsErrorMessage.style.display = 'none';
-                         newsErrorMessage.textContent = '';
-                     }
-
-                     const formData = new FormData(this);
-                     const newsData = {
-                         title: formData.get('title')?.trim(),
-                         description: formData.get('description')?.trim(),
-                         bannerUrl: formData.get('bannerUrl')?.trim() || '' // Allow empty
-                     };
-
-                     // Basic validation
-                     if (!newsData.title || !newsData.description) {
-                         if (newsErrorMessage) {
-                             newsErrorMessage.textContent = 'Title and Description are required.';
-                             newsErrorMessage.style.display = 'block';
-                         }
-                         return;
-                     }
-
-                     try {
-                         const token = localStorage.getItem('adminToken');
-                         if (!token) {
-                             throw new Error("No authentication token found.");
-                         }
-
-                         const response = await fetch('/api/news', {
-                             method: 'POST',
-                             headers: {
-                                 'Content-Type': 'application/json',
-                                 'Authorization': `Bearer ${token}`
-                             },
-                             body: JSON.stringify(newsData)
-                         });
-
-                         if (response.ok) {
-                             const data = await response.json();
-                             if (data.success) {
-                                 alert('News article published successfully!');
-                                 newsForm.reset(); // Clear the form
-                                 loadNews(); // Reload the news list
-                             } else {
-                                 throw new Error(data.message || 'Unknown error from server.');
-                             }
-                         } else {
-                             if (response.status === 401 || response.status === 403) {
-                                 alert('Session expired or invalid. Please log in again.');
-                                 localStorage.removeItem('adminToken');
-                                 showLogin();
-                                 return;
-                             } else {
-                                 const errorData = await response.json();
-                                 throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
-                             }
-                         }
-                     } catch (error) {
-                         console.error('Error publishing news:', error);
-                         if (newsErrorMessage) {
-                             newsErrorMessage.textContent = 'Failed to publish news: ' + error.message;
-                             newsErrorMessage.style.display = 'block';
-                         }
-                     }
-                 });
-             }
-
-             // Delete News Function
-             async function deleteNews(id) {
-                 // Simple confirmation
-                 if (!confirm(`Are you sure you want to permanently delete news article ID ${id}? This action cannot be undone.`)) {
-                     return;
-                 }
-
-                 try {
-                     const token = localStorage.getItem('adminToken');
-                     if (!token) {
-                         throw new Error("No authentication token found.");
-                     }
-
-                     const response = await fetch(`/api/news/${id}`, {
-                         method: 'DELETE',
-                         headers: {
-                             'Authorization': `Bearer ${token}`
-                         }
-                     });
-
-                     const data = await response.json();
-
-                     if (response.ok && data.success) {
-                         alert('News article deleted successfully.');
-                         loadNews(); // Reload the list to reflect the deletion
-                     } else {
-                         const message = data.message || 'Unknown error';
-                         alert(`Failed to delete news article: ${message}`);
-
-                         // If the error is due to authentication, logout
-                         if (response.status === 401 || response.status === 403) {
-                             console.warn("Authentication failed during delete, redirecting to login.");
-                             alert('Session expired or invalid. Please log in again.');
-                             localStorage.removeItem('adminToken');
-                             showLogin();
-                         } else if (response.status === 404) {
-                             alert('News article not found. It might have already been deleted.');
-                             loadNews(); // Reload list as it might be out of sync
-                         }
-                     }
-                 } catch (error) {
-                     console.error('Error deleting news article:', error);
-                     alert('An error occurred while deleting the news article.');
-                 }
-             }
-
+            if (token) {
+                loadNews();
+                loadPopup();
+            }
         });
     </script>
 </body>
