@@ -1,306 +1,705 @@
-// index.js
-const express = require('express');
-const path = require('path');
-const dotenv = require('dotenv');
-const jwt = require('jsonwebtoken');
-const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-
-dotenv.config();
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-// --- MongoDB Connection Setup ---
-const uri = process.env.MONGODB_URI;
-if (!uri) {
-    console.error("Error: MONGODB_URI is not defined in the environment variables.");
-}
-
-const client = new MongoClient(uri, {
-    serverApi: {
-        version: ServerApiVersion.v1,
-        strict: true,
-        deprecationErrors: true,
-    }
-});
-
-let db;
-let newsCollection;
-let popupCollection;
-
-async function connectToDatabase() {
-    if (!uri) return;
-    try {
-        await client.connect();
-        await client.db("admin").command({ ping: 1 });
-        console.log("Pinged your deployment. You successfully connected to MongoDB!");
-
-        db = client.db(process.env.MONGODB_DB_NAME || "snm_esports");
-        newsCollection = db.collection("news");
-        popupCollection = db.collection("popup");
-
-        await newsCollection.createIndex({ publishedAt: -1 });
-        await popupCollection.createIndex({ active: 1 });
-
-        console.log(`Using database: ${db.databaseName}, collections: news, popup`);
-    } catch (error) {
-        console.error("Error connecting to MongoDB:", error);
-    }
-}
-
-// --- Middleware ---
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// --- JWT Authentication ---
-const authenticateToken = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        return res.status(401).json({ success: false, message: 'Access Denied. No Token Provided.' });
-    }
-    const token = authHeader.split(' ')[1];
-    if (!token) {
-        return res.status(401).json({ success: false, message: 'Access Denied. Token Missing.' });
-    }
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded;
-        next();
-    } catch (err) {
-        console.error("Token verification error:", err.message);
-        res.status(403).json({ success: false, message: 'Invalid Token.' });
-    }
-};
-
-// --- Serve HTML Pages ---
-app.get(['/', '/about.html', '/merch.html', '/apply.html', '/news.html', '/admin.html'], (req, res) => {
-    let filename = 'index.html';
-    if (req.path !== '/') {
-        filename = req.path.substring(1);
-    }
-    res.sendFile(path.join(__dirname, 'public', filename), (err) => {
-        if (err) {
-            console.error(`Error sending file ${filename}:`, err);
-            res.status(404).send('File not found');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SNM Esports</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Dark Mode Variables */
+        :root {
+            --primary: #1a3a5f;
+            --secondary: #2d5a87;
+            --accent: #e63946;
+            --light: #f1faee;
+            --dark: #0d1b2a;
+            --darker: #0a1424;
+            --darkest: #080f1a;
+            --gray: #a8dadc;
+            --text-light: #e0e1dd;
+            --text-gray: #b0b0b0;
+            --border: #2d3a52;
+            --card-bg: #1b263b;
+            --transition: all 0.3s ease;
+            --nav-link-color: #ff00ff; /* Vibrant pink for nav links */
         }
-    });
-});
-
-// --- Login Route ---
-app.post('/api/login', (req, res) => {
-    const { username, password } = req.body;
-    if (!username || !password) {
-        return res.status(400).json({ success: false, message: 'Username and password are required.' });
-    }
-
-    const validCredentials = [
-        { user: process.env.ADMIN_USERNAME, pass: process.env.ADMIN_PASSWORD },
-        { user: process.env.ADMIN2_USERNAME, pass: process.env.ADMIN2_PASSWORD }
-    ];
-
-    const isValid = validCredentials.some(cred => {
-        return cred.user && cred.pass && username === cred.user && password === cred.pass;
-    });
-
-    if (isValid) {
-        const token = jwt.sign({ username: username }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        return res.json({ success: true, token: token });
-    } else {
-        return res.status(401).json({ success: false, message: 'Invalid credentials' });
-    }
-});
-
-// --- In-memory Applications (unchanged) ---
-let applications = [];
-
-app.get('/api/applications', (req, res) => {
-    res.json({ success: true, applications });
-});
-
-app.post('/api/applications', (req, res) => {
-    const { ign, rank, region, experience, favoriteHero, whyJoin } = req.body;
-    if (!ign || !rank || !region || !experience || !favoriteHero || !whyJoin) {
-        return res.status(400).json({ success: false, message: 'All fields are required.' });
-    }
-    const newApplication = {
-        id: Date.now().toString(),
-        ign, rank, region, experience, favoriteHero, whyJoin,
-        submittedAt: new Date().toISOString()
-    };
-    applications.push(newApplication);
-    console.log(`New application received: ${ign}`);
-    res.status(201).json({ success: true, message: 'Application submitted successfully!' });
-});
-
-app.put('/api/applications/:id', (req, res) => {
-    const { id } = req.params;
-    const { ign, rank, region, experience, favoriteHero, whyJoin } = req.body;
-    if (!ign || !rank || !region || !experience || !favoriteHero || !whyJoin) {
-        return res.status(400).json({ success: false, message: 'All fields are required.' });
-    }
-    const index = applications.findIndex(app => app.id === id);
-    if (index === -1) return res.status(404).json({ success: false, message: 'Application not found.' });
-    applications[index] = { ...applications[index], ign, rank, region, experience, favoriteHero, whyJoin };
-    console.log(`Application ID ${id} updated`);
-    res.json({ success: true, message: 'Application updated successfully!' });
-});
-
-app.delete('/api/applications/:id', authenticateToken, (req, res) => {
-    const { id } = req.params;
-    const index = applications.findIndex(app => app.id === id);
-    if (index === -1) return res.status(404).json({ success: false, message: 'Application not found.' });
-    applications.splice(index, 1);
-    console.log(`Application ID ${id} deleted`);
-    res.json({ success: true, message: 'Application deleted successfully!' });
-});
-
-// --- News Management (MongoDB) ---
-app.get('/api/news', async (req, res) => {
-    if (!newsCollection) return res.status(500).json({ success: false, message: 'Database connection error.' });
-    try {
-        const newsItems = await newsCollection.find({}).sort({ publishedAt: -1 }).toArray();
-        const serializedNews = newsItems.map(item => ({ ...item, id: item._id.toString() }));
-        res.json({ success: true, news: serializedNews });
-    } catch (error) {
-        console.error('Error fetching news:', error);
-        res.status(500).json({ success: false, message: 'Failed to load news articles.' });
-    }
-});
-
-app.post('/api/news', authenticateToken, async (req, res) => {
-    if (!newsCollection) return res.status(500).json({ success: false, message: 'Database connection error.' });
-    const { title, description, bannerUrl } = req.body;
-    if (!title || !description) {
-        return res.status(400).json({ success: false, message: 'Title and Description are required.' });
-    }
-    const newNewsItem = { title, description, bannerUrl: bannerUrl || '', publishedAt: new Date() };
-    try {
-        const result = await newsCollection.insertOne(newNewsItem);
-        const insertedItem = { _id: result.insertedId.toString(), ...newNewsItem, id: result.insertedId.toString() };
-        console.log(`News created with ID: ${result.insertedId}`);
-        res.status(201).json({ success: true, message: 'News article created', newsItem: insertedItem });
-    } catch (error) {
-        console.error('Error creating news:', error);
-        res.status(500).json({ success: false, message: 'Failed to create news article.' });
-    }
-});
-
-app.delete('/api/news/:id', authenticateToken, async (req, res) => {
-    if (!newsCollection) return res.status(500).json({ success: false, message: 'Database connection error.' });
-    const { id } = req.params;
-    let objectId;
-    try { objectId = new ObjectId(id); } catch (err) { return res.status(400).json({ success: false, message: 'Invalid ID.' }); }
-    try {
-        const result = await newsCollection.deleteOne({ _id: objectId });
-        if (result.deletedCount === 1) {
-            console.log(`News ID ${id} deleted`);
-            res.json({ success: true, message: 'News article deleted' });
-        } else {
-            res.status(404).json({ success: false, message: 'News article not found' });
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-    } catch (error) {
-        console.error('Error deleting news:', error);
-        res.status(500).json({ success: false, message: 'Failed to delete news article.' });
-    }
-});
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--darker);
+            color: var(--text-light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        h1, h2, h3, h4, h5 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            box-shadow: 0 2px 8px rgba(45, 90, 135, 0.2);
+            font-size: 0.9rem;
+        }
+        .btn:hover {
+            background-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(45, 90, 135, 0.3);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--secondary);
+            color: var(--secondary);
+        }
+        .btn-outline:hover {
+            background: var(--secondary);
+            color: white;
+        }
+        /* Header Styles */
+        header {
+            background: var(--darkest);
+            box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        .logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .logo img {
+            width: 100px;
+            height: auto;
+        }
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+        nav ul li {
+            position: relative;
+        }
+        nav ul li a {
+            color: var(--nav-link-color);
+            text-decoration: none;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+        }
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--nav-link-color);
+            transition: width 0.3s ease;
+        }
+        nav ul li a:hover {
+            color: var(--nav-link-color);
+        }
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+        .social-icons {
+            display: flex;
+            gap: 15px;
+        }
+        .social-icons a {
+            color: var(--nav-link-color);
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        }
+        .social-icons a:hover {
+            color: white;
+        }
+        .mobile-menu {
+            display: none;
+            font-size: 1.4rem;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            min-height: 700px;
+            background: url('snm.png') center/cover no-repeat;
+            display: flex;
+            align-items: center;
+            position: relative;
+            text-align: center;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(13, 27, 42, 0.7);
+        }
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding-top: 60px;
+            position: relative;
+            z-index: 2;
+        }
+        .hero h1 {
+            font-size: 3.5rem;
+            color: white;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        .hero p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 40px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        }
+        .hero-btns {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        /* Section Styles */
+        .section {
+            padding: 100px 0;
+        }
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        .section-title h2 {
+            font-size: 2.2rem;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 15px;
+            color: var(--text-light);
+        }
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 2px;
+            background: var(--secondary);
+        }
+        .section-title p {
+            max-width: 700px;
+            margin: 20px auto 0;
+            color: var(--text-gray);
+            font-size: 1.1rem;
+        }
+        /* About Section */
+        .about-content {
+            display: flex;
+            gap: 50px;
+            align-items: center;
+        }
+        .about-text {
+            flex: 1;
+        }
+        .about-text h3 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: var(--text-light);
+        }
+        .about-text p {
+            margin-bottom: 20px;
+            color: var(--text-gray);
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+        .about-image {
+            flex: 1;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        .about-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: var(--transition);
+        }
+        .about-image:hover img {
+            transform: scale(1.05);
+        }
+        /* Games Section */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        .game-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: var(--transition);
+            border: 1px solid var(--border);
+        }
+        .game-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+        .game-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+        }
+        .game-info {
+            padding: 25px 20px;
+        }
+        .game-info h3 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: var(--text-light);
+        }
+        .game-info p {
+            color: var(--text-gray);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+        /* Stats Section */
+        .stats {
+            background: var(--darkest);
+            padding: 80px 0;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+        }
+        .stat-card {
+            padding: 30px 20px;
+        }
+        .stat-card i {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--secondary);
+        }
+        .stat-card h3 {
+            font-size: 2.5rem;
+            color: var(--text-light);
+            margin-bottom: 10px;
+        }
+        .stat-card p {
+            color: var(--text-gray);
+            font-size: 1rem;
+        }
+        /* Footer */
+        footer {
+            background: var(--darkest);
+            color: var(--text-light);
+            padding: 70px 0 30px;
+            border-top: 1px solid var(--border);
+        }
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            position: relative;
+            padding-bottom: 10px;
+            color: var(--text-light);
+        }
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 35px;
+            height: 2px;
+            background: var(--secondary);
+        }
+        .footer-column p {
+            margin-bottom: 20px;
+            color: var(--text-gray);
+            font-size: 0.95rem;
+        }
+        .footer-links {
+            list-style: none;
+        }
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+        .footer-links a {
+            color: var(--text-gray);
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            font-size: 0.95rem;
+        }
+        .footer-links a i {
+            margin-right: 10px;
+            color: var(--secondary);
+            width: 20px;
+        }
+        .footer-links a:hover {
+            color: var(--secondary);
+            padding-left: 5px;
+        }
+        .social-icons.footer-social {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .social-icons.footer-social a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #2d3a52;
+            color: var(--text-light);
+            transition: var(--transition);
+            font-size: 1rem;
+        }
+        .social-icons.footer-social a:hover {
+            background: var(--secondary);
+            color: white;
+            transform: translateY(-3px);
+        }
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid var(--border);
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .logo {
+                order: 1;
+            }
+            nav ul {
+                display: none;
+            }
+            nav ul.active {
+                display: flex;
+                flex-direction: column;
+                position: fixed;
+                top: 70px;
+                left: 0;
+                background: var(--darkest);
+                width: 100%;
+                text-align: center;
+                padding: 20px 0;
+                box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
+                border: 1px solid var(--border);
+            }
+            .social-icons:not(.footer-social) {
+                display: none;
+            }
+            .mobile-menu {
+                display: block;
+            }
+            .about-content {
+                flex-direction: column;
+            }
+        }
+        @media (max-width: 768px) {
+            .section {
+                padding: 70px 0;
+            }
+            .section-title h2 {
+                font-size: 1.8rem;
+            }
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            .hero p {
+                font-size: 1.1rem;
+            }
+            .hero-btns {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .hero-btns .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
 
-// --- Popup Management (MongoDB) ---
-app.get('/api/popup', async (req, res) => {
-    if (!popupCollection) return res.status(500).json({ success: false, message: 'Database connection error.' });
-    try {
-        const activePopup = await popupCollection.findOne({ active: true });
-        if (activePopup) {
-            res.json({
-                success: true,
-                popup: {
-                    id: activePopup._id.toString(),
-                    message: activePopup.message,
-                    link: activePopup.link || null,
-                    linkText: activePopup.linkText || 'More Info'
+    <!-- ✅ Popup Notification -->
+    <div id="popupNotification" style="display: none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #e63946; color: white; padding: 15px 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 9999; max-width: 90%; text-align: center; font-weight: 500; font-size: 14px;">
+        <span id="popupMessage"></span>
+        <a href="#" id="popupLink" style="color: #fff; text-decoration: underline; margin-left: 10px;" target="_blank"></a>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/about.html">About</a></li>
+                    <li><a href="/merch.html">Merch</a></li>
+                    <li><a href="/news.html">News</a></li>
+                    <li><a href="/admin.html">Admin</a></li>
+                </ul>
+            </nav>
+            <div class="logo">
+                <img src="snm.png" alt="SNM Esports Logo">
+            </div>
+            <div class="social-icons">
+                <a href="https://twitch.tv/snmesportsggs" target="_blank"><i class="fab fa-twitch"></i></a>
+                <a href="https://twitter.com/snmesportsggs" target="_blank"><i class="fab fa-twitter"></i></a>
+                <a href="https://youtube.com/@snmesportsggs" target="_blank"><i class="fab fa-youtube"></i></a>
+                <a href="https://discord.gg/fearsnm" target="_blank"><i class="fab fa-discord"></i></a>
+                <a href="https://instagram.com/snmesportsggs" target="_blank"><i class="fab fa-instagram"></i></a>
+            </div>
+            <div class="mobile-menu">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container hero-content">
+            <h1>REDEFINING COMPETITIVE GAMING</h1>
+            <p>Join SNM Esports and become part of a revolutionary esports organization that transcends traditional boundaries</p>
+            <div class="hero-btns">
+                <a href="/about.html" class="btn">Discover Our Story</a>
+                <a href="/merch.html" class="btn btn-outline">Team Merch</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="section">
+        <div class="container">
+            <div class="section-title">
+                <h2>About Us</h2>
+                <p>Discover the story behind SNM Esports</p>
+            </div>
+            <div class="about-content">
+                <div class="about-text">
+                    <h3>Our Mission</h3>
+                    <p>SNM Esports is dedicated to fostering a world-class environment for competitive gaming. We strive to nurture talent, build a strong community, and compete at the highest levels across multiple titles.</p>
+                    <p>Founded on the principles of innovation, teamwork, and integrity, we aim to be a leading force in the esports industry, inspiring players and fans alike.</p>
+                    <a href="/about.html" class="btn">Our Story</a>
+                </div>
+                <div class="about-image">
+                    <img src="snm.png" alt="SNM Esports Team">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Games Section -->
+    <section class="section" style="background: var(--darker);">
+        <div class="container">
+            <div class="section-title">
+                <h2>Our Teams</h2>
+                <p>Competing across the most popular esports titles</p>
+            </div>
+            <div class="games-grid">
+                <div class="game-card">
+                    <img src="snm.png" alt="Counter-Strike 2" class="game-image">
+                    <div class="game-info">
+                        <h3>Counter-Strike 2</h3>
+                        <p>Strategic teamwork and precise gunplay define our CS2 roster.</p>
+                        <a href="#" class="btn btn-outline">Team Roster</a>
+                    </div>
+                </div>
+                <div class="game-card">
+                    <img src="snm.png" alt="Valorant" class="game-image">
+                    <div class="game-info">
+                        <h3>Valorant</h3>
+                        <p>Tactical shooters with unique agent abilities and clutch plays.</p>
+                        <a href="#" class="btn btn-outline">Team Roster</a>
+                    </div>
+                </div>
+                <div class="game-card">
+                    <img src="snm.png" alt="Rocket League" class="game-image">
+                    <div class="game-info">
+                        <h3>Rocket League</h3>
+                        <p>High-octane soccer with cars, skill, and spectacular goals.</p>
+                        <a href="#" class="btn btn-outline">Team Roster</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="fas fa-trophy"></i>
+                    <h3>N/A</h3>
+                    <p>Tournaments Won</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-users"></i>
+                    <h3>3k+</h3>
+                    <p>Team Members</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-calendar-alt"></i>
+                    <h3>2024</h3>
+                    <p>Founded</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-globe"></i>
+                    <h3>Global</h3>
+                    <p>Presence</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>SNM Esports</h3>
+                    <p>Redefining competitive gaming through innovation, excellence, and community since 2023.</p>
+                    <div class="social-icons footer-social">
+                        <a href="https://twitch.tv/snmesportsggs" target="_blank"><i class="fab fa-twitch"></i></a>
+                        <a href="https://twitter.com/snmesportsggs" target="_blank"><i class="fab fa-twitter"></i></a>
+                        <a href="https://youtube.com/@snmesportsggs" target="_blank"><i class="fab fa-youtube"></i></a>
+                        <a href="https://discord.gg/fearsnm" target="_blank"><i class="fab fa-discord"></i></a>
+                        <a href="https://instagram.com/snmesportsggs" target="_blank"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Organization</h3>
+                    <ul class="footer-links">
+                        <li><a href="/about.html"><i class="fas fa-chevron-right"></i> Our Story</a></li>
+                        <li><a href="/about.html"><i class="fas fa-chevron-right"></i> Leadership</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Careers</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Press</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Partnerships</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Competitive Teams</h3>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Fortnite</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Valorant</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Rocket League - Coming Soon</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Content Creators</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Academy Program</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact</h3>
+                    <ul class="footer-links">
+                        <li><a href="mailto:contact@snmesports.com"><i class="fas fa-envelope"></i> contact@snmesports.com</a></li>
+                        <li><a href="#"><i class="fas fa-map-marker-alt"></i> Global</a></li>
+                        <li><a href="#"><i class="fas fa-phone"></i> </a></li>
+                        <li><a href="#"><i class="fas fa-headset"></i> Support Center</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 SNM Esports. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ✅ Popup Script -->
+    <script>
+        // Fetch and display active popup notification
+        async function loadPopup() {
+            try {
+                const response = await fetch('/api/popup');
+                const data = await response.json();
+                const popup = data.popup;
+                const popupEl = document.getElementById('popupNotification');
+                const messageEl = document.getElementById('popupMessage');
+                const linkEl = document.getElementById('popupLink');
+
+                if (popup) {
+                    messageEl.textContent = popup.message;
+                    if (popup.link) {
+                        linkEl.href = popup.link;
+                        linkEl.textContent = popup.linkText || 'More Info';
+                        linkEl.style.display = 'inline';
+                    } else {
+                        linkEl.style.display = 'none';
+                    }
+                    popupEl.style.display = 'block';
+
+                    // Auto-hide after 10 seconds
+                    setTimeout(() => {
+                        popupEl.style.display = 'none';
+                    }, 10000);
                 }
-            });
-        } else {
-            res.json({ success: true, popup: null });
+            } catch (error) {
+                console.error('Failed to load popup:', error);
+            }
         }
-    } catch (error) {
-        console.error('Error fetching popup:', error);
-        res.status(500).json({ success: false, message: 'Server error.' });
-    }
-});
 
-app.post('/api/popup', authenticateToken, async (req, res) => {
-    if (!popupCollection) return res.status(500).json({ success: false, message: 'Database connection error.' });
-    const { message, link, linkText } = req.body;
-    if (!message) return res.status(400).json({ success: false, message: 'Message is required.' });
+        // Run on page load
+        document.addEventListener('DOMContentLoaded', loadPopup);
+    </script>
 
-    try {
-        await popupCollection.updateMany({ active: true }, { $set: { active: false } });
-        const newPopup = {
-            message,
-            link: link || '',
-            linkText: linkText || 'More Info',
-            active: true,
-            createdAt: new Date(),
-            updatedAt: new Date()
-        };
-        const result = await popupCollection.insertOne(newPopup);
-        console.log(`Popup created with ID: ${result.insertedId}`);
-        res.status(201).json({
-            success: true,
-            message: 'Popup published',
-            popup: { id: result.insertedId.toString(), ...newPopup }
+    <!-- Mobile Menu Toggle -->
+    <script>
+        document.querySelector('.mobile-menu').addEventListener('click', () => {
+            document.querySelector('nav ul').classList.toggle('active');
         });
-    } catch (error) {
-        console.error('Error creating popup:', error);
-        res.status(500).json({ success: false, message: 'Failed to create popup.' });
-    }
-});
+    </script>
 
-app.delete('/api/popup/:id', authenticateToken, async (req, res) => {
-    if (!popupCollection) return res.status(500).json({ success: false, message: 'Database connection error.' });
-    const { id } = req.params;
-    let objectId;
-    try { objectId = new ObjectId(id); } catch (err) { return res.status(400).json({ success: false, message: 'Invalid ID.' }); }
-    try {
-        const result = await popupCollection.updateOne({ _id: objectId }, { $set: { active: false } });
-        if (result.modifiedCount === 1) {
-            console.log(`Popup ID ${id} deactivated`);
-            res.json({ success: true, message: 'Popup removed' });
-        } else {
-            res.status(404).json({ success: false, message: 'Popup not found' });
-        }
-    } catch (error) {
-        console.error('Error removing popup:', error);
-        res.status(500).json({ success: false, message: 'Failed to remove popup.' });
-    }
-});
-
-// --- Graceful Shutdown ---
-process.on('SIGINT', async () => {
-    console.log('\nShutting down gracefully (SIGINT)...');
-    if (client) await client.close();
-    process.exit(0);
-});
-
-process.on('SIGTERM', async () => {
-    console.log('\nShutting down gracefully (SIGTERM)...');
-    if (client) await client.close();
-    process.exit(0);
-});
-
-// --- Start Server ---
-connectToDatabase().then(() => {
-    const server = app.listen(PORT, '0.0.0.0', () => {
-        console.log(`
-==========================================`);
-        console.log(`  Server is running on http://0.0.0.0:${PORT}`);
-        console.log(`==========================================`);
-    });
-    server.on('error', (err) => {
-        console.error('Server failed to start:', err);
-        process.exit(1);
-    });
-}).catch(err => {
-    console.error("Failed to start server:", err);
-    process.exit(1);
-});
+</body>
+</html>
