@@ -52,6 +52,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// --- Serve favicon as sn.png ---
+app.get('/favicon.ico', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'sn.png'));
+});
+
 // --- JWT Authentication ---
 const authenticateToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
@@ -122,11 +127,18 @@ app.post('/api/applications', (req, res) => {
     if (!ign || !rank || !region || !experience || !favoriteHero || !whyJoin) {
         return res.status(400).json({ success: false, message: 'All fields are required.' });
     }
+
     const newApplication = {
         id: Date.now().toString(),
-        ign, rank, region, experience, favoriteHero, whyJoin,
+        ign,
+        rank,
+        region,
+        experience,
+        favoriteHero,
+        whyJoin,
         submittedAt: new Date().toISOString()
     };
+
     applications.push(newApplication);
     console.log(`New application received: ${ign}`);
     res.status(201).json({ success: true, message: 'Application submitted successfully!' });
@@ -138,8 +150,10 @@ app.put('/api/applications/:id', (req, res) => {
     if (!ign || !rank || !region || !experience || !favoriteHero || !whyJoin) {
         return res.status(400).json({ success: false, message: 'All fields are required.' });
     }
+
     const index = applications.findIndex(app => app.id === id);
     if (index === -1) return res.status(404).json({ success: false, message: 'Application not found.' });
+
     applications[index] = { ...applications[index], ign, rank, region, experience, favoriteHero, whyJoin };
     console.log(`Application ID ${id} updated`);
     res.json({ success: true, message: 'Application updated successfully!' });
@@ -149,6 +163,7 @@ app.delete('/api/applications/:id', authenticateToken, (req, res) => {
     const { id } = req.params;
     const index = applications.findIndex(app => app.id === id);
     if (index === -1) return res.status(404).json({ success: false, message: 'Application not found.' });
+
     applications.splice(index, 1);
     console.log(`Application ID ${id} deleted`);
     res.json({ success: true, message: 'Application deleted successfully!' });
@@ -157,6 +172,7 @@ app.delete('/api/applications/:id', authenticateToken, (req, res) => {
 // --- News Management ---
 app.get('/api/news', async (req, res) => {
     if (!newsCollection) return res.status(500).json({ success: false, message: 'Database connection error.' });
+
     try {
         const newsItems = await newsCollection.find({}).sort({ publishedAt: -1 }).toArray();
         const serializedNews = newsItems.map(item => ({ ...item, id: item._id.toString() }));
@@ -169,11 +185,19 @@ app.get('/api/news', async (req, res) => {
 
 app.post('/api/news', authenticateToken, async (req, res) => {
     if (!newsCollection) return res.status(500).json({ success: false, message: 'Database connection error.' });
+
     const { title, description, bannerUrl } = req.body;
     if (!title || !description) {
         return res.status(400).json({ success: false, message: 'Title and Description are required.' });
     }
-    const newNewsItem = { title, description, bannerUrl: bannerUrl || '', publishedAt: new Date() };
+
+    const newNewsItem = {
+        title,
+        description,
+        bannerUrl: bannerUrl || '',
+        publishedAt: new Date()
+    };
+
     try {
         const result = await newsCollection.insertOne(newNewsItem);
         const insertedItem = { _id: result.insertedId.toString(), ...newNewsItem, id: result.insertedId.toString() };
@@ -187,9 +211,15 @@ app.post('/api/news', authenticateToken, async (req, res) => {
 
 app.delete('/api/news/:id', authenticateToken, async (req, res) => {
     if (!newsCollection) return res.status(500).json({ success: false, message: 'Database connection error.' });
+
     const { id } = req.params;
     let objectId;
-    try { objectId = new ObjectId(id); } catch (err) { return res.status(400).json({ success: false, message: 'Invalid ID.' }); }
+    try {
+        objectId = new ObjectId(id);
+    } catch (err) {
+        return res.status(400).json({ success: false, message: 'Invalid ID.' });
+    }
+
     try {
         const result = await newsCollection.deleteOne({ _id: objectId });
         if (result.deletedCount === 1) {
@@ -207,6 +237,7 @@ app.delete('/api/news/:id', authenticateToken, async (req, res) => {
 // --- Popup Management ---
 app.get('/api/popup', async (req, res) => {
     if (!popupCollection) return res.status(500).json({ success: false, message: 'Database connection error.' });
+
     try {
         const activePopup = await popupCollection.findOne({ active: true });
         if (activePopup) {
@@ -231,11 +262,13 @@ app.get('/api/popup', async (req, res) => {
 
 app.post('/api/popup', authenticateToken, async (req, res) => {
     if (!popupCollection) return res.status(500).json({ success: false, message: 'Database connection error.' });
+
     const { title, message, link, linkText } = req.body;
     if (!title || !message) return res.status(400).json({ success: false, message: 'Title and message are required.' });
 
     try {
         await popupCollection.updateMany({ active: true }, { $set: { active: false } });
+
         const newPopup = {
             title,
             message,
@@ -245,6 +278,7 @@ app.post('/api/popup', authenticateToken, async (req, res) => {
             createdAt: new Date(),
             updatedAt: new Date()
         };
+
         const result = await popupCollection.insertOne(newPopup);
         console.log(`Popup created with ID: ${result.insertedId}`);
         res.status(201).json({
@@ -260,9 +294,15 @@ app.post('/api/popup', authenticateToken, async (req, res) => {
 
 app.delete('/api/popup/:id', authenticateToken, async (req, res) => {
     if (!popupCollection) return res.status(500).json({ success: false, message: 'Database connection error.' });
+
     const { id } = req.params;
     let objectId;
-    try { objectId = new ObjectId(id); } catch (err) { return res.status(400).json({ success: false, message: 'Invalid ID.' }); }
+    try {
+        objectId = new ObjectId(id);
+    } catch (err) {
+        return res.status(400).json({ success: false, message: 'Invalid ID.' });
+    }
+
     try {
         const result = await popupCollection.updateOne({ _id: objectId }, { $set: { active: false } });
         if (result.modifiedCount === 1) {
@@ -298,6 +338,7 @@ connectToDatabase().then(() => {
         console.log(`  Server is running on http://0.0.0.0:${PORT}`);
         console.log(`==========================================`);
     });
+
     server.on('error', (err) => {
         console.error('Server failed to start:', err);
         process.exit(1);
